@@ -22,7 +22,6 @@ pipelines:
 
       - step:
           name: Upload Image
-          deployment: production
           script:
             - apt-get update && apt-get install -y lftp
             - |
@@ -36,7 +35,6 @@ pipelines:
               put build.tar.gz;
               bye
               "
-
 
 definitions:
   caches:
