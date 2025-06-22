@@ -1,0 +1,8 @@
+{
+  "shared": {
+    "fields": {
+      "password": "Contraseña",
+      "passwordConfirmation": "Confirmación de contraseña"
+    }
+  }
+}

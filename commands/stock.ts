@@ -1,0 +1,116 @@
+import env from '#start/env'
+import { BaseCommand } from '@adonisjs/core/ace'
+import { createReadStream } from 'node:fs'
+import parser from 'csv-parser'
+import Product from '#models/product'
+import { CommandOptions } from '@adonisjs/core/types/ace'
+import { exit } from 'node:process'
+import { Transform } from 'node:stream'
+import Provider from '#models/provider'
+
+/**
+ * Creates a transform stream that removes double quotes from the data
+ */
+function replaceStreamContent() {
+  return new Transform({
+    transform(chunk, _, callback) {
+      // Convert buffer to string, replace double quotes, and convert back to buffer
+      const modifiedChunk = Buffer.from(chunk.toString().replace(/"/g, ''))
+      callback(null, modifiedChunk)
+    },
+  })
+}
+
+export default class StockCommand extends BaseCommand {
+  static readonly commandName = 'stock:update'
+  static readonly description = 'Update stock'
+
+  static readonly options: CommandOptions = {
+    startApp: true,
+  }
+
+  async run() {
+    const products: any = []
+    const providerAliases = new Set<string>()
+    const source = env.get('STOCK_LIST_UTF8')
+    if (!source) throw new Error('STOCK_LIST_UTF8 is not defined')
+    this.logger.info('Updating stock...')
+    createReadStream(source)
+      .pipe(replaceStreamContent())
+      .pipe(
+        parser({
+          separator: ';',
+          headers: [
+            'code',
+            'provider',
+            'providerName',
+            'name',
+            'fob',
+            'price',
+            'stock',
+            'location',
+            'brandCode',
+            'brandName',
+            'categoryCode',
+            'categoryName',
+            'subcategoryCode',
+            'subcategoryName',
+            'originCode',
+            'originName',
+            'factoryCode',
+          ],
+        })
+      )
+      .on('error', (error) => {
+        this.logger.error('Error reading file. ' + error.message)
+      })
+      .on('data', (row) => {
+        products.push({
+          id: `${row.code}${row.provider}`,
+          code: row.code,
+          provider: row.provider,
+          location: row.location,
+          name: row.name,
+          fob: Number(row.fob?.replace(',', '.') ?? 0),
+          price: Number(row.price?.replace(',', '.') ?? 0),
+          stock: Number.parseInt(row.stock, 10),
+          brand: row.brandName,
+          category: row.categoryName,
+          subcategory: row.subcategoryName,
+          origin: row.originName,
+          public: 1,
+        })
+
+        providerAliases.add(row.provider)
+      })
+      .on('end', () => {
+        const promises = []
+        promises.push(
+          Product.updateOrCreateMany('id', products)
+            .then(() => {
+              this.logger.info('Stock updated')
+            })
+            .catch((error) => {
+              this.logger.error('Error updating stock', error.message)
+            })
+        )
+
+        promises.push(
+          Provider.updateOrCreateMany(
+            'alias',
+            Array.from(providerAliases).map((alias) => ({
+              alias,
+            }))
+          )
+            .then(() => {
+              this.logger.info('Providers updated')
+            })
+            .catch((error) => {
+              this.logger.error('Error updating providers', error.message)
+            })
+        )
+
+        Promise.all(promises).finally(() => exit())
+      })
+  }
+}

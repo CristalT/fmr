@@ -1,0 +1,63 @@
+<script lang="ts" setup>
+import { Button, Input, Alert } from '~/components/ui'
+import { useForm } from '@inertiajs/vue3'
+import { computed } from 'vue'
+
+const props = defineProps(['errors'])
+
+const form = useForm({
+  email: '',
+  password: '',
+})
+
+const error = computed(() => {
+  if (props.errors?.message) {
+    return 'Error. Revise sus credenciales de acceso.'
+  }
+  return ''
+})
+
+</script>
+
+<template>
+  <div
+    class="flex flex-row h-screen w-screen items-center justify-center absolute inset-0 bg-cover bg-center bg-no-repeat"
+    style="background-image: url('/static/motorcycle-bg.jpg')"
+  >
+    <div class="h-full bg-black bg-opacity-40 p-28 text-white w-1/3">
+      <div class="flex flex-col gap-4">
+        <h1 class="uppercase text-center font-semibold">Acceso Clientes</h1>
+        <Alert variant="danger" v-if="error"> {{ error }} </Alert>
+        <form @submit.prevent="form.post('/auth/customers')">
+          <div class="flex flex-col gap-4">
+            <div>
+              <Input
+                placeholder="Usuario"
+                v-model="form.email"
+                :error="form.errors.email"
+              />
+            </div>
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                v-model="form.password"
+                :error="form.errors.password"
+              />
+            </div>
+            <div class="flex justify-center">
+              <Button label="Ingresar" type="submit" variant="primary" class="w-full" />
+            </div>
+            <div class="flex justify-center">
+              <a href="/auth/password-recovery" class="text-white underline">Olvidé mi contraseña</a>
+            </div>
+            <div class="flex justify-center">
+              <a href="/registries/create" class="text-white underline">Quiero ser cliente</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="w-2/3"></div>
+  </div>
+</template>

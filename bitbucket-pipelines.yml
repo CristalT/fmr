@@ -1,0 +1,43 @@
+image: node:21.7.3
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Build
+          caches:
+            - pnpm
+          script:
+            - apt-get update && apt-get install rsync -y
+            - npm install -g pnpm
+            - pnpm install --frozen-lockfile
+            - node ace build
+            - cp -r ./inertia ./build/inertia
+            - cp ./tailwind.config.js ./build/tailwind.config.js
+            - rsync -av --exclude="node_modules" --exclude=".git" --exclude="*.log" . /tmp/build-copy/
+            - tar -czf "build.tar.gz" -C /tmp/build-copy .
+            - rm -rf /tmp/build-copy
+          artifacts:
+            - build.tar.gz
+
+      - step:
+          name: Upload Image
+          deployment: production
+          script:
+            - apt-get update && apt-get install -y lftp
+            - |
+              lftp -c "
+              set ssl:verify-certificate no;
+              set ssl:check-hostname no;
+              set ftp:ssl-force on;
+              set ftp:ssl-protect-data yes;
+              open -u $FTP_USER,$FTP_PASSWORD $FTP_HOST;
+              cd $FTP_REMOTE_PATH;
+              put build.tar.gz;
+              bye
+              "
+
+
+definitions:
+  caches:
+    pnpm: ~/.pnpm-store
