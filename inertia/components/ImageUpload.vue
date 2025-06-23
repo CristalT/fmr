@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import Product from '#models/product';
+import ProductImage from './ProductImage.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -50,6 +51,7 @@ onMounted(() => {
   <p v-if="label">{{ label }}</p>
   <div class="rounded-md overflow-hidden cursor-pointer" @click="changeImage">
     <input :accept="accept" type="file" v-show="false" ref="inputFile" @change="loadImage" />
-    <img :src="imageSrc" class="object-cover min-h-full max-w-full" alt="Product Image" />
+    <ProductImage v-if="!imageSrc" rounded :product class="w-full mx-auto" />
+    <img v-else :src="imageSrc" class="object-cover min-h-full max-w-full" alt="Product Image" />
   </div>
 </template>
