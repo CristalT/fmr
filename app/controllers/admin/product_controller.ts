@@ -3,7 +3,8 @@ import Product from '#models/product'
 import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import logger from '@adonisjs/core/services/logger'
-export default class AdminProductsController {
+
+export default class ProductController {
   async index({ inertia, request }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 12)
@@ -66,13 +67,11 @@ export default class AdminProductsController {
 
     const data = request.all()
 
-    data.public = data.public === 'false' ? 0 : 1
-
     product.fill(data)
     product.image = imageName
 
     await product.save()
 
-    response.redirect('/admin/products')
+    response.redirect('/admin/products?reload')
   }
 }

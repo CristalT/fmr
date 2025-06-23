@@ -33,6 +33,13 @@ function openEdit(productId: string) {
 const search = useDebounceFn(() => {
   router.get('/admin/products', params.value)
 }, 1000)
+
+onMounted(() => {
+  const reload = window.location.search.includes('reload')
+  if (reload) {
+    window.location.href = window.location.href.replace('?reload', '')
+  }
+})
 </script>
 
 <template>

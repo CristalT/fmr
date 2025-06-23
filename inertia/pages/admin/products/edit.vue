@@ -3,7 +3,7 @@ import { Input, Button, Toggle } from '~/components/ui'
 import AdminLayout from '~/components/AdminLayout.vue'
 import ImageUpload from '~/components/ImageUpload.vue'
 import usePath from '~/composables/use_path'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import type Product from '#models/product'
 
@@ -46,6 +46,12 @@ function submit() {
   })
 }
 
+const isPublic = computed({
+  get: () => Boolean(form.public),
+  set: (value) => {
+    form.public = value ? 1 : 0
+  },
+})
 </script>
 
 <template>
@@ -76,7 +82,7 @@ function submit() {
             </div>
           </div>
           <div class="flex gap-2 items-center mt-4 border-t py-4">
-            <Toggle label="Público" v-model="form.public" valueType="num" />
+            <Toggle label="Público" v-model="isPublic" />
           </div>
         </div>
         <div class="basis-2/6">
