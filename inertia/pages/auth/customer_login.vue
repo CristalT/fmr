@@ -22,7 +22,7 @@ const error = computed(() => {
 <template>
   <div
     class="flex flex-row h-screen w-screen items-center justify-center absolute inset-0 bg-cover bg-center bg-no-repeat"
-    style="background-image: url('/static/motorcycle-bg.jpg')"
+    style="background-image: url('/static/customer-login-bg.webp')"
   >
     <div class="h-full bg-black bg-opacity-40 p-28 text-white w-1/3">
       <div class="flex flex-col gap-4">
