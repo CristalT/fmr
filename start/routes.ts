@@ -7,6 +7,7 @@ const OrderController = () => import('#controllers/order_controller')
 
 import router from '@adonisjs/core/services/router'
 import { publicRoutes, adminRoutes } from '#start/routes/index'
+import env from '#start/env'
 
 // Public routes
 router.group(() => publicRoutes())
@@ -31,6 +32,7 @@ router
 const PATH_TRAVERSAL_REGEX = /(?:^|[\\/])\.\.(?:[\\/]|$)/
 
 router.get('/uploads/*', ({ request, response }) => {
+  const uploadsFolder = env.get('UPLOADS_FOLDER', 'uploads')
   const filePath = request.param('*').join(sep)
   const normalizedPath = normalize(filePath)
 
@@ -38,6 +40,6 @@ router.get('/uploads/*', ({ request, response }) => {
     return response.badRequest('Malformed path')
   }
 
-  const absolutePath = app.makePath('uploads', normalizedPath)
+  const absolutePath = app.makePath(uploadsFolder, normalizedPath)
   return response.download(absolutePath)
 })
