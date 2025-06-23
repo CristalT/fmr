@@ -2,7 +2,7 @@ import { UPLOADS_FOLDER } from '#config/constants'
 import Product from '#models/product'
 import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
-import logger from '@adonisjs/core/services/logger'
+import sharp from 'sharp'
 
 export default class ProductController {
   async index({ inertia, request }: HttpContext) {
@@ -51,19 +51,13 @@ export default class ProductController {
     const product = await Product.findOrFail(params.id)
 
     const imageFile = request.file('imageFile')
-    const imageName = `${params.id}.png`
+    const imageName = `${params.id}.webp`
 
-    await imageFile
-      ?.move(app.makePath(UPLOADS_FOLDER, 'images'), {
-        name: imageName,
-      })
-      .then(() => {
-        logger.info(`Image ${imageName} uploaded successfully`)
-      })
-      .catch((error) => {
-        logger.error(`Error uploading image: ${error.message}`)
-        throw error
-      })
+    if (imageFile) {
+      sharp(imageFile.tmpPath)
+        .webp({ quality: 80 })
+        .toFile(app.makePath(UPLOADS_FOLDER, 'images', imageName))
+    }
 
     const data = request.all()
 
