@@ -86,7 +86,7 @@ const isPublic = computed({
           </div>
         </div>
         <div class="basis-2/6">
-          <ImageUpload :product :src="imagePath(product.image)" label="Imagen" v-model="image" accept="image/png" />
+          <ImageUpload :product :src="imagePath(product.image)" label="Imagen" v-model="image" accept="image/png,image/jpg,image/jpeg,image/webp" />
         </div>
       </div>
     </form>
