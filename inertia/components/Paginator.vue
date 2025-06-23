@@ -9,6 +9,7 @@ const props = defineProps(['lastPage', 'currentPage'])
 const page = defineModel()
 
 function handlePageChange(n: number) {
+  if (n < 1 || n > props.lastPage) return
   page.value = n
 }
 
@@ -43,7 +44,6 @@ const pageNumbers = computed(() => {
 <template>
   <div class="flex justify-between">
     <Button
-      bordered
       variant="tertiary"
       label="Anterior"
       @click="handlePageChange(currentPage - 1)"
@@ -51,7 +51,6 @@ const pageNumbers = computed(() => {
     <ul class="flex gap-2 items-center" :key="currentPage">
       <li v-for="page of pageNumbers" :key="page">
         <Button
-          bordered
           :variant="currentPage === page ? 'primary' : 'tertiary'"
           :label="page"
           v-if="page !== '...'"
@@ -61,7 +60,6 @@ const pageNumbers = computed(() => {
       </li>
     </ul>
     <Button
-      bordered
       variant="tertiary"
       label="Siguiente"
       @click="handlePageChange(currentPage + 1)"

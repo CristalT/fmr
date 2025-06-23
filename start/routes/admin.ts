@@ -10,7 +10,6 @@ const RegistryController = () => import('#controllers/registry_controller')
 
 export default function adminRoutes() {
   router.get('/', [AdminController, 'index']).as('admin.index')
-  router.get('/products/view', [AdminProductsController, 'view']).as('admin.products.view')
   router.resource('/products', AdminProductsController).as('admin.products')
   router.get('/customers/view', [CustomerController, 'view']).as('admin.customers.view')
   router.resource('/customers', CustomerController).as('admin.customers')

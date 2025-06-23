@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-import ProductImage from './ProductImage.vue'
+import { computed, onMounted, ref } from 'vue'
 import Product from '#models/product';
 
 const props = withDefaults(
@@ -15,10 +14,13 @@ const props = withDefaults(
   }
 )
 
-const model = defineModel()
-
+const model = defineModel<File>()
 const inputFile = ref()
-const preview = ref('')
+const preview = ref<string>('')
+
+const imageSrc = computed(() => {
+  return preview.value || props.product.image || ''
+})
 
 function changeImage() {
   inputFile.value.click()
@@ -31,9 +33,10 @@ function loadImage(event: Event) {
 
   const reader = new FileReader()
 
+  model.value = file
+
   reader.onload = function (e) {
     preview.value = e.target?.result as string
-    model.value = file
   }
 
   reader.readAsDataURL(file)
@@ -47,6 +50,6 @@ onMounted(() => {
   <p v-if="label">{{ label }}</p>
   <div class="rounded-md overflow-hidden cursor-pointer" @click="changeImage">
     <input :accept="accept" type="file" v-show="false" ref="inputFile" @change="loadImage" />
-    <ProductImage :product :src="preview" class="h-[200px] max-w-[300px]" />
+    <img :src="imageSrc" class="object-cover min-h-full max-w-full" alt="Product Image" />
   </div>
 </template>

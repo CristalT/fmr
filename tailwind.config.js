@@ -2,6 +2,9 @@
 export default {
   content: ['./inertia/**/*.{html,js,vue}'],
   theme: {
+    fontFamily: {
+      sans: ['"PT Sans"', 'sans-serif'],
+    },
     extend: {
       colors: {
         primary: '#023285',

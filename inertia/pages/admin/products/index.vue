@@ -6,12 +6,11 @@ import { Input } from '~/components/ui'
 import Paginator from '~/components/Paginator.vue'
 import ProductImage from '~/components/ProductImage.vue'
 import ProviderSelect from '~/components/ProviderSelect.vue'
-import type Product from '#models/product'
-import { useDebounceFn, useLocalStorage } from '@vueuse/core'
-import useHttp from '~/composables/use_http'
+import Product from '#models/product'
+import { useDebounceFn } from '@vueuse/core'
 import { Meta } from '~/types/metadata'
 
-const params = useLocalStorage('adminProductSearchParams', {
+const params = ref({
   terms: '',
   page: 1,
   filter: {
@@ -19,57 +18,26 @@ const params = useLocalStorage('adminProductSearchParams', {
   },
 })
 
-const http = useHttp()
+const props = defineProps<{ data: { data: Product [], meta: Meta } }>()
 
-const uploading = ref(false)
+const products = computed(() => props.data.data)
+const metadata = computed(() => props.data.meta)
 
-const items = ref<Product[]>([])
-const isFetching = ref(false)
-const metadata = ref<Meta>({
-  lastPage: 0,
-  perPage: 0,
-  total: 0,
-  firstPage: 0,
-  currentPage: 0,
-})
 
-async function fetchAll({ page }: { page?: number }) {
-  if (page) params.value.page = page
-
-  const request = http.path('admin/products').cancellable('getAllProducts')
-
-  request.query(params.value)
-
-  isFetching.value = true
-
-  try {
-    const { data, meta } = await request.get<{ data: Product[]; meta: Meta }>()
-    items.value = data
-    metadata.value = meta
-  } catch (err) {
-    console.error(err)
-  } finally {
-    isFetching.value = false
-  }
-}
-
-const loading = computed(() => isFetching.value || uploading.value)
+params.value.page = metadata.value.currentPage
 
 function openEdit(productId: string) {
-  router.get(`${window.location.origin}/admin/products/${productId}`)
+  router.get(`/admin/products/${productId}`)
 }
 
 const search = useDebounceFn(() => {
-  fetchAll({ page: 1 })
+  router.get('/admin/products', params.value)
 }, 1000)
-
-
-onMounted(() => {
-  fetchAll({})
-})
 </script>
+
 <template>
-  <AdminLayout :loading>
+  <AdminLayout>
+
     <div class="p-2 bg-white shadow-sm rounded-md flex gap-2">
       <div class="basis-9/12">
         <Input v-model="params.terms" placeholder="Buscar ..." @update:model-value="search" />
@@ -90,9 +58,9 @@ onMounted(() => {
           <th class="w-[80px] p-2 text-right">Precio</th>
         </tr>
       </thead>
-      <tbody class="overflow-auto block h-[calc(100vh-250px)]" v-if="items.length">
+      <tbody class="overflow-auto block h-[calc(100vh-250px)]" v-if="products.length">
         <tr
-          v-for="product of items"
+          v-for="product of products"
           :key="product.id"
           class="table-fixed table w-full border-b hover:bg-gray-100 cursor-pointer"
           :class="{ 'opacity-30': !product.public }"
@@ -121,7 +89,7 @@ onMounted(() => {
               v-model="params.page"
               :current-page="metadata.currentPage"
               :last-page="metadata.lastPage"
-              @update:model-value="(page) => fetchAll({ page })"
+              @update:model-value="router.get('/admin/products', params)"
             />
           </td>
         </tr>
