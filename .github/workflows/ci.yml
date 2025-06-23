@@ -1,0 +1,81 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.7.3
+
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install rsync -y
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: node ace build
+
+      - name: Copy inertia directory
+        run: cp -r ./inertia ./build/inertia
+
+      - name: Copy tailwind config
+        run: cp ./tailwind.config.js ./build/tailwind.config.js
+
+      - name: Rsync to temp directory
+        run: rsync -av --exclude="node_modules" --exclude=".git" --exclude="*.log" . /tmp/build-copy/
+
+      - name: Create build archive
+        run: tar -czf build.tar.gz -C /tmp/build-copy .
+
+      - name: Remove temp directory
+        run: rm -rf /tmp/build-copy
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build.tar.gz
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Upload via FTP
+        env:
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_REMOTE_PATH: ${{ secrets.FTP_REMOTE_PATH }}
+        run: |
+          lftp -d -c "
+            set ssl:verify-certificate no;
+            set ssl:check-hostname no;
+            set ftp:ssl-force on;
+            set ftp:ssl-protect-data yes;
+            open -u $FTP_USER,$FTP_PASSWORD $FTP_HOST;
+            cd $FTP_REMOTE_PATH;
+            put build.tar.gz;
+            bye
+          "
