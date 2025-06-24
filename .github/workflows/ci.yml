@@ -76,6 +76,7 @@ jobs:
         run: |
           cp -r ./inertia ./build/inertia
           cp ./tailwind.config.js ./build/tailwind.config.js
+          cp ./postcss.config.js ./build/postcss.config.js
 
       - name: Create build archive
         run: |
