@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, computed } from '@adonisjs/lucid/orm'
+import { BaseModel, column, computed, scope } from '@adonisjs/lucid/orm'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -57,4 +57,34 @@ export default class Product extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+
+  static readonly getForEdit = scope((query, id: string) => {
+    return query
+      .select([
+        'id',
+        'code',
+        'provider',
+        'public',
+        'name',
+        'price',
+        'fob',
+        'image',
+        'stock',
+        'location',
+      ])
+      .where('id', id)
+  })
+
+  static readonly search = scope((query, { terms, filter }) => {
+    if (filter) {
+      for (const [key, value] of Object.entries(filter)) {
+        if (value) query.where(key, '=', String(value))
+      }
+    }
+
+    if (terms) {
+      query.where('name', 'LIKE', `%${terms.replaceAll(' ', '%')}%`)
+      query.orWhere('code', 'LIKE', terms)
+    }
+  })
 }

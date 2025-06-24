@@ -6,13 +6,12 @@ export default class OrderService {
     return cache.getOrSet({
       key: `order:${id}`,
       ttl: '1 hour',
-      factory: async () => {
-        return await Order.query()
+      factory: () =>
+        Order.query()
           .preload('cartItems', (query) => query.preload('product'))
           .preload('customerUser')
           .where('id', id)
-          .firstOrFail()
-      },
+          .firstOrFail(),
     })
   }
 }

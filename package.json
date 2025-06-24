@@ -15,7 +15,7 @@
     "deploy": "sh ./scripts/deploy.sh",
     "dev": "node ace serve --watch",
     "test": "node ace test",
-    "test:unit": "vitest",
+    "test:ui": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

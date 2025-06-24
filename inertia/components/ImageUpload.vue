@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import Product from '#models/product';
-import ProductImage from './ProductImage.vue';
+import { Icon } from '~/components/ui'
+import Product from '#models/product'
+import ProductImage from './ProductImage.vue'
+import { usePath } from '~/composables'
+
+const { staticPath } = usePath()
 
 const props = withDefaults(
   defineProps<{
@@ -15,12 +19,12 @@ const props = withDefaults(
   }
 )
 
-const model = defineModel<File>()
+const model = defineModel<File | null>()
 const inputFile = ref()
-const preview = ref<string>('')
+const preview = ref<string>(props.product.image || '')
 
 const imageSrc = computed(() => {
-  return preview.value || props.product.image || ''
+  return preview.value || staticPath('image-placeholder.png')
 })
 
 function changeImage() {
@@ -43,15 +47,27 @@ function loadImage(event: Event) {
   reader.readAsDataURL(file)
 }
 
+function deleteImage() {
+  preview.value = ''
+  model.value = null
+}
+
 onMounted(() => {
   if (props.src) preview.value = props.src
 })
 </script>
 <template>
-  <p v-if="label">{{ label }}</p>
-  <div class="rounded-md overflow-hidden cursor-pointer" @click="changeImage">
-    <input :accept="accept" type="file" v-show="false" ref="inputFile" @change="loadImage" />
-    <ProductImage v-if="!imageSrc" rounded :product class="w-full mx-auto" />
-    <img v-else :src="imageSrc" class="object-cover min-h-full max-w-full" alt="Product Image" />
+  <div class="flex flex-col">
+
+    <p v-if="label">{{ label }}</p>
+    <div class="rounded-md overflow-hidden relative">
+      <div class="h-full w-full absolute opacity-0 hover:opacity-100 hover:bg-black/50 transition-all flex gap-4 items-center justify-center">
+        <Icon name="edit" class="text-white cursor-pointer hover:scale-150 transition-transform" @click="changeImage"  />
+        <Icon name="delete" class="text-white cursor-pointer hover:scale-150 transition-transform" @click="deleteImage" />
+      </div>
+      <input :accept="accept" type="file" v-show="false" ref="inputFile" @change="loadImage" />
+      <ProductImage v-if="!preview && !product.image" rounded :product class="w-full mx-auto" />
+      <img id="img-preview" v-else :src="imageSrc" class="object-cover min-h-full max-w-full" alt="Product Image" />
+    </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { router } from '@inertiajs/vue3'
 import AdminLayout from '~/components/AdminLayout.vue'
 import { Input } from '~/components/ui'
@@ -7,10 +7,10 @@ import Paginator from '~/components/Paginator.vue'
 import ProductImage from '~/components/ProductImage.vue'
 import ProviderSelect from '~/components/ProviderSelect.vue'
 import Product from '#models/product'
-import { useDebounceFn } from '@vueuse/core'
+import { useDebounceFn, useLocalStorage } from '@vueuse/core'
 import { Meta } from '~/types/metadata'
 
-const params = ref({
+const params = useLocalStorage('adminProductsSearchParams', {
   terms: '',
   page: 1,
   filter: {
@@ -18,7 +18,7 @@ const params = ref({
   },
 })
 
-const props = defineProps<{ data: { data: Product [], meta: Meta } }>()
+const props = defineProps<{ data: { data: Product [], meta: Meta }, qs: Record<string, string> }>()
 
 const products = computed(() => props.data.data)
 const metadata = computed(() => props.data.meta)
@@ -34,20 +34,14 @@ const search = useDebounceFn(() => {
   router.get('/admin/products', params.value)
 }, 1000)
 
-onMounted(() => {
-  const reload = window.location.search.includes('reload')
-  if (reload) {
-    window.location.href = window.location.href.replace('?reload', '')
-  }
-})
+
 </script>
 
 <template>
   <AdminLayout>
-
     <div class="p-2 bg-white shadow-sm rounded-md flex gap-2">
       <div class="basis-9/12">
-        <Input v-model="params.terms" placeholder="Buscar ..." @update:model-value="search" />
+        <Input v-model="params.terms" placeholder="Buscar ..." @update:model-value="search" autofocus />
       </div>
       <div class="basis-3/12">
         <ProviderSelect v-model="params.filter.provider" @change="search" placeholder="Proveedor" />

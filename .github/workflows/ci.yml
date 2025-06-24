@@ -3,61 +3,102 @@ name: CI/CD
 on:
   push:
     branches:
+      - '**'
+  pull_request:
+    branches:
       - main
+  release:
+    types: [published]
+
+env:
+  NODE_VERSION: '21.7.3'
+  PNPM_VERSION: 'latest'
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 21.7.3
-
-      - name: Install rsync
-        run: sudo apt-get update && sudo apt-get install rsync -y
-
-      - name: Install pnpm
-        run: npm install -g pnpm
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install
+          fi
+
+      - name: Run tests
+        run: pnpm run test:ui
+
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install
+          fi
 
       - name: Build project
         run: node ace build
 
-      - name: Copy inertia directory
-        run: cp -r ./inertia ./build/inertia
-
-      - name: Copy tailwind config
-        run: cp ./tailwind.config.js ./build/tailwind.config.js
-
-      - name: Rsync to temp directory
-        run: rsync -av --exclude="node_modules" --exclude=".git" --exclude="*.log" . /tmp/build-copy/
+      - name: Prepare build files
+        run: |
+          cp -r ./inertia ./build/inertia
+          cp ./tailwind.config.js ./build/tailwind.config.js
 
       - name: Create build archive
-        run: tar -czf build.tar.gz -C /tmp/build-copy .
-
-      - name: Remove temp directory
-        run: rm -rf /tmp/build-copy
+        run: |
+          cd build
+          tar -czf ../build.tar.gz --exclude="node_modules" --exclude=".git" --exclude="*.log" .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build
+          name: build-${{ github.event.release.tag_name }}
           path: build.tar.gz
+          retention-days: 7
 
   deploy:
-    needs: build
+    needs: [test, build]
     runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    environment: production
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: build
+          name: build-${{ github.event.release.tag_name }}
 
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp

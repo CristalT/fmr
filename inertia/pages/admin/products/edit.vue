@@ -85,7 +85,7 @@ const isPublic = computed({
             <Toggle label="Público" v-model="isPublic" />
           </div>
         </div>
-        <div class="basis-2/6">
+        <div class="basis-2/6 flex justify-center">
           <ImageUpload :product :src="imagePath(product.image)" label="Imagen" v-model="image" accept="image/png,image/jpg,image/jpeg,image/webp" />
         </div>
       </div>
