@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { Message } from '~/types/message'
+import { Button, Icon } from '~/components/ui'
 import AdminLayout from '~/components/AdminLayout.vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps<{ message: Message }>()
 
 const handleDelete = () => {
-  if (confirm('Are you sure you want to delete this message?')) {
+  if (confirm('Está por eliminar el mensaje, ¿desea continuar?')) {
     router.delete(`/admin/messages/${props.message.id}`, {
       onSuccess: () => {
         router.visit('/admin/messages')
@@ -23,12 +24,11 @@ const handleDelete = () => {
         <div class="px-6 py-4">
           <div class="flex items-center justify-between mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Mensaje #{{ message.id }}</h1>
-            <button
-              @click="handleDelete"
-              class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-            >
-              Eliminar Mensaje
-            </button>
+            <Button variant="danger" @click="handleDelete" label="Eliminar">
+              <template #icon>
+                <Icon name="delete" />
+              </template>
+            </Button>
           </div>
 
           <div class="space-y-4">

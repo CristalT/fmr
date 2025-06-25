@@ -3,25 +3,20 @@ import MainLayout from '~/components/MainLayout.vue'
 import MainHeader from '~/components/MainHeader.vue'
 import ProductCard from '~/components/ProductCard.vue'
 import Input from '~/components/ui/input/Input.vue'
-import useHttp from '~/composables/use_http'
-import Paginator from '~/components/Paginator.vue'
+import { Paginator } from '~/components/ui'
 import type Product from '#models/product'
 import type { Meta } from '~/types/metadata'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
+import http from '~/shared/http'
 
-const http = useHttp()
-const request = http.path('products/list').cancellable('get_public_products_list')
+const data = ref<{ data: Product[]; meta: Meta }>()
 
-const products = ref<Product[]>([])
+const products = computed(() => data.value?.data as Product[] || [])
+const meta = computed<Meta>(() => data.value?.meta as Meta || {})
+
 const isFetching = ref(false)
-const metadata = ref<Meta>({
-  lastPage: 0,
-  perPage: 0,
-  total: 0,
-  firstPage: 0,
-  currentPage: 0,
-})
+
 
 const params = reactive<{
   terms: string
@@ -34,10 +29,12 @@ const params = reactive<{
 async function doFetch() {
   isFetching.value = true
   try {
-    request.query(params)
-    const { data, meta } = await request.get<{ data: Product[]; meta: Meta }>()
-    products.value = data
-    metadata.value = meta
+    const response = await http('products/list')
+      .query(params)
+      .cancellable('get_public_products_list')
+      .get<{ data: { data: Product[]; meta: Meta } }>()
+
+    data.value = response.data
   } catch (err) {
     console.error(err)
   } finally {
@@ -45,10 +42,10 @@ async function doFetch() {
   }
 }
 
-const search = useDebounceFn(() => {
+const search = () => {
   params.page = 1
   doFetch()
-}, 1000)
+}
 </script>
 
 <template>
@@ -58,7 +55,7 @@ const search = useDebounceFn(() => {
     </template>
 
     <div class="bg-white rounded p-4 shadow-sm mb-4">
-      <Input placeholder="Buscar ..." v-model="params.terms" @update:model-value="search" />
+      <Input placeholder="Buscar ..." v-model="params.terms" @update:model-value="search" :debounce="800" clearable/>
     </div>
 
     <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -68,8 +65,8 @@ const search = useDebounceFn(() => {
       v-model="params.page"
       v-if="products.length"
       class="mt-4 pb-4"
-      :last-page="metadata.lastPage"
-      :current-page="metadata.currentPage"
+      :last-page="meta.lastPage"
+      :current-page="meta.currentPage"
       @update:model-value="doFetch()"
     />
   </MainLayout>

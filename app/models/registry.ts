@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, computed } from '@adonisjs/lucid/orm'
 
 export default class Registry extends BaseModel {
   @column({ isPrimary: true })
@@ -10,6 +10,11 @@ export default class Registry extends BaseModel {
 
   @column()
   declare lastName: string
+
+  @computed()
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`
+  }
 
   @column()
   declare dni: string

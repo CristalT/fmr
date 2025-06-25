@@ -11,12 +11,18 @@ export default function useOrder(order: Order) {
     return `${order.customerUser.firstName} ${order.customerUser.lastName}`
   })
 
-  function setStatus(status: OrderStatus) {
+  const total = computed(() =>
+    Math.round(order.cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0))
+  )
+
+  const asked = computed(() => order.cartItems.reduce((acc, item) => acc + item.quantity, 0))
+  const delivered = computed(() => order.cartItems.reduce((acc, item) => acc + item.delivered, 0))
+  const pending = computed(() => asked.value - delivered.value)
+
+  async function setStatus(status: OrderStatus) {
     const oldStatus = order.status
-    http
-      .patch(`admin/orders/${order.id}`, {
-        status,
-      })
+    return http(`admin/orders/${order.id}`)
+      .patch({ status })
       .then(() => {
         order.status = status
       })
@@ -27,5 +33,5 @@ export default function useOrder(order: Order) {
       })
   }
 
-  return { customerFullName, setStatus }
+  return { customerFullName, setStatus, total, asked, delivered, pending }
 }

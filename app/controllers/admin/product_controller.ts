@@ -13,7 +13,7 @@ export default class ProductController {
 
     const data = await Product.query()
       .withScopes((scope) => scope.search({ terms, filter }))
-      .select('id', 'name', 'image', 'code', 'price', 'stock', 'location', 'public')
+      .select('id', 'name', 'image', 'code', 'price', 'stock', 'location', 'public', 'provider')
       .orderBy('name')
       .paginate(page, limit)
 

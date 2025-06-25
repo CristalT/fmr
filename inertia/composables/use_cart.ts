@@ -7,14 +7,14 @@ const items = shallowRef<CartItem[]>([])
 
 export default function useCart() {
   async function getItems(): Promise<CartItem[]> {
-    const { data } = (await http.get('cart/items')) as { data: CartItem[] }
+    const { data } = await http('cart/items').get<{ data: CartItem[] }>()
     items.value = data
     return items.value
   }
 
   async function add(item: Product, qty: number) {
-    return http
-      .post('carts', {
+    return http('carts')
+      .post({
         id: item.id,
         quantity: qty,
       })
@@ -23,16 +23,16 @@ export default function useCart() {
       })
   }
 
-  async function update(item: CartItem, qty: number) {
-    return http.put(`carts/${item.id}`, {
-      quantity: qty,
-    })
+  async function update(item: CartItem, quantity: number) {
+    return http(`carts/${item.id}`).patch({ quantity })
   }
 
   async function remove(item: CartItem) {
-    return http.delete(`carts/${item.id}`).then(() => {
-      getItems()
-    })
+    return http('carts')
+      .delete(item.id)
+      .then(() => {
+        getItems()
+      })
   }
 
   const length = toValue(

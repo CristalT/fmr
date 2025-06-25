@@ -26,6 +26,7 @@ watch(siteKey, (newKey) => {
     loadScript(recaptchaScript).then(() => {
       window.onloadCallback = () => {
         window.grecaptcha.render('recaptcha', {
+          hl: 'es',
           sitekey: newKey,
           callback: verify,
           'expired-callback': resetRecaptcha,
@@ -37,7 +38,7 @@ watch(siteKey, (newKey) => {
 
 onMounted(async () => {
   try {
-    const { key } = await http.get('/captcha').then((res) => res.data)
+    const { key } = await http('/captcha').get<{ data: { key: string } }>().then((res) => res.data)
     siteKey.value = key
   } catch (err) {
     console.error('Error getting the captcha key', err)

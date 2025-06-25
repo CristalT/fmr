@@ -1,7 +1,7 @@
 <script setup lang="ts">
 </script>
 <template>
-  <main class="bg-white rounded-md shadow-sm">
+  <main class="bg-white rounded-md shadow-sm border">
     <header class="p-4 border-b" v-if="$slots.header">
       <slot name="header"></slot>
     </header>

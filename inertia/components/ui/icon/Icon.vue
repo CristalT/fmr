@@ -7,6 +7,7 @@ import PrintIcon from '~/components/icons/PrinterIcon.vue'
 import SendIcon from '~/components/icons/SendIcon.vue'
 import AddIcon from '~/components/icons/AddIcon.vue'
 import OrdersIcon from '~/components/icons/OrdersIcon.vue'
+import CheckIcon from '~/components/icons/CheckIcon.vue';
 
 const icons = {
   edit: EditIcon,
@@ -16,6 +17,7 @@ const icons = {
   send: SendIcon,
   add: AddIcon,
   orders: OrdersIcon,
+  check: CheckIcon
 }
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl'

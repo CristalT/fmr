@@ -42,7 +42,7 @@ function createOrder() {
         </template>
       </Button> -->
 
-      <Button label="Finalizar" variant="primary" @click="createOrder" :disabled="!cart.length">
+      <Button label="Enviar" variant="primary" @click="createOrder" :disabled="!cart.length">
         <template #icon>
           <Icon name="send" />
         </template>

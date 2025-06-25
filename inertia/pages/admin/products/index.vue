@@ -2,8 +2,7 @@
 import { computed } from 'vue'
 import { router } from '@inertiajs/vue3'
 import AdminLayout from '~/components/AdminLayout.vue'
-import { Input } from '~/components/ui'
-import Paginator from '~/components/Paginator.vue'
+import { Input, Paginator } from '~/components/ui'
 import ProductImage from '~/components/ProductImage.vue'
 import ProviderSelect from '~/components/ProviderSelect.vue'
 import Product from '#models/product'
@@ -18,7 +17,7 @@ const params = useLocalStorage('adminProductsSearchParams', {
   },
 })
 
-const props = defineProps<{ data: { data: Product [], meta: Meta }, qs: Record<string, string> }>()
+const props = defineProps<{ data: { data: Product [], meta: Meta } }>()
 
 const products = computed(() => props.data.data)
 const metadata = computed(() => props.data.meta)
@@ -39,9 +38,10 @@ const search = useDebounceFn(() => {
 
 <template>
   <AdminLayout>
+    <div class="flex flex-col gap-2">
     <div class="p-2 bg-white shadow-sm rounded-md flex gap-2">
       <div class="basis-9/12">
-        <Input v-model="params.terms" placeholder="Buscar ..." @update:model-value="search" autofocus />
+        <Input v-model="params.terms" placeholder="Buscar ..." @update:model-value="search" autofocus clearable />
       </div>
       <div class="basis-3/12">
         <ProviderSelect v-model="params.filter.provider" @change="search" placeholder="Proveedor" />
@@ -59,7 +59,7 @@ const search = useDebounceFn(() => {
           <th class="w-[80px] p-2 text-right">Precio</th>
         </tr>
       </thead>
-      <tbody class="overflow-auto block h-[calc(100vh-250px)]" v-if="products.length">
+      <tbody class="overflow-auto block h-[calc(100vh-200px)]" v-if="products.length">
         <tr
           v-for="product of products"
           :key="product.id"
@@ -67,7 +67,7 @@ const search = useDebounceFn(() => {
           :class="{ 'opacity-30': !product.public }"
           @click="openEdit(product.id)"
         >
-          <td class="p-2 w-[100px] text-center">
+          <td class="p-2 w-[100px] h-20 text-center">
             <ProductImage rounded :product class="w-20 mx-auto" />
           </td>
           <td class="p-2 w-[120px]">{{ product.code }}</td>
@@ -96,5 +96,6 @@ const search = useDebounceFn(() => {
         </tr>
       </tfoot>
     </table>
+  </div>
   </AdminLayout>
 </template>

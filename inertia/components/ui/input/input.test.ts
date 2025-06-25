@@ -66,4 +66,25 @@ describe('Input', () => {
     expect(error.exists()).toBe(true)
     expect(error.text()).toBe('Test Error 1. Test Error 2.')
   })
+
+  it('shows clear button when clearable is true', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        modelValue: 'test',
+        label: 'Test Input',
+        type: 'text',
+        clearable: true,
+      },
+    })
+
+    const clearButton = wrapper.find('button')
+    expect(clearButton.exists()).toBe(true)
+
+    await clearButton.trigger('click')
+
+    const input = wrapper.find('input')
+    expect(input.element.value).toBe('')
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([['']])
+  })
 })

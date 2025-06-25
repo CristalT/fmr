@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type Order from '#models/order'
 import AdminLayout from '~/components/AdminLayout.vue'
-import { Table, Button, Card, Icon, Select } from '~/components/ui'
+import { Table, Card, Select } from '~/components/ui'
 import StatusBadge from '~/components/StatusBadge.vue'
 import type { Column } from '~/components/ui/table/Table.vue'
 import { useOrder } from '~/composables'
@@ -12,25 +12,27 @@ import { router } from '@inertiajs/vue3'
 
 const { order } = defineProps<{ order: Order }>()
 
+const { total, delivered, pending } = useOrder(order)
+
 const { customerFullName } = useOrder(order)
 
 const columns: Column[] = [
   { label: 'Código', key: 'code', align: 'center' },
   { label: 'Nombre', key: 'name', align: 'left' },
   { label: 'Cantidad', key: 'quantity', align: 'center' },
+  { label: 'Entregado', key: 'delivered', align: 'center' },
 ]
 
-const print = () => {
-  window.open(`/admin/orders/${order.id}/print`, '_blank')
+const patchStatus = (status: Order['status']) => {
+    useOrder(order).setStatus(status).then(() => {
+      if (status === OrderStatus.Processing) {
+        router.visit(`/admin/orders/${order.id}/processing`)
+      }
+    })
+
 }
 
-const patchStatus = (status: Order['status']) => {
-  useOrder(order).setStatus(status).then(() => {
-    if (status === OrderStatus.Processing) {
-      router.visit(`/admin/orders/${order.id}/processing`)
-    }
-  })
-}
+
 </script>
 
 <template>
@@ -39,11 +41,6 @@ const patchStatus = (status: Order['status']) => {
       <div class="flex items-center justify-between gap-2">
         <Select class="w-60" :options="statusOptions" v-model="order.status"
           @change="({ value }) => patchStatus(value as OrderStatus)" />
-        <Button label="Imprimir" variant="tertiary" @click="print">
-          <template #icon>
-            <Icon name="print" />
-          </template>
-        </Button>
       </div>
     </template>
     <Card class="flex flex-col mb-4">
@@ -54,7 +51,21 @@ const patchStatus = (status: Order['status']) => {
         </div>
       </template>
       <h2 class="text-lg font-bold">{{ customerFullName }}</h2>
-      <h3 class="text-md font-bold">{{ friendlyDate(order.createdAt) }}</h3>
+      <p>
+        Fecha pedido: <span class="text-md font-bold">{{ friendlyDate(order.createdAt) }}</span>
+      </p>
+      <p>
+        Ultima actualización: <span class="text-md font-bold">{{ friendlyDate(order.updatedAt) }}</span>
+      </p>
+      <p>
+        Total: <span class="text-md font-bold">${{ total }}</span>
+      </p>
+      <p>
+        Items entregados: <span class="text-md font-bold">{{ delivered }}</span>
+      </p>
+      <p>
+        Items pendientes: <span class="text-md font-bold">{{ pending }}</span>
+      </p>
     </Card>
     <Table :columns="columns" :data="order.cartItems" />
   </AdminLayout>

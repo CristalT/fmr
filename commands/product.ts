@@ -1,7 +1,10 @@
 import { BaseCommand } from '@adonisjs/core/ace'
 import type { CommandOptions } from '@adonisjs/core/types/ace'
 import Product from '#models/product'
-import { readdirSync } from 'node:fs'
+import { readdirSync, unlinkSync } from 'node:fs'
+import sharp from 'sharp'
+import app from '@adonisjs/core/services/app'
+import { UPLOADS_FOLDER } from '#config/constants'
 
 export default class ProductCommand extends BaseCommand {
   static readonly commandName = 'product:image:update:all'
@@ -12,14 +15,25 @@ export default class ProductCommand extends BaseCommand {
   }
 
   async run() {
-    const files = readdirSync('uploads/images')
+    const path = app.makePath(UPLOADS_FOLDER, 'images')
+    const files = readdirSync(path)
 
     for (const file of files) {
-      const [id] = file.split('.')
+      const [id, extension] = file.split('.')
+      const imageName = `${id}.webp`
+
+      if (extension !== 'webp') {
+        sharp(app.makePath(UPLOADS_FOLDER, 'images', file))
+          .webp({ quality: 80 })
+          .toFile(app.makePath(UPLOADS_FOLDER, 'images', imageName))
+          .then(() => {
+            unlinkSync(app.makePath(UPLOADS_FOLDER, 'images', file))
+          })
+      }
       const item = await Product.findBy({ id })
       if (item && !item?.image) {
         this.logger.info(`Updating product ${item.code}`)
-        item.image = file
+        item.image = imageName
         item?.save()
       }
     }

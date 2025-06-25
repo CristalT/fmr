@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type Order from '#models/order'
+import Order from '#models/order'
 import AdminLayout from '~/components/AdminLayout.vue'
-import { Card, Button, Select, Alert } from '~/components/ui'
+import { Card, Button, Select } from '~/components/ui'
 import { friendlyDate } from '~/shared/utils'
 import { router } from '@inertiajs/vue3'
-import { statusOptions } from './status_options'
+import { statusOptions } from '~/shared/status_options'
+import StatusBadge from '~/components/StatusBadge.vue'
 
 defineProps<{ orders: Order[] }>()
-
 
 const status = ref('')
 
@@ -27,10 +27,6 @@ function getCustomerFullName(order: Order) {
 
 const showOrder = (order: Order) => {
   router.visit(`/admin/orders/${order.id}`)
-}
-
-function getStatusName(status: Order['status']) {
-  return statusOptions.find(option => option.value === status)!.label.toUpperCase()
 }
 
 function filterByStatus(status: Order['status']) {
@@ -53,18 +49,18 @@ function filterByStatus(status: Order['status']) {
     <div v-else class="grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
       <Card v-for="order of orders" :key="order.id">
         <template #header>
-          <h1 class="text-lg font-bold">
-            {{ getCustomerFullName(order) }}
-          </h1>
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold">
+              {{ getCustomerFullName(order) }}
+            </h1>
+            <StatusBadge :status="order.status" />
+          </div>
         </template>
         <p>
           Fecha: {{ friendlyDate(order.createdAt) }}
         </p>
         <p>
           Items: {{ order.cartItems.length }}
-        </p>
-        <p>
-          Estado: <span class="font-semibold text-gray-600">{{ getStatusName(order.status) }}</span>
         </p>
 
         <template #footer>

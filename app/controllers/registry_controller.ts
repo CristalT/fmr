@@ -4,8 +4,14 @@ import type { HttpContext } from '@adonisjs/core/http'
 import logger from '@adonisjs/core/services/logger'
 
 export default class RegistryController {
-  async index({ inertia }: HttpContext) {
-    const registries = await Registry.query().paginate(1, 25)
+  async index({ request, inertia }: HttpContext) {
+    const terms = request.input('terms', '').replace(' ', '%')
+    const page = request.input('page', 1)
+    const registries = await Registry.query()
+      .where('firstName', 'like', `%${terms}%`)
+      .orWhere('lastName', 'like', `%${terms}%`)
+      .orWhere('dni', terms)
+      .paginate(page, 25)
     return inertia.render('registry/index', { registries })
   }
 

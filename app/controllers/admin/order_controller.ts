@@ -5,6 +5,7 @@ import OrderService from '#services/order_service'
 import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
 import cache from '@adonisjs/cache/services/main'
+import { OrderStatus } from '#types/order_status'
 
 @inject()
 export default class OrderController {
@@ -32,6 +33,13 @@ export default class OrderController {
     if (!order) {
       return response.notFound('Order not found')
     }
+
+    if (order.status === OrderStatus.Processing) {
+      return inertia.render('admin/orders/processing', { order })
+    }
+    if (order.status === OrderStatus.Completed) {
+      return inertia.render('admin/orders/completed', { order })
+    }
     return inertia.render('admin/orders/show', { order })
   }
 
@@ -44,12 +52,13 @@ export default class OrderController {
       .save()
       .then(() => {
         cache.delete({ key: `order:${order.id}` }) // Invalidate cache for this order
-        return response.noContent()
       })
       .catch((error) => {
-        logger.error('Failed to update order:', error)
-        return response.internalServerError('Failed to update order')
+        logger.error('Failed to update order: ' + error.message)
+        return response.internalServerError('Failed to update order.')
       })
+
+    return response.noContent()
   }
 
   async print({ params, response }: HttpContext) {

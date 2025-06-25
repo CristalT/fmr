@@ -2,11 +2,8 @@
 import type Order from '#models/order'
 import MainHeader from '~/components/MainHeader.vue'
 import MainLayout from '~/components/MainLayout.vue'
-import CartSubheader from '~/components/CartSubheader.vue'
 
 import { friendlyDate } from '~/shared/utils'
-
-
 
 defineProps<{ orders: Order[] }>()
 

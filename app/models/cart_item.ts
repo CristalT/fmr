@@ -30,6 +30,9 @@ export default class CartItem extends BaseModel {
   declare quantity: number
 
   @column()
+  declare delivered: number
+
+  @column()
   declare name: string
 
   @column()

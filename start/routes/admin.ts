@@ -7,6 +7,7 @@ const OrderController = () => import('#controllers/admin/order_controller')
 const CustomerController = () => import('#controllers/customer_controller')
 const MessageController = () => import('#controllers/message_controller')
 const RegistryController = () => import('#controllers/registry_controller')
+const CartItemController = () => import('#controllers/admin/cart_item_controller')
 
 export default function adminRoutes() {
   router.get('/', [AdminController, 'index']).as('admin.index')
@@ -21,4 +22,5 @@ export default function adminRoutes() {
   router.resource('/registries', RegistryController).only(['index', 'edit']).as('admin.registries')
   router.resource('/orders', OrderController).as('admin.orders')
   router.get('/orders/:id/print', [OrderController, 'print']).as('admin.orders.print')
+  router.resource('/cart-items', CartItemController)
 }

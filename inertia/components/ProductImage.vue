@@ -24,8 +24,8 @@ watch(src, () => {
 
 <template>
   <div :class="{ 'rounded-md': rounded }" class="flex items-center justify-center overflow-hidden">
-    <img class="object-cover min-h-full max-w-full" :src :alt="product.name" @error="loadPlaceholder" v-show="hasImage" />
-    <img class="object-cover min-h-full max-w-full" :src="staticPath('image-placeholder.png')" :alt="product.name"
+    <img class="object-cover max-h-full max-w-full" :src :alt="product.name" @error="loadPlaceholder" v-show="hasImage" />
+    <img class="object-cover max-h-full max-w-full" :src="staticPath('image-placeholder.png')" :alt="product.name"
       v-show="!hasImage" />
   </div>
 </template>

@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch, watchEffect, nextTick } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect, defineAsyncComponent } from 'vue'
+
+
+const asyncComponents = {
+ StatusBadge: defineAsyncComponent(() => import('~/components/StatusBadge.vue')),
+}
+
+const currentComponent = (name: keyof typeof asyncComponents) => {
+  return asyncComponents[name]
+}
 
 const emit = defineEmits<{ (e: 'change', option: { value: string | number, label: string }): void }>()
 
 const props = defineProps<{
-  options: Array<{ value: string | number, label: string }>
+  options: Array<{ value: string | number, label: string, component?: { name: string, props: Record<string, unknown> } }>
   placeholder?: string
   label?: string
   disabled?: boolean
@@ -35,11 +44,9 @@ const filteredOptions = computed(() => {
 })
 
 // Updates the selected option when the model changes
-watchEffect(() => {
-  if (model.value) {
-    selectedOption.value = props.options.find(option => option.value === model.value) || null
-  }
-})
+watch(model, (value) => {
+  selectedOption.value = props.options.find(option => option.value === value) || null
+}, { immediate: true })
 
 // Resets the highlighted index when filtered options change
 watch(filteredOptions, () => {
@@ -207,7 +214,11 @@ onUnmounted(() => {
             'bg-gray-100': selectedOption && selectedOption.value === option.value,
             'highlighted bg-blue-100': highlightedIndex === index
           }">
-          {{ option.label }}
+
+          <component v-if="option.component" :is="currentComponent(option.component.name)" v-bind="option.component.props"  />
+          <span v-else>
+            {{ option.label }}
+          </span>
         </div>
       </div>
 
