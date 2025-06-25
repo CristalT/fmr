@@ -24,7 +24,7 @@ const inputFile = ref()
 const preview = ref<string>(props.product.image || '')
 
 const imageSrc = computed(() => {
-  return preview.value || staticPath('image-placeholder.png')
+  return preview.value || staticPath('image-placeholder.webp')
 })
 
 function changeImage() {

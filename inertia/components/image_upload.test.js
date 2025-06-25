@@ -14,6 +14,6 @@ describe('ImageUpload', () => {
 
     const img = wrapper.findAll('img')
 
-    expect(img.at(1).attributes('src')).toBe(staticPath('image-placeholder.png'))
+    expect(img.at(1).attributes('src')).toBe(staticPath('image-placeholder.webp'))
   })
 })
