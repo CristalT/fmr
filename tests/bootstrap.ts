@@ -4,7 +4,6 @@ import type { Config } from '@japa/runner/types'
 import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { authApiClient } from '@adonisjs/auth/plugins/api_client'
-import { apiClient } from '@japa/api-client'
 import { sessionApiClient } from '@adonisjs/session/plugins/api_client'
 
 /**
@@ -18,7 +17,6 @@ import { sessionApiClient } from '@adonisjs/session/plugins/api_client'
 export const plugins: Config['plugins'] = [
   assert(),
   pluginAdonisJS(app),
-  apiClient(),
   authApiClient(app),
   sessionApiClient(app),
 ]
