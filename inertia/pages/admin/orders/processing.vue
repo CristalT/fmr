@@ -84,7 +84,7 @@ const updateCartItem = (item: CartItem) => {
             <Input type="number" v-model="row.delivered" alignment="center" class="w-24" :debounce="800"
               @update:modelValue="updateCartItem(row)" />
           </td>
-          <td class="text-right p-2 currency">{{ Math.round(row.product.price * row.quantity) }}</td>
+          <td class="text-right p-2 currency">{{ Math.round(row.product.price * row.delivered) }}</td>
         </tr>
 
       </tbody>

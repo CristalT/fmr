@@ -13,7 +13,7 @@ export default function useOrder(order: Order) {
   })
 
   const total = computed(() =>
-    Math.round(order.cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0))
+    Math.round(order.cartItems.reduce((acc, item) => acc + item.product.price * item.delivered, 0))
   )
 
   const asked = computed(() => order.cartItems.reduce((acc, item) => acc + item.quantity, 0))
