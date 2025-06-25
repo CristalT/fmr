@@ -4,11 +4,9 @@ import { useDebounceFn, useLocalStorage } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
 import AdminLayout from '~/components/AdminLayout.vue'
 import { Input, Table, Button } from '~/components/ui'
-import useHttp from '~/composables/use_http'
+import http from '~/shared/http'
 import type { Customer } from '~/types/customer'
 import { Meta } from '~/types/metadata'
-
-const http = useHttp()
 
 const users = ref<Customer[]>([])
 
@@ -26,8 +24,7 @@ const metadata = ref<Meta>({
 })
 
 async function fetchCustomers() {
-  const request = http
-    .path('admin/customers')
+  const request = http('admin/customers')
     .cancellable('getCustomers')
     .query(params)
     .get<{ data: Customer[]; meta: Meta }>()
