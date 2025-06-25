@@ -1,4 +1,3 @@
-<script lang="ts"></script>
 <template>
   <footer class="bg-primary p-6 text-white">
     <div>

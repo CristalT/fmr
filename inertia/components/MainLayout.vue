@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Footer from '~/components/Footer.vue'
+import WhatsApp from '~/components/WhatsApp.vue'
 import Toast from './Toast.vue'
 import { onMounted } from 'vue'
 import { useCart } from '~/composables'
@@ -45,4 +46,5 @@ onMounted(() => {
     </div>
   </div>
   <Footer />
+  <WhatsApp />
 </template>
