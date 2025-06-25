@@ -24,15 +24,13 @@ const metadata = ref<Meta>({
 })
 
 async function fetchCustomers() {
-  const request = http('admin/customers')
+  const {data} =  await http('admin/customers')
     .cancellable('getCustomers')
     .query(params)
-    .get<{ data: Customer[]; meta: Meta }>()
+    .get<{ data: { data: Customer[]; meta: Meta }}>()
 
-  const { data, meta } = await request
-
-  users.value = data
-  metadata.value = meta
+  users.value = data.data
+  metadata.value = data.meta
 }
 
 const search = useDebounceFn(() => {

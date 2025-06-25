@@ -10,6 +10,16 @@ export default class OrderController {
 
     return inertia.render('cart/orders', { orders })
   }
+  async show({  params, auth, inertia }: HttpContext) {
+    const order = await Order.query()
+      .where('customer_user_id', auth.user?.id!)
+      .where('id', params.id)
+      .preload('cartItems')
+      .preload('customerUser')
+      .firstOrFail()
+
+      return inertia.render('cart/order', { order })
+  }
   async store({ response, auth }: HttpContext) {
     // create order
     const order = await Order.create({

@@ -2,11 +2,19 @@
 import type Order from '#models/order'
 import MainHeader from '~/components/MainHeader.vue'
 import MainLayout from '~/components/MainLayout.vue'
-
 import { friendlyDate } from '~/shared/utils'
+import { statusOptions } from '~/shared/status_options'
+import { router } from '@inertiajs/vue3'
 
-defineProps<{ orders: Order[] }>()
+import { Table } from '~/components/ui'
 
+const { orders } = defineProps<{ orders: Order[] }>()
+
+const data = orders.map(order => ({
+  id: order.id,
+  createdAt: friendlyDate(order.createdAt),
+  status: statusOptions.find(option => option.value === order.status)?.label,
+}))
 </script>
 <template>
   <MainLayout>
@@ -14,22 +22,11 @@ defineProps<{ orders: Order[] }>()
       <MainHeader />
     </template>
     <div class="bg-white rounded-md">
-      <table class="bg-white rounded-md shadow-md mx-auto w-full overflow-hidden">
-        <thead>
-          <tr class="bg-white border-b">
-            <th class="py-2 px-4 text-center">#</th>
-            <th class="py-2 px-4 text-center">Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="order of orders" :key="order.id" class="border-b">
-            <td class="text-center py-2 px-4">{{ order.id }}</td>
-            <td class="text-center py-2 px-4">{{ friendlyDate(order.createdAt) }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <Table :columns="[
+        { label: '#', key: 'id' },
+        { label: 'Fecha', key: 'createdAt' },
+        { label: 'Estado', key: 'status' },
+      ]" :data @row-click="(row) => router.visit(`/orders/${row.id}`)" />
     </div>
-
-
   </MainLayout>
 </template>

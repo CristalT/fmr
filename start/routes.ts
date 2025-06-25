@@ -25,7 +25,7 @@ router
     router.resource('/carts', CartController)
     router.get('/cart/items', [CartController, 'getCartItems'])
     router.get('/pdfs/current-cart', [CartController, 'print'])
-    router.resource('/orders', OrderController).only(['store', 'index'])
+    router.resource('/orders', OrderController)
   })
   .use(middleware.auth({ guards: ['customer', 'admin'] }))
 

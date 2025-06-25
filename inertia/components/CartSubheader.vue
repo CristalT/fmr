@@ -31,7 +31,7 @@ function createOrder() {
       <li v-if="cart.items">Total: <b>$ {{ total }}</b></li>
     </ul>
     <div class="flex gap-4">
-      <Button label="Pedidos" variant="tertiary" @click="router.get('/orders')">
+      <Button label="Historial de Pedidos" variant="tertiary" @click="router.get('/orders')">
         <template #icon>
           <Icon name="orders" />
         </template>
