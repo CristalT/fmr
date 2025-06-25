@@ -56,7 +56,7 @@ const isPublic = computed({
 
 <template>
   <AdminLayout>
-    <form class="h-screen">
+    <form>
       <div class="flex p-4 gap-4 bg-white shadow-md rounded-md">
         <div class="basis-4/6">
           <div class="flex flex-row gap-2">
