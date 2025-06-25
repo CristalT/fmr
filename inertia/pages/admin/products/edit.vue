@@ -15,7 +15,7 @@ const { product } = defineProps<{
 
 const image = ref<File>()
 
-const form = useForm<Partial<Product>>({
+const form = useForm({
   id: product.id,
   code: product.code,
   provider: product.provider,
@@ -33,7 +33,7 @@ function submit() {
 
   Object.entries(form.data()).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
-      formData.append(key, value)
+      formData.append(key, value.toString())
     }
   })
 
@@ -56,7 +56,7 @@ const isPublic = computed({
 
 <template>
   <AdminLayout>
-    <form>
+    <form class="h-screen">
       <div class="flex p-4 gap-4 bg-white shadow-md rounded-md">
         <div class="basis-4/6">
           <div class="flex flex-row gap-2">

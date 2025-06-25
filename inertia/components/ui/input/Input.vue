@@ -15,7 +15,7 @@ const props = defineProps<{
   alignment?: 'left' | 'center' | 'right'
 }>()
 
-const model = defineModel<string>({ default: ''})
+const model = defineModel<string | number>({ default: ''})
 
 let timeout: string | number | NodeJS.Timeout | undefined
 
