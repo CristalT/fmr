@@ -4,7 +4,6 @@ import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import CartItem from './cart_item.js'
 import CustomerUser from './customer_user.js'
 import { OrderStatus } from '#types/order_status'
-import cache from '@adonisjs/cache/services/main'
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
