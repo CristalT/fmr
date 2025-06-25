@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { statusOptions } from '~/shared/status_options'
+import type Order from '#models/order'
 
 defineProps<{ status: Order['status'] }>()
 
-import Order from '#models/order'
 
 function getStatusName(status: Order['status']) {
   return statusOptions.find(option => option.value === status)?.label.toUpperCase()

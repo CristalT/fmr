@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { Icon } from '~/components/ui'
-import Product from '#models/product'
+import type Product from '#models/product'
 import ProductImage from './ProductImage.vue'
 import { usePath } from '~/composables'
 

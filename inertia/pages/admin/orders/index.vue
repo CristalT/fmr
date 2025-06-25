@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import Order from '#models/order'
+import type Order from '#models/order'
 import AdminLayout from '~/components/AdminLayout.vue'
 import { Card, Button, Select } from '~/components/ui'
 import { friendlyDate } from '~/shared/utils'

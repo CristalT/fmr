@@ -5,7 +5,7 @@ import { friendlyDate } from '~/shared/utils'
 import AdminLayout from '~/components/AdminLayout.vue'
 import { Input, Table } from '~/components/ui'
 import { Column } from '~/components/ui/table/Table.vue';
-import Registry from '#models/registry'
+import type Registry from '#models/registry'
 
 const props = defineProps(['registries'])
 

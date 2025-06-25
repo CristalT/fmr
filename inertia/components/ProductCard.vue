@@ -5,7 +5,7 @@ import ProductImage from './ProductImage.vue'
 import { useCart, useToast } from '~/composables'
 import Dialog from '~/components/ui/dialog/Dialog.vue'
 import { router } from '@inertiajs/vue3'
-import Product from '#models/product'
+import type Product from '#models/product'
 
 
 const cart = useCart()

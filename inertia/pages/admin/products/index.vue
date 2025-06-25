@@ -5,7 +5,7 @@ import AdminLayout from '~/components/AdminLayout.vue'
 import { Input, Paginator } from '~/components/ui'
 import ProductImage from '~/components/ProductImage.vue'
 import ProviderSelect from '~/components/ProviderSelect.vue'
-import Product from '#models/product'
+import type Product from '#models/product'
 import { useDebounceFn, useLocalStorage } from '@vueuse/core'
 import { Meta } from '~/types/metadata'
 

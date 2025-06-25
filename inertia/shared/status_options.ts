@@ -1,4 +1,4 @@
-import Order from '#models/order'
+import type Order from '#models/order'
 import { OrderStatus } from '#types/order_status'
 
 export const statusOptions: {
