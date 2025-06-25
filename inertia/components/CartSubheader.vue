@@ -8,7 +8,7 @@ import { router } from '@inertiajs/vue3';
 import { useCart, useToast } from '~/composables'
 
 const cart = useCart()
-const {toast} = useToast()
+const { toast } = useToast()
 
 const total = computed(() => {
   const sum = cart.items.value?.reduce((sum, item) => sum + item.product.roundedPrice * item.quantity, 0) || 0
@@ -16,7 +16,7 @@ const total = computed(() => {
 })
 
 function createOrder() {
-  http.post('orders').then(() => {
+  http('orders').post({}).then(() => {
     toast.success('Pedido enviado! Gracias por su compra.')
     router.get('carts')
   }).catch(err => {
@@ -36,11 +36,6 @@ function createOrder() {
           <Icon name="orders" />
         </template>
       </Button>
-      <!-- <Button label="Imprimir" variant="tertiary" @click="router.get('/pdfs/current-cart')">
-        <template #icon>
-          <Icon name="print" />
-        </template>
-      </Button> -->
 
       <Button label="Enviar" variant="primary" @click="createOrder" :disabled="!cart.length">
         <template #icon>

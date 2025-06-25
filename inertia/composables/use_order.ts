@@ -1,5 +1,6 @@
 import type Order from '#models/order'
 import { OrderStatus } from '#types/order_status'
+import { router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useToast } from '~/composables'
 import http from '~/shared/http'
@@ -24,7 +25,7 @@ export default function useOrder(order: Order) {
     return http(`admin/orders/${order.id}`)
       .patch({ status })
       .then(() => {
-        order.status = status
+        router.visit(`/admin/orders/${order.id}`)
       })
       .catch((error) => {
         order.status = oldStatus // Revert to old status on error

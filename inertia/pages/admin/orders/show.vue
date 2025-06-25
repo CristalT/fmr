@@ -7,10 +7,12 @@ import type { Column } from '~/components/ui/table/Table.vue'
 import { useOrder } from '~/composables'
 import { friendlyDate } from '~/shared/utils'
 import { OrderStatus } from '#types/order_status'
-import { statusOptions } from '../../../shared/status_options';
+import { statusOptions } from '~/shared/status_options';
 import { router } from '@inertiajs/vue3'
 
 const { order } = defineProps<{ order: Order }>()
+
+const { setStatus } = useOrder(order)
 
 const { customerFullName } = useOrder(order)
 
@@ -24,13 +26,6 @@ const print = () => {
   window.open(`/admin/orders/${order.id}/print`, '_blank')
 }
 
-const patchStatus = (status: Order['status']) => {
-  useOrder(order).setStatus(status).then(() => {
-    if (status === OrderStatus.Processing) {
-      router.visit(`/admin/orders/${order.id}/processing`)
-    }
-  })
-}
 </script>
 
 <template>
@@ -38,7 +33,7 @@ const patchStatus = (status: Order['status']) => {
     <template #topbar>
       <div class="flex items-center justify-between gap-2">
         <Select class="w-60" :options="statusOptions" v-model="order.status"
-          @change="({ value }) => patchStatus(value as OrderStatus)" />
+          @change="({ value }) => setStatus(value as OrderStatus)" />
         <Button label="Imprimir" variant="tertiary" @click="print">
           <template #icon>
             <Icon name="print" />

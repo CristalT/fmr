@@ -8,9 +8,11 @@ import { useOrder } from '~/composables'
 import { friendlyDate } from '~/shared/utils'
 import { OrderStatus } from '#types/order_status'
 import { statusOptions } from '../../../shared/status_options';
-import { router } from '@inertiajs/vue3'
+
 
 const { order } = defineProps<{ order: Order }>()
+
+const { setStatus } = useOrder(order)
 
 const { total, delivered, pending } = useOrder(order)
 
@@ -23,16 +25,6 @@ const columns: Column[] = [
   { label: 'Entregado', key: 'delivered', align: 'center' },
 ]
 
-const patchStatus = (status: Order['status']) => {
-    useOrder(order).setStatus(status).then(() => {
-      if (status === OrderStatus.Processing) {
-        router.visit(`/admin/orders/${order.id}/processing`)
-      }
-    })
-
-}
-
-
 </script>
 
 <template>
@@ -40,7 +32,7 @@ const patchStatus = (status: Order['status']) => {
     <template #topbar>
       <div class="flex items-center justify-between gap-2">
         <Select class="w-60" :options="statusOptions" v-model="order.status"
-          @change="({ value }) => patchStatus(value as OrderStatus)" />
+          @change="({ value }) => setStatus(value as OrderStatus)" />
       </div>
     </template>
     <Card class="flex flex-col mb-4">
