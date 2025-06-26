@@ -91,8 +91,8 @@ export default class Product extends BaseModel {
   static readonly publicSearch = scope((query, { terms }) => {
     query.where((query) => {
       query.where('stock', '>', 0)
-      query.where('public', true)
-      query.where('price', '>', 0)
+      query.where('public', 1)
+      query.where('price', '>=', 100)
     })
 
     if (terms) {
