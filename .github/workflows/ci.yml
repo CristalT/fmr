@@ -24,18 +24,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
 
       - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+        run: pnpm install
 
       - name: Run tests
-        run: npm run test:ui
+        run: pnpm test:ui
 
   build:
     runs-on: ubuntu-latest
@@ -47,18 +47,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
 
       - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+        run: pnpm install
 
       - name: Build project
-        run: node ace build
+        run: pnpm build
 
       - name: Prepare build files
         run: |
@@ -118,4 +118,3 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no -p 5084 $SERVER_USER@$SERVER_HOST "source ~/.nvm/nvm.sh && /root/deploy.sh"
-
