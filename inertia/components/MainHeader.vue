@@ -25,7 +25,7 @@ const options = ref<Option[]>([
 
 
 function isActive(route: string) {
-  if (page.url === route) return 'bg-primary text-white'
+  if (page.url === route) return ' border-b-2 !border-primary font-semibold text-primary'
 }
 </script>
 
@@ -33,9 +33,9 @@ function isActive(route: string) {
   <nav class="flex justify-between border-b items-center px-4 bg-logo shadow-sm h-20">
     <img :src="staticPath('brand-logo.jpg')" class="h-16" />
     <div class="flex items-center h-full">
-      <ul class="flex h-full">
+      <ul class="flex h-full mr-4">
         <li v-for="item in options"
-          class="px-6 hover:bg-primary hover:text-white cursor-pointer flex h-full items-center"
+          class="px-6 border-b-2 border-transparent hover:bg-gray-200 text-gray-700 cursor-pointer flex items-center"
           :class="isActive(item.to)" @click="router.get(item.to)">
           {{ item.label }}
         </li>

@@ -53,7 +53,7 @@ function addToCart() {
         variant="primary"
         full
         label="Agregar al Carrito"
-        v-if="isLoggedInView && product.stock > 0"
+        v-if="isLoggedInView"
         @click="showQtyDialog = true"
       >
       <template #icon>

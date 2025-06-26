@@ -7,7 +7,6 @@ import { Paginator } from '~/components/ui'
 import type Product from '#models/product'
 import type { Meta } from '~/types/metadata'
 import { computed, reactive, ref } from 'vue'
-import { useDebounceFn } from '@vueuse/core'
 import http from '~/shared/http'
 
 const data = ref<{ data: Product[]; meta: Meta }>()
