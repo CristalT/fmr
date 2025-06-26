@@ -10,11 +10,10 @@ const customer = useCustomer()
 </script>
 <template>
   <div id="customer-tools" class="bg-logo flex justify-between items-center p-2 shadow-sm" v-if="customer.isLoggedIn.value">
-    <div class="flex gap-4">
-    </div>
+    <div></div>
     <ul class="flex gap-4">
       <li>
-        <Button label="Historial de Pedidos" variant="tertiary" @click="router.get('/orders')">
+        <Button label="Mis Pedidos" variant="tertiary" @click="router.get('/orders')">
           <template #icon>
             <Icon name="orders" />
           </template>

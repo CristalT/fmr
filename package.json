@@ -9,9 +9,9 @@
     "email": "marceloforclaz@gmail.com"
   },
   "scripts": {
-    "start": "sh ./scripts/start.sh",
-    "stop": "pm2 stop fmr-site",
-    "build": "node ace build --package-manager=\"pnpm\"",
+    "start": "pm2 start ./bin/server.js --n fmr",
+    "stop": "pm2 stop fmr",
+    "build": "node ace build",
     "deploy": "sh ./scripts/deploy.sh",
     "dev": "node ace serve --watch",
     "test": "node ace test",

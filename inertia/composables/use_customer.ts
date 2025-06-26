@@ -4,8 +4,11 @@ import { usePage } from "@inertiajs/vue3"
 
 export default function useCustomer() {
   const page = usePage()
-  const isLoggedIn = computed(() => (page.props as unknown as { auth: { isCustomerLoggedIn: boolean } }).auth.isCustomerLoggedIn)
-  const userId = computed(() => (page.props as unknown as { auth: { userId: number } }).auth.userId)
+  const props = (page.props as unknown as { auth: { isCustomerLoggedIn: boolean, isAdminLoggedIn: boolean, userId: number, userFullName: string } })
 
-  return { isLoggedIn, userId }
+  const fullName = computed(() => props.auth.userFullName)
+  const isLoggedIn = computed(() => props.auth.isCustomerLoggedIn)
+  const userId = computed(() => props.auth.userId)
+
+  return { isLoggedIn, userId, fullName }
 }

@@ -2,7 +2,8 @@
 import CustomerTools from '~/components/CustomerTools.vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { usePath, useCustomer } from '~/composables'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
+import CustomerAccountMenu from './CustomerAccountMenu.vue'
 
 const { staticPath } = usePath()
 
@@ -41,7 +42,8 @@ function isActive(route: string) {
       </ul>
       <a class="mx-12 underline hover:text-primary" href="/auth/customers/show"
         v-if="!customer.isLoggedIn.value">Ingresar</a>
-      <div class="mx-12 underline hover:text-primary cursor-pointer" @click="router.delete(`/auth/customers/${customer.userId.value}`)" v-else>Salir</div>
+
+        <CustomerAccountMenu />
     </div>
   </nav>
   <CustomerTools />

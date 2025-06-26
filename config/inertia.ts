@@ -14,7 +14,8 @@ export default defineConfig({
     auth: async ({ auth }) => {
       const isCustomerLoggedIn = await auth.use('customer').check()
       const isAdminLoggedIn = await auth.use('admin').check()
-      return { isCustomerLoggedIn, isAdminLoggedIn }
+      const { fullName: userFullName, id: userId } = auth.use('customer').user ?? {}
+      return { isCustomerLoggedIn, isAdminLoggedIn, userFullName, userId }
     },
     errors: (ctx) => ctx.session?.flashMessages.get('errors'),
   },

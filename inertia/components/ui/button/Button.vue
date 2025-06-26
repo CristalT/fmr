@@ -16,7 +16,7 @@ const props = withDefaults(
 const variants = {
   'bg-primary text-white hover:bg-primary/[0.9]': props.variant === 'primary',
   'bg-secondary text-white hover:bg-secondary/[0.9]': props.variant === 'secondary',
-  'bg-transparent text-black hover:bg-transparent/[0.1]': props.variant === 'tertiary',
+  'bg-transparent text-gray-600 hover:bg-transparent/[0.1]': props.variant === 'tertiary',
   'bg-red-600 text-white hover:bg-red-700': props.variant === 'danger',
 }
 
