@@ -7,7 +7,7 @@ import { useCart } from '~/composables'
 
 const cart = useCart()
 
-defineProps<{ loading?: boolean }>()
+defineProps<{ loading?: boolean, whatsappHidden?: boolean }>()
 
 onMounted(() => {
   cart.getItems()
@@ -44,7 +44,10 @@ onMounted(() => {
       </div>
       <slot></slot>
     </div>
+    <div class="sticky bottom-0 z-10">
+      <slot name="footer"></slot>
+    </div>
   </div>
   <Footer />
-  <WhatsApp />
+  <WhatsApp v-show="!whatsappHidden" />
 </template>

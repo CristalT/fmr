@@ -21,7 +21,7 @@ function close(e: KeyboardEvent) {
   <teleport to="body">
     <div
       v-if="model"
-      class="w-screen h-screen fixed top-0 left-0 bg-black/[0.8] flex items-center justify-center"
+      class="w-screen h-screen fixed top-0 left-0 bg-black/[0.8] flex items-center justify-center z-10"
     >
       <slot></slot>
     </div>

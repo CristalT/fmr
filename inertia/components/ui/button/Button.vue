@@ -8,6 +8,7 @@ const props = withDefaults(
     size?: 'sm' | 'md'
     bordered?: boolean
     disabled?: boolean
+    badge?: string | number
   }>(),
   { type: 'button', full: false, variant: 'primary', bordered: false, size: 'md' }
 )
@@ -15,7 +16,7 @@ const props = withDefaults(
 const variants = {
   'bg-primary text-white hover:bg-primary/[0.9]': props.variant === 'primary',
   'bg-secondary text-white hover:bg-secondary/[0.9]': props.variant === 'secondary',
-  'bg-gray-100 text-black hover:bg-gray-200': props.variant === 'tertiary',
+  'bg-transparent text-black hover:bg-transparent/[0.1]': props.variant === 'tertiary',
   'bg-red-600 text-white hover:bg-red-700': props.variant === 'danger',
 }
 
@@ -45,6 +46,9 @@ function onClick() {
     <div class="flex items-center gap-2 justify-center">
       <slot name="icon" />
       {{ label }}
+      <span class="text-xs bg-gray-500 text-white rounded-full px-2 py-[2px]" v-if="badge">
+        {{ badge }}
+      </span>
     </div>
   </button>
 </template>

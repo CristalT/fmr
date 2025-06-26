@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Meta } from '~/types/metadata';
+import type { Meta } from '~/types/metadata';
 import { Paginator } from '~/components/ui';
 
 export type Column = {

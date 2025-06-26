@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { Icon } from '~/components/ui'
+import CustomerTools from '~/components/CustomerTools.vue'
 import { router, usePage } from '@inertiajs/vue3'
-import { useCart, usePath } from '~/composables'
+import { usePath, useCustomer } from '~/composables'
 import { computed, ref } from 'vue'
 
 const { staticPath } = usePath()
 
-const cart = useCart()
-
-const cartLength = computed(() => cart.items.value.length)
+const customer = useCustomer()
 
 type Option = {
   icon?: string
@@ -24,9 +22,6 @@ const options = ref<Option[]>([
   { label: 'Contacto', to: '/contact' },
 ])
 
-const isCustomerLoggedIn = computed(() => (page.props as unknown as { auth: { isCustomerLoggedIn: boolean } }).auth.isCustomerLoggedIn)
-
-const userId = computed(() => (page.props as unknown as { auth: { userId: number } }).auth.userId)
 
 function isActive(route: string) {
   if (page.url === route) return 'bg-primary text-white'
@@ -44,16 +39,10 @@ function isActive(route: string) {
           {{ item.label }}
         </li>
       </ul>
-
-      <div v-if="isCustomerLoggedIn" class="flex cursor-pointer p-6 hover:bg-primary hover:text-white h-full" :class="isActive('/carts')"
-        @click="router.get('/carts')">
-
-        <Icon name="cart" /> {{ cartLength }}
-
-      </div>
       <a class="mx-12 underline hover:text-primary" href="/auth/customers/show"
-        v-if="!isCustomerLoggedIn">Ingresar</a>
-      <div class="mx-12 underline hover:text-primary cursor-pointer" @click="router.delete(`/auth/customers/${userId}`)" v-else>Salir</div>
+        v-if="!customer.isLoggedIn.value">Ingresar</a>
+      <div class="mx-12 underline hover:text-primary cursor-pointer" @click="router.delete(`/auth/customers/${customer.userId.value}`)" v-else>Salir</div>
     </div>
   </nav>
+  <CustomerTools />
 </template>

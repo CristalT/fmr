@@ -3,12 +3,16 @@ import Order from '#models/order'
 import { HttpContext } from '@adonisjs/core/http'
 
 export default class OrderController {
-  async index({ inertia, auth }: HttpContext) {
-    const orders = await Order.query()
+  async index({ request, inertia, auth }: HttpContext) {
+    const page = request.input('page', 1)
+
+    const data = await Order.query()
       .where('customer_user_id', auth.user?.id!)
       .preload('cartItems')
+      .orderBy('created_at', 'desc')
+      .paginate(page, 10)
 
-    return inertia.render('cart/orders', { orders })
+    return inertia.render('cart/orders', { data })
   }
   async show({  params, auth, inertia }: HttpContext) {
     const order = await Order.query()

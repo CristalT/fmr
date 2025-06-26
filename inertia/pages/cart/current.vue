@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import MainHeader from '~/components/MainHeader.vue'
 import MainLayout from '~/components/MainLayout.vue'
+import ProductImage from '~/components/ProductImage.vue'
 import type CartItem from '#models/cart_item'
+import http from '~/shared/http';
 import { toLocaleNumber } from '~/shared/utils'
 import { Button, Input, Icon, Dialog } from '~/components/ui'
 import { computed, ref } from 'vue'
-import ProductImage from '~/components/ProductImage.vue'
-import CartSubheader from '~/components/CartSubheader.vue'
-import { useCart, useConfirm } from '~/composables'
+import { useCart, useConfirm, useToast } from '~/composables'
+import { router } from '@inertiajs/vue3';
 
 const { confirmation } = useConfirm()
+const { toast } = useToast()
+
 
 const showQtyDialog = ref(false)
 const qty = ref(1)
@@ -58,12 +61,28 @@ async function remove(item: CartItem) {
       .catch(console.error)
   }
 }
+
+async function createOrder() {
+  const conf = await confirmation({
+    title: 'Nuevo pedido',
+    message: `Está por enviar el carrito y generar un pedido. ¿Desea continuar?`,
+    confirm: 'Enviar',
+    cancel: 'Cancelar'
+  })
+  if (!conf) return
+  http('orders').post({}).then(() => {
+    toast.success('Pedido enviado! Gracias por su compra.')
+    router.get('carts')
+  }).catch(err => {
+    console.error(err)
+    toast.error('Ocurrió un error al enviar el pedido.')
+  })
+}
 </script>
 <template>
-  <MainLayout>
+  <MainLayout whatsapp-hidden>
     <template #header>
       <MainHeader />
-      <CartSubheader />
     </template>
     <div class="bg-white rounded-md" v-if="cartItems.length">
       <table class="bg-white rounded-md shadow-md mx-auto w-full overflow-hidden">
@@ -107,8 +126,10 @@ async function remove(item: CartItem) {
       </table>
     </div>
 
-    <div v-else class="text-gray-600 text-center py-4">
+    <div v-else class="text-gray-600 text-center py-4 flex flex-col gap-2">
       <div class="text-lg font-bold">Tu carrito de compras está vacío</div>
+      <div class="text-sm">Para agregar productos, consultá nuestro <a href="/products" class="text-primary">catálogo</a></div>
+      <div class="text-sm">Si querés conocer el estado de tus pedidos, <a href="/orders" class="text-primary">ingresá al historial de pedidos</a></div>
     </div>
 
     <Dialog v-model="showQtyDialog">
@@ -127,5 +148,14 @@ async function remove(item: CartItem) {
         </div>
       </div>
     </Dialog>
+    <template #footer>
+      <nav class="flex justify-end gap-2 p-2 bg-gray-100 border-t shadow-sm" v-if="cart.length.value">
+        <Button label="Enviar" variant="primary" @click="createOrder">
+          <template #icon>
+            <Icon name="send" />
+          </template>
+        </Button>
+      </nav>
+    </template>
   </MainLayout>
 </template>

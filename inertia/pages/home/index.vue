@@ -2,6 +2,7 @@
   import MainLayout from '~/components/MainLayout.vue'
   import MainHeader from '~/components/MainHeader.vue'
 </script>
+
 <template>
   <MainLayout>
     <template #header>

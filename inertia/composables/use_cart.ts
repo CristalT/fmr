@@ -35,11 +35,8 @@ export default function useCart() {
       })
   }
 
-  const length = toValue(
-    computed<number>(() => {
-      return items.value.length
-    })
-  )
+  const length = computed<number>(() => items.value.length)
+
 
   return { items, add, update, remove, length, getItems }
 }

@@ -16,7 +16,7 @@ const emits = defineEmits(['confirm', 'cancel'])
 </script>
 
 <template>
-  <div  class="w-screen h-screen fixed top-0 left-0 bg-black/[0.8] flex items-center justify-center">
+  <div  class="w-screen h-screen fixed top-0 left-0 bg-black/[0.8] flex items-center justify-center z-10">
     <div class="bg-white p-4 rounded-md w-[500px]">
     <div class="text-lg font-semibold">
       {{ title }}

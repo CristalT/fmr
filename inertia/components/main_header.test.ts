@@ -22,21 +22,20 @@ function setCustomerLoggedIn(value: boolean) {
 }
 
 describe('main header', () => {
-  it('shows cart icon while customer is logged in', () => {
+  it('shows customer tools while customer is logged in', () => {
     setCustomerLoggedIn(true)
 
     const wrapper = mount(MainHeader)
 
-    const icon = wrapper.findComponent({ name: 'Icon' })
-    expect(icon.exists()).toBe(true)
-    expect(icon.props('name')).toBe('cart')
+    const tools = wrapper.find('#customer-tools')
+    expect(tools.exists()).toBe(true)
   })
 
-  it('does not show cart icon while customer is not logged in', () => {
+  it('does not show customer tools customer is not logged in', () => {
     setCustomerLoggedIn(false)
     const wrapper = mount(MainHeader)
 
-    const icon = wrapper.findComponent({ name: 'Icon' })
-    expect(icon.exists()).toBe(false)
+    const tools = wrapper.find('#customer-tools')
+    expect(tools.exists()).toBe(false)
   })
 })
