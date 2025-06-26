@@ -75,6 +75,10 @@ export default class Product extends BaseModel {
       .where('id', id)
   })
 
+  /**
+   * Scope for search
+   * This search criteria is used for listing products for Admin Users
+   */
   static readonly search = scope((query, { terms, filter }) => {
     if (filter) {
       for (const [key, value] of Object.entries(filter)) {
@@ -88,6 +92,10 @@ export default class Product extends BaseModel {
     }
   })
 
+  /**
+   * Scope for public search
+   * This search criteria is used for listing products for Customer Users
+   */
   static readonly publicSearch = scope((query, { terms }) => {
     query.where((query) => {
       query.where('stock', '>', 0)

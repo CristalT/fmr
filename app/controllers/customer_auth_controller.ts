@@ -22,6 +22,6 @@ export default class CustomerAuthController {
 
   async destroy({ auth, response }: HttpContext) {
     await auth.use('customer').logout()
-    return response.redirect('/')
+    return response.noContent()
   }
 }

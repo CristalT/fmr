@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, computed, useTemplateRef } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { useCustomer } from '~/composables'
+import http from '~/shared/http'
 
 const customer = useCustomer()
 const isOpen = ref(false)
@@ -43,7 +44,11 @@ function closeMenu() {
 }
 
 function logout() {
-  router.delete(`/auth/customers/${customer.userId.value}`)
+  http('/auth/customers')
+    .delete(customer.userId.value)
+    .then(() => {
+      window.location.reload()
+    })
 }
 
 // Handle click outside to close the menu
