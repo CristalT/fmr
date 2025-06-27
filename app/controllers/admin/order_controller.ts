@@ -63,6 +63,21 @@ export default class OrderController {
     return response.noContent()
   }
 
+  async destroy({ params, response }: HttpContext) {
+    const order = await Order.findOrFail(params.id)
+
+    try {
+      await order.related('cartItems').query().delete()
+      await order.delete()
+      await cache.delete({ key: `order:${order.id}` }) // Invalidate cache for this order
+    } catch (error) {
+      logger.error('Failed to delete order: ' + error.message)
+      return response.internalServerError('Failed to delete order.')
+    }
+
+    return response.noContent()
+  }
+
   async print({ params, response }: HttpContext) {
     const order = await this.orderService.getById(params.id)
     if (!order) {

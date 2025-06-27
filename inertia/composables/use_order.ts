@@ -2,11 +2,12 @@ import type Order from '#models/order'
 import { OrderStatus } from '#types/order_status'
 import { router } from '@inertiajs/vue3'
 import { computed } from 'vue'
-import { useToast } from '~/composables'
+import { useToast, useConfirm } from '~/composables'
 import http from '~/shared/http'
 
 export default function useOrder(order: Order) {
   const { toast } = useToast()
+  const { confirmation } = useConfirm()
 
   const customerFullName = computed(() => {
     return `${order.customerUser.firstName} ${order.customerUser.lastName}`
@@ -19,6 +20,28 @@ export default function useOrder(order: Order) {
   const asked = computed(() => order.cartItems.reduce((acc, item) => acc + item.quantity, 0))
   const delivered = computed(() => order.cartItems.reduce((acc, item) => acc + item.delivered, 0))
   const pending = computed(() => asked.value - delivered.value)
+
+  async function destroy() {
+    const isConfirmed = await confirmation({
+      title: 'Eliminar Pedido',
+      type: 'danger',
+      message: 'Está por eliminar el pedido de manera permanente. La siguiente acción es irreversible. ¿Desea continuar?',
+      confirm: 'Eliminar',
+      cancel: 'Cancelar'
+    })
+
+    if (!isConfirmed) return;
+
+    http('admin/orders')
+      .delete(order.id)
+      .then(() => {
+        router.visit(`/admin/orders`)
+      })
+      .catch((error) => {
+        toast.error('Error al eliminar el pedido')
+        console.error('Failed to delete order:', error)
+      })
+  }
 
   async function setStatus(status: OrderStatus) {
     const oldStatus = order.status
@@ -34,5 +57,5 @@ export default function useOrder(order: Order) {
       })
   }
 
-  return { customerFullName, setStatus, total, asked, delivered, pending }
+  return { customerFullName, setStatus, destroy, total, asked, delivered, pending }
 }

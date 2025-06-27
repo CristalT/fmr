@@ -6,6 +6,7 @@ export default function useConfirm() {
   const createConfirmDialogApp = (
     options: {
       title?: string
+      type?: 'danger' | 'warning' | 'info' | 'success'
       message?: string
       confirm?: string
       cancel?: string
@@ -54,6 +55,7 @@ export default function useConfirm() {
   const confirmation = (
     options: {
       title?: string
+      type?: 'danger' | 'warning' | 'info' | 'success'
       message?: string
       confirm?: string
       cancel?: string
