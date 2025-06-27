@@ -46,7 +46,7 @@ function changePage(page: number) {
     <div class="flex flex-col gap-2">
       <div class="p-2 bg-white shadow-sm rounded-md flex gap-2">
         <div class="basis-9/12">
-          <Input v-model="params.terms" placeholder="Buscar ..." autofocus clearable />
+          <Input v-model="params.terms" placeholder="Buscar ..." :debounce="500" autofocus clearable />
         </div>
         <div class="basis-3/12">
           <ProviderSelect v-model="params.filter.provider" placeholder="Proveedor" />

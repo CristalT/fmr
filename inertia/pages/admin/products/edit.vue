@@ -92,7 +92,7 @@ const isPublic = computed({
     </form>
     <template #footer>
       <nav class="flex justify-end gap-2">
-        <Button label="Cancelar" variant="tertiary" @click="router.visit('/admin/products')" />
+        <Button label="Cancelar" variant="tertiary" @click="router.visit('/admin/products/view')" />
         <Button type="button" label="Guardar" @click="submit" />
       </nav>
     </template>

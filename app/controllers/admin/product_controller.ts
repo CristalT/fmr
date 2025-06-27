@@ -53,6 +53,6 @@ export default class ProductController {
 
     await product.save()
 
-    response.redirect('/admin/products')
+    response.redirect('/admin/products/view')
   }
 }
