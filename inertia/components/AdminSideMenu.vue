@@ -12,7 +12,7 @@ const options: MenuOption[] = [
   { label: 'Registros', to: '/admin/registries' },
   { label: 'Clientes', to: '/admin/customers/view' },
   { label: 'Pedidos', to: '/admin/orders' },
-  { label: 'Productos', to: '/admin/products' },
+  { label: 'Productos', to: '/admin/products/view' },
   { label: 'Salir', to: '/auth/logout' },
 ]
 

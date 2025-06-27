@@ -1,5 +1,6 @@
 import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 import axios from 'axios'
+import { get } from 'lodash-es'
 
 const axiosInstance = axios.create({
   baseURL: window.location.origin,
@@ -36,8 +37,12 @@ function httpClientWrapper(client: AxiosInstance) {
 
         return this
       },
-      async get<T>(): Promise<T> {
+      async get<T>(source?: string): Promise<T> {
         config.method = 'GET'
+        if (source) {
+          const result = await client(config)
+          return get(result, source) as T
+        }
         return client(config) as Promise<T>
       },
       post<T>(data: object): Promise<T> {
@@ -86,4 +91,4 @@ function httpClientWrapper(client: AxiosInstance) {
   }
 }
 
-export default (path: string) => httpClientWrapper(axiosInstance)(path)
+export default httpClientWrapper(axiosInstance)

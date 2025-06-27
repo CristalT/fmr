@@ -1,14 +1,18 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type Order from '#models/order'
 import AdminLayout from '~/components/AdminLayout.vue'
-import { Card, Button, Select } from '~/components/ui'
+import { Card, Button, Select, Paginator } from '~/components/ui'
 import { friendlyDate } from '~/shared/utils'
 import { router } from '@inertiajs/vue3'
 import { statusOptions } from '~/shared/status_options'
 import StatusBadge from '~/components/StatusBadge.vue'
+import type { Meta } from '~/types/metadata'
 
-defineProps<{ orders: Order[] }>()
+const { data } = defineProps<{ data: { data: Order[]; meta: Meta } }>()
+
+const orders = computed(() => data.data)
+const metadata = computed(() => data.meta)
 
 const status = ref('')
 
@@ -31,6 +35,10 @@ const showOrder = (order: Order) => {
 
 function filterByStatus(status: Order['status']) {
   router.get(`/admin/orders`, { status }, { replace: true, preserveState: true })
+}
+
+function changePage(page: number) {
+  router.get(`/admin/orders`, { page }, { replace: true, preserveState: true })
 }
 
 </script>
@@ -70,6 +78,7 @@ function filterByStatus(status: Order['status']) {
         </template>
       </Card>
     </div>
+    <Paginator v-if="metadata.lastPage > 1" class="mt-4" :last-page="metadata.lastPage" :current-page="metadata.currentPage" @change="changePage" />
   </AdminLayout>
 
 </template>

@@ -5,7 +5,10 @@ import app from '@adonisjs/core/services/app'
 import sharp from 'sharp'
 
 export default class ProductController {
-  async index({ inertia, request }: HttpContext) {
+  async view({ inertia }: HttpContext) {
+    return inertia.render('admin/products/index')
+  }
+  async index({ response, request }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 12)
     const terms = request.input('terms', null)
@@ -17,7 +20,7 @@ export default class ProductController {
       .orderBy('name')
       .paginate(page, limit)
 
-    return inertia.render('admin/products/index', { data })
+    return response.json(data)
   }
 
   async show({ inertia, request }: HttpContext) {

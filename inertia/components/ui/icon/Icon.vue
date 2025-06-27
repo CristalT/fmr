@@ -8,6 +8,8 @@ import SendIcon from '~/components/icons/SendIcon.vue'
 import AddIcon from '~/components/icons/AddIcon.vue'
 import OrdersIcon from '~/components/icons/OrdersIcon.vue'
 import CheckIcon from '~/components/icons/CheckIcon.vue';
+import ChevronLeftIcon from '~/components/icons/ChevronLeftIcon.vue'
+import ChevronRightIcon from '~/components/icons/ChevronRightIcon.vue'
 
 const icons = {
   edit: EditIcon,
@@ -17,7 +19,9 @@ const icons = {
   send: SendIcon,
   add: AddIcon,
   orders: OrdersIcon,
-  check: CheckIcon
+  check: CheckIcon,
+  chevronLeft: ChevronLeftIcon,
+  chevronRight: ChevronRightIcon
 }
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl'

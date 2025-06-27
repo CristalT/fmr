@@ -34,9 +34,9 @@ defineEmits<{ (e: 'pageChange', page: number): void; (e: 'rowClick', row: any): 
         <tr>
           <td colspan="5" class="p-2">
             <Paginator
-              v-model="metadata.currentPage"
+              :current-page="metadata.currentPage"
               :last-page="metadata.lastPage"
-              @update:model-value="$emit('pageChange', $event)"
+              @change="$emit('pageChange', $event)"
             />
           </td>
         </tr>

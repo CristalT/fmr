@@ -61,12 +61,11 @@ const search = () => {
       <ProductCard v-for="product of products" :key="product.id" :product />
     </div>
     <Paginator
-      v-model="params.page"
       v-if="products.length"
       class="mt-4 pb-4"
       :last-page="meta.lastPage"
       :current-page="meta.currentPage"
-      @update:model-value="doFetch()"
+      @change="(page) => { params.page = page; doFetch() }"
     />
   </MainLayout>
 </template>

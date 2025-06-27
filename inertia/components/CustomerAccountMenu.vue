@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, useTemplateRef } from 'vue'
-import { router } from '@inertiajs/vue3'
 import { useCustomer } from '~/composables'
 import http from '~/shared/http'
 
@@ -47,7 +46,7 @@ function logout() {
   http('/auth/customers')
     .delete(customer.userId.value)
     .then(() => {
-      window.location.reload()
+      window.location.replace('/')
     })
 }
 

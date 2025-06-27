@@ -12,6 +12,8 @@ export default class OrderController {
   constructor(private orderService: OrderService) {}
 
   async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
+    const limit = request.input('limit', 12)
     const query = Order.query()
       .preload('cartItems')
       .preload('customerUser')
@@ -23,9 +25,9 @@ export default class OrderController {
       query.where('status', status)
     }
 
-    const orders = await query.exec()
+    const data = await query.paginate(page, limit)
 
-    return inertia.render('admin/orders/index', { orders })
+    return inertia.render('admin/orders/index', { data })
   }
 
   async show({ inertia, params, response }: HttpContext) {

@@ -19,7 +19,8 @@ async function getProviders() {
 onMounted(() => {
   getProviders()
 })
+
 </script>
 <template>
-  <Select searchable :options="providers" v-model="model" />
+  <Select v-if="providers.length" searchable :options="providers" v-model="model" />
 </template>
