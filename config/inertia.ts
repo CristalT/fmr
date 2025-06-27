@@ -1,3 +1,4 @@
+import Setting from '#models/setting'
 import { defineConfig } from '@adonisjs/inertia'
 
 export default defineConfig({
@@ -11,6 +12,17 @@ export default defineConfig({
    */
   sharedData: {
     appName: 'FMR Site',
+    settings: async () => {
+      return {
+        companyAddress: await Setting.get('company_address'),
+        companyCity: await Setting.get('company_city'),
+        companyProvince: await Setting.get('company_province'),
+        companyZipCode: await Setting.get('company_zip_code'),
+        companyPhone: await Setting.get('company_phone'),
+        companyEmail: await Setting.get('company_email'),
+        whatsapp: await Setting.get('company_whatsapp')
+      }
+    },
     auth: async ({ auth }) => {
       const isCustomerLoggedIn = await auth.use('customer').check()
       const isAdminLoggedIn = await auth.use('admin').check()

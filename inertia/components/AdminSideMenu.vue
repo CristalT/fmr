@@ -13,6 +13,7 @@ const options: MenuOption[] = [
   { label: 'Clientes', to: '/admin/customers/view' },
   { label: 'Pedidos', to: '/admin/orders' },
   { label: 'Productos', to: '/admin/products/view' },
+  { label: 'Configuración', to: '/admin/settings/view' },
   { label: 'Salir', to: '/auth/logout' },
 ]
 

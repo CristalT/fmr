@@ -1,16 +1,24 @@
 <script setup lang="ts">
+// Models
 import type Order from '#models/order'
-import AdminLayout from '~/components/AdminLayout.vue'
-import { Button, Card, Icon, Input, Select } from '~/components/ui'
-import type { Column } from '~/components/ui/table/Table.vue'
-import { useOrder } from '~/composables'
-import { friendlyDate } from '~/shared/utils'
-import type CartItem from '#models/cart_item'
-import StatusBadge from '~/components/StatusBadge.vue'
-import { ref } from 'vue'
-import http from '~/shared/http'
 import { OrderStatus } from '#types/order_status'
+import type { Column } from '~/components/ui/table/Table.vue'
+import type CartItem from '#models/cart_item'
+
+// Components
+import { Button, Card, Icon, Input, Select } from '~/components/ui'
+import AdminLayout from '~/components/AdminLayout.vue'
+import StatusBadge from '~/components/StatusBadge.vue'
+import SavingIndicator from '~/components/SavingIndicator.vue'
+
+// Utilities
+import { ref } from 'vue'
+import { friendlyDate } from '~/shared/utils'
+import http from '~/shared/http'
 import { statusOptions } from '~/shared/status_options';
+
+// Composables
+import { useOrder } from '~/composables'
 
 const { order } = defineProps<{ order: Order }>()
 
@@ -70,7 +78,7 @@ const updateCartItem = (item: CartItem) => {
       <thead class="border-b">
         <tr>
           <th v-for="(col, key) of columns" :key="key" class="p-2" :class="`text-${col.align || 'left'}`">{{ col.label
-            }}
+          }}
           </th>
         </tr>
       </thead>
@@ -82,7 +90,7 @@ const updateCartItem = (item: CartItem) => {
           <td class="text-right p-2 currency">{{ Math.round(row.product.price) }}</td>
           <td class="flex justify-center p-2">
             <Input type="number" v-model="row.delivered" alignment="center" class="w-24" :debounce="800"
-              @update:modelValue="updateCartItem(row)" />
+              @update:modelValue="updateCartItem(row as CartItem)" />
           </td>
           <td class="text-right p-2 currency">{{ Math.round(row.product.price * row.delivered) }}</td>
         </tr>
@@ -91,26 +99,20 @@ const updateCartItem = (item: CartItem) => {
     </table>
     <template #footer>
       <div class="flex justify-between items-center">
-        <div class="pl-2 text-gray-600">
-          <span v-show="isSaving">Guardando ...</span>
-          <span v-show="isSaving === false" class="flex gap-2">
-            <Icon name="check" class="text-green-500" />
-            Guardado
-          </span>
+        <SavingIndicator :is-saving="isSaving" :is-saved="isSaving === false" />
+      </div>
+      <div class="flex justify-end items-center gap-4">
+        <div>
+          <span>Items pendientes</span> <span class="text-right font-semibold">{{ asked - delivered }}</span>
         </div>
-        <div class="flex justify-end items-center gap-4">
-          <div>
-            <span>Items pendientes</span> <span class="text-right font-semibold">{{ asked - delivered }}</span>
-          </div>
-          <div>
-            <span>Total</span> <span class="text-right currency font-semibold"> {{ Math.round(total) }}</span>
-          </div>
-          <Button label="Finalizar" variant="primary" @click="setStatus(OrderStatus.Completed)">
-            <template #icon>
-              <Icon name="check" />
-            </template>
-          </Button>
+        <div>
+          <span>Total</span> <span class="text-right currency font-semibold"> {{ Math.round(total) }}</span>
         </div>
+        <Button label="Finalizar" variant="primary" @click="setStatus(OrderStatus.Completed)">
+          <template #icon>
+            <Icon name="check" />
+          </template>
+        </Button>
       </div>
     </template>
   </AdminLayout>

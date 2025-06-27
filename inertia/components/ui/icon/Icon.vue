@@ -10,6 +10,7 @@ import OrdersIcon from '~/components/icons/OrdersIcon.vue'
 import CheckIcon from '~/components/icons/CheckIcon.vue';
 import ChevronLeftIcon from '~/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '~/components/icons/ChevronRightIcon.vue'
+import ExclamationIcon from '~/components/icons/ExclamationIcon.vue'
 
 const icons = {
   edit: EditIcon,
@@ -20,6 +21,7 @@ const icons = {
   add: AddIcon,
   orders: OrdersIcon,
   check: CheckIcon,
+  exclamation: ExclamationIcon,
   chevronLeft: ChevronLeftIcon,
   chevronRight: ChevronRightIcon
 }

@@ -40,7 +40,7 @@ function isActive(route: string) {
           {{ item.label }}
         </li>
       </ul>
-      <a class="mx-12 underline hover:text-primary" href="/auth/customers/show"
+      <a class="mx-12 border border-gray-500 text-gray-500 hover:bg-primary/20 py-1 px-4 rounded-full uppercase font-extralight" href="/auth/customers/show"
         v-if="!customer.isLoggedIn.value">Ingresar</a>
 
         <CustomerAccountMenu />

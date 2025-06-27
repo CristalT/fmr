@@ -4,6 +4,9 @@ import WhatsApp from '~/components/WhatsApp.vue'
 import Toast from './Toast.vue'
 import { onMounted } from 'vue'
 import { useCart } from '~/composables'
+import { useSetting } from '~/composables'
+
+const { settings } = useSetting()
 
 const cart = useCart()
 
@@ -49,5 +52,5 @@ onMounted(() => {
     </div>
   </div>
   <Footer />
-  <WhatsApp v-show="!whatsappHidden" />
+  <WhatsApp v-show="!whatsappHidden" :phone="settings.whatsapp" />
 </template>
