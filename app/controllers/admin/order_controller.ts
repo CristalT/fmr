@@ -14,12 +14,18 @@ export default class OrderController {
   async index({ inertia, request }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 12)
+    const status = request.input('status', null)
+
     const query = Order.query()
-      .preload('cartItems')
+      .whereHas('customerUser', (q) => {
+        q
+          .where('firstName', 'LIKE', `%${request.input('terms', '')}%`)
+          .orWhere('lastName', 'LIKE', `%${request.input('terms', '')}%`)
+      })
       .preload('customerUser')
+      .preload('cartItems')
       .orderBy('createdAt', 'asc')
 
-    const { status } = request.qs()
 
     if (status) {
       query.where('status', status)

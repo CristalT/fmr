@@ -1,5 +1,5 @@
 import '../css/app.css'
-import { createSSRApp, h } from 'vue'
+import { createApp, h } from 'vue'
 import type { DefineComponent } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import { resolvePageComponent } from '@adonisjs/inertia/helpers'
@@ -8,6 +8,7 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
 
 createInertiaApp({
+
   progress: { color: '#5468FF', delay: 0, showSpinner: false, includeCSS: true },
 
   title: (title) => `${title} - ${appName}`,
@@ -20,7 +21,7 @@ createInertiaApp({
   },
 
   setup({ el, App, props, plugin }) {
-    createSSRApp({ render: () => h(App, props) })
+    createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(VueQueryPlugin)
       .mount(el)

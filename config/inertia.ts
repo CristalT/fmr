@@ -13,14 +13,16 @@ export default defineConfig({
   sharedData: {
     appName: 'FMR Site',
     settings: async () => {
+      const settings = await Setting.getAll()
+
       return {
-        companyAddress: await Setting.get('company_address'),
-        companyCity: await Setting.get('company_city'),
-        companyProvince: await Setting.get('company_province'),
-        companyZipCode: await Setting.get('company_zip_code'),
-        companyPhone: await Setting.get('company_phone'),
-        companyEmail: await Setting.get('company_email'),
-        whatsapp: await Setting.get('company_whatsapp')
+        companyAddress: settings.get('company_address'),
+        companyCity: settings.get('company_city'),
+        companyProvince: settings.get('company_province'),
+        companyZipCode: settings.get('company_zip_code'),
+        companyPhone: settings.get('company_phone'),
+        companyEmail: settings.get('company_email'),
+        whatsapp: settings.get('company_whatsapp')
       }
     },
     auth: async ({ auth }) => {
@@ -36,7 +38,7 @@ export default defineConfig({
    * Options for the server-side rendering
    */
   ssr: {
-    enabled: false,
+    enabled: true,
     entrypoint: 'inertia/app/ssr.ts',
   },
 })

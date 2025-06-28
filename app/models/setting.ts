@@ -27,9 +27,18 @@ export default class Setting extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
+  static async getAll() {
+    const data = await cache.getOrSetForever({
+      key: 'setting:all',
+      factory: async () => await this.all(),
+    })
+
+    return new Map(data.map(s => [s.key, s.value]))
+  }
+
   static async get(key: string, defaultValue: any = undefined) {
     const factory = async () => {
-      const setting = await Setting.findBy({ key })
+      const setting = await this.findBy({ key })
       if (!setting) return defaultValue
 
       switch (setting.type) {
@@ -62,6 +71,7 @@ export default class Setting extends BaseModel {
       setting.value = value.trim()
       return setting.save().then((setting) => {
         cache.delete({ key: `setting:${setting.key}` })
+        cache.delete({ key: 'setting:all' })
         return setting
       })
     } catch (error) {
@@ -96,6 +106,7 @@ export default class Setting extends BaseModel {
 
     return save.then((result) => {
       cache.delete({ key: `setting:${key}` })
+      cache.delete({ key: 'setting:all' })
       return result
     })
   }

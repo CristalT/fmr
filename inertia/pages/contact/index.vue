@@ -55,8 +55,7 @@ async function onSubmit() {
   await validate()
 
   if (isValid.value) {
-    http
-      .post('contact', form)
+    http('contact').post(form)
       .then(() => {
         clearForm()
         toast.success('Formulario enviado con exito.')

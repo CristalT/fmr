@@ -3,7 +3,7 @@ import axios from 'axios'
 import { get } from 'lodash-es'
 
 const axiosInstance = axios.create({
-  baseURL: window.location.origin,
+  baseURL: '/',
   withCredentials: true,
 })
 
