@@ -12,7 +12,7 @@ function getStatusName(status: Order['status']) {
 const statusColor = (status: Order['status']) => {
   switch (status) {
     case 'pending':
-      return 'bg-yellow-600 text-white'
+      return 'bg-yellow-500 text-white'
     case 'completed':
       return 'bg-green-600 text-white'
     case 'cancelled':
@@ -27,7 +27,7 @@ const statusColor = (status: Order['status']) => {
 }
 </script>
 <template>
-  <span v-if="status" class="font-semibold px-2 py-1 rounded text-xs" :class="statusColor(status)">{{
+  <span v-if="status" class="font-semibold p-1 rounded text-xs" :class="statusColor(status)">{{
     getStatusName(status) }}</span>
 
 </template>

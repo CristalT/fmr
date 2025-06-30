@@ -63,7 +63,7 @@ function search() {
       <Card v-for="order of orders" :key="order.id" @click="showOrder(order)" class="cursor-pointer hover:bg-gray-50 hover:shadow-md transition-all">
         <template #header>
           <div class="flex items-center justify-between">
-            <h1 class="text-lg font-bold">
+            <h1 class="font-semibold">
               {{ getCustomerFullName(order) }}
             </h1>
             <StatusBadge :status="order.status" />

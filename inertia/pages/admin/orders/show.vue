@@ -21,10 +21,6 @@ const columns: Column[] = [
   { label: 'Cantidad', key: 'quantity', align: 'center' },
 ]
 
-const print = () => {
-  window.open(`/admin/orders/${order.id}/print`, '_blank')
-}
-
 </script>
 
 <template>
@@ -33,12 +29,7 @@ const print = () => {
       <div class="flex items-center justify-between gap-2">
         <Select class="w-60" :options="statusOptions" v-model="order.status"
         @change="({ value }) => setStatus(value as OrderStatus)" />
-        <Button label="Imprimir" variant="tertiary" @click="print">
-          <template #icon>
-            <Icon name="print" />
-          </template>
-        </Button>
-        <Button label="Eliminar" variant="danger" flat @click="destroy"><template #icon><Icon name="delete" /></template></Button>
+        <Button v-if="order.status === OrderStatus.Cancelled" label="Eliminar" variant="danger" flat @click="destroy"><template #icon><Icon name="delete" /></template></Button>
       </div>
     </template>
     <Card class="flex flex-col mb-4">

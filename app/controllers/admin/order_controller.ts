@@ -13,7 +13,7 @@ export default class OrderController {
 
   async index({ inertia, request }: HttpContext) {
     const page = request.input('page', 1)
-    const limit = request.input('limit', 12)
+    const limit = request.input('limit', 16)
     const status = request.input('status', null)
 
     const query = Order.query()

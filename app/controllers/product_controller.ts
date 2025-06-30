@@ -15,7 +15,7 @@ export default class ProductController {
 
     if (await auth.check()) columns = columns.concat(['price', 'stock', 'brand', 'provider'])
 
-    const query = Product.query().withScopes((scope) => scope.publicSearch({ terms })).select(columns)
+    const query = Product.query().withScopes((scope) => scope.publicSearch({ terms })).select(columns).orderBy('name')
 
     return await query.paginate(page, limit)
   }

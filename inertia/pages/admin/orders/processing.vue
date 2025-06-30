@@ -53,6 +53,10 @@ const updateCartItem = (item: CartItem) => {
     .patch({ delivered: item.delivered })
     .finally(() => setIsSaving(false, 800))
 }
+
+const print = () => {
+  window.open(`/admin/orders/${order.id}/print`, '_blank')
+}
 </script>
 
 <template>
@@ -61,6 +65,12 @@ const updateCartItem = (item: CartItem) => {
       <div class="flex items-center justify-between gap-2">
         <Select class="w-60" :options="statusOptions" v-model="order.status"
           @change="({ value }) => setStatus(value as OrderStatus)" />
+
+        <Button label = "Imprimir" variant = "tertiary" @click="print" >
+          <template #icon >
+            <Icon name="print" />
+          </template>
+        </Button>
       </div>
     </template>
     <Card class="flex flex-col mb-4">
@@ -78,7 +88,7 @@ const updateCartItem = (item: CartItem) => {
       <thead class="border-b">
         <tr>
           <th v-for="(col, key) of columns" :key="key" class="p-2" :class="`text-${col.align || 'left'}`">{{ col.label
-          }}
+            }}
           </th>
         </tr>
       </thead>
