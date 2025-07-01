@@ -31,7 +31,7 @@ const products = computed(() => data.value?.data)
 const paginate = computed(() => data.value?.meta)
 
 function openEdit(productId: string) {
-  router.get(`/admin/products/${productId}`)
+  router.get(`/admin/stock/${productId}`)
 }
 
 function changePage(page: number) {
@@ -79,7 +79,7 @@ function changePage(page: number) {
               <td class="p-2 w-[500px] border-r">{{ product.name }}</td>
               <td class="p-2 w-[120px] border-r text-center text-xs">{{ product.location }}</td>
               <td class="p-2 w-[70px] border-r   text-center">{{ product.stock }}</td>
-              <td class="pr-4 w-[80px] text-right">$ {{ product.roundedPrice }}</td>
+              <td class="pr-4 w-[80px] text-right">$ {{ product.price }}</td>
             </tr>
           </tbody>
           <tbody class="font-mono" v-else-if="!products?.length && isFetched">

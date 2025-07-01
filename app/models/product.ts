@@ -25,9 +25,6 @@ export default class Product extends BaseModel {
   declare price: number
 
   @column()
-  declare roundedPrice: number
-
-  @column()
   declare stock: number
 
   @column()
@@ -64,16 +61,11 @@ export default class Product extends BaseModel {
   static async afterFetchHook(products: Product[]) {
     const interval = Number(await setting('stock_round_interval'))
 
-    if (interval === 0) {
+    if (interval > 0) {
       products.forEach(product => {
-        product.roundedPrice = product.price
+        product.price = Math.round(product.price / interval) * interval
       })
-      return
     }
-
-    products.forEach(product => {
-      product.roundedPrice = Math.round(product.price / interval) * interval
-    })
   }
 
   static readonly getForEdit = scope((query, id: string) => {

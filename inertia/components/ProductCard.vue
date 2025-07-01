@@ -46,7 +46,7 @@ function addToCart() {
     <div class="text-center p-2 h-14 text-sm uppercase">
       {{ product.name }}
     </div>
-    <div v-if="product.roundedPrice" class="text-center py-4 font-medium text-lg">$ {{ product.roundedPrice }}</div>
+    <div v-if="product.price" class="text-center py-4 font-medium text-lg">$ {{ product.price }}</div>
 
     <div class="p-2">
       <Button

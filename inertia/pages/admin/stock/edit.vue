@@ -42,7 +42,7 @@ function submit() {
     formData.append('imageFile', image.value)
   }
 
-  router.put(`/admin/products/${product.id}`, formData, {
+  router.put(`/admin/stock/${product.id}`, formData, {
     forceFormData: true,
   })
 }

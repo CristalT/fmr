@@ -87,6 +87,8 @@ export default class StockCommand extends BaseCommand {
       })
       .on('end', () => {
         const promises = []
+
+        // Update or create products
         promises.push(
           Product.updateOrCreateMany('id', products)
             .then(() => {
@@ -97,6 +99,7 @@ export default class StockCommand extends BaseCommand {
             })
         )
 
+        // Update or create providers
         promises.push(
           Provider.updateOrCreateMany(
             'alias',

@@ -23,7 +23,7 @@ const cart = useCart()
 const cartItems = computed(() => cart.items.value)
 
 function amount(item: CartItem) {
-  const sum = Math.floor(item.product.roundedPrice * item.quantity)
+  const sum = Math.floor(item.product.price * item.quantity)
 
   return toLocaleNumber(sum)
 }
@@ -104,7 +104,7 @@ async function createOrder() {
             </td>
             <td class="py-2 px-4">{{ item.code }}</td>
             <td class="py-2 px-4">{{ item.name }}</td>
-            <td class="py-2 px-4 currency">{{ toLocaleNumber(item.product.roundedPrice) }}</td>
+            <td class="py-2 px-4 currency">{{ toLocaleNumber(item.product.price) }}</td>
             <td class="py-2 px-4 text-center">{{ item.quantity }}</td>
             <td class="py-2 px-4 currency">{{ amount(item) }}</td>
             <td>
