@@ -4,9 +4,9 @@ import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import sharp from 'sharp'
 
-export default class ProductController {
+export default class StockController {
   async view({ inertia }: HttpContext) {
-    return inertia.render('admin/products/index')
+    return inertia.render('admin/stock/index')
   }
   async index({ response, request }: HttpContext) {
     const page = request.input('page', 1)
@@ -16,7 +16,7 @@ export default class ProductController {
 
     const data = await Product.query()
       .withScopes((scope) => scope.search({ terms, filter }))
-      .select('id', 'name', 'image', 'code', 'price', 'stock', 'location', 'public', 'provider')
+      .select('id', 'name', 'image', 'code', 'price', 'stock', 'location', 'public', 'provider', 'factoryCode')
       .orderBy('name')
       .paginate(page, limit)
 
@@ -27,7 +27,7 @@ export default class ProductController {
     const product = await Product.query()
       .withScopes((scopes) => scopes.getForEdit(request.param('id')))
       .firstOrFail()
-    return inertia.render('admin/products/edit', { product })
+    return inertia.render('admin/stock/edit', { product })
   }
 
   async update({ request, params, response, logger }: HttpContext) {
@@ -53,6 +53,6 @@ export default class ProductController {
 
     await product.save()
 
-    response.redirect().toRoute('admin.products.view')
+    response.redirect().toRoute('admin.stock.view')
   }
 }

@@ -23,7 +23,7 @@ export default function useSetting() {
   const settings = computed(() => props.settings)
 
   const update = useMutation({
-    mutationFn: ({ value, id }: Setting) => http(`/admin/settings/${id}`).cancellable(`update_setting_${id}`).patch({ value: value.trim() })
+    mutationFn: ({ value, id }: Setting) => http(`/admin/settings/${id}`).cancellable(`update_setting_${id}`).patch({ value: String(value).trim() })
   })
 
   return { settings, update }

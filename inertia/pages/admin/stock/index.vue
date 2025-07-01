@@ -7,9 +7,9 @@ import { computed, watch } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { router } from '@inertiajs/vue3'
 import { Input, Paginator } from '~/components/ui'
-import { useProduct } from '~/composables'
+import { useStock } from '~/composables'
 
-const { fetchAll } = useProduct()
+const { fetchAll } = useStock()
 
 const params = useLocalStorage('adminProductsSearchParams', {
   terms: '',
@@ -57,11 +57,12 @@ function changePage(page: number) {
           <thead class="table w-full table-fixed border-b-2 ">
             <tr>
               <th class="w-[100px]">Foto</th>
-              <th class="w-[120px] py-2 px-4 text-left">Código</th>
+              <th class="w-[120px] py-2 px-4 text-center">Código</th>
+              <th class="w-[145px] py-2 px-4 text-center">Catálogo</th>
               <th class="w-[65px] py-2 px-4 text-left">Prov.</th>
-              <th class="w-[600px] py-2 px-4 text-left">Descripción</th>
+              <th class="w-[500px] py-2 px-4 text-left">Descripción</th>
               <th class="w-[120px] py-2 px-4 text-center">Ubicación</th>
-              <th class="w-[80px] py-2 px-4 text-center">Stock</th>
+              <th class="w-[70px] py-2 px-4 text-center">Stock</th>
               <th class="w-[80px] py-2 px-4 text-right">Precio</th>
             </tr>
           </thead>
@@ -69,14 +70,15 @@ function changePage(page: number) {
             <tr v-for="product of products" :key="product.id"
               class="table-fixed table w-full border-b hover:bg-gray-100 cursor-pointer"
               :class="{ 'opacity-30': !product.public }" @click="openEdit(product.id)">
-              <td class="p-2 w-[100px] h-20 text-center">
+              <td class="p-2 w-[100px] h-20 text-center border-r">
                 <ProductImage rounded :product class="w-20 mx-auto" />
               </td>
-              <td class="p-2 w-[120px]">{{ product.code }}</td>
-              <td class="p-2 w-[65px]">{{ product.provider }}</td>
-              <td class="p-2 w-[600px]">{{ product.name }}</td>
-              <td class="p-2 w-[120px] text-center text-xs">{{ product.location }}</td>
-              <td class="p-2 w-[80px] text-center">{{ product.stock }}</td>
+              <td class="p-2 w-[120px] border-r text-center">{{ product.code }}</td>
+              <td class="p-2 w-[145px] border-r text-center">{{ product.factoryCode }}</td>
+              <td class="p-2 w-[65px] border-r text-center">{{ product.provider }}</td>
+              <td class="p-2 w-[500px] border-r">{{ product.name }}</td>
+              <td class="p-2 w-[120px] border-r text-center text-xs">{{ product.location }}</td>
+              <td class="p-2 w-[70px] border-r   text-center">{{ product.stock }}</td>
               <td class="pr-4 w-[80px] text-right">$ {{ product.roundedPrice }}</td>
             </tr>
           </tbody>
@@ -88,7 +90,7 @@ function changePage(page: number) {
           <tfoot v-if="paginate && paginate.lastPage > 1" class="border-t bg-gray-100">
             <tr>
               <td colspan="7" class="p-2">
-                <Paginator :current-page="paginate.currentPage" :last-page="paginate.lastPage" @change="changePage" />
+                <Paginator v-model="paginate.currentPage" :last-page="paginate.lastPage" @change="changePage" />
               </td>
             </tr>
           </tfoot>

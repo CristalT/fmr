@@ -5,6 +5,16 @@ import logger from '@adonisjs/core/services/logger'
 
 type SettingType = 'string' | 'number' | 'boolean' | 'json' | 'email'
 
+const inferType = (value: any) => {
+  // Infer type safely
+  let inferredType: SettingType = 'string'
+  if (typeof value === 'number') inferredType = 'number'
+  else if (typeof value === 'boolean') inferredType = 'boolean'
+  else if (typeof value === 'object' && value !== null) inferredType = 'json'
+  else if (typeof value === 'string' && value.includes('@')) inferredType = 'email'
+  return inferredType
+}
+
 export default class Setting extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
@@ -68,7 +78,7 @@ export default class Setting extends BaseModel {
   static async setById(id: number, value: any) {
     try {
       const setting = await this.findOrFail(id)
-      setting.value = value.trim()
+      setting.value = String(value).trim()
       return setting.save().then((setting) => {
         cache.delete({ key: `setting:${setting.key}` })
         cache.delete({ key: 'setting:all' })
@@ -80,15 +90,19 @@ export default class Setting extends BaseModel {
     }
   }
 
+  static async createIfNotExists(key: string, value: any, description: string | null = null): Promise<Setting> {
+    const setting = await this.findBy({ key })
+    if (setting) return setting
+
+    return this.create({
+      key,
+      value: String(value).trim(),
+      type: inferType(value),
+      description,
+    })
+  }
   static async set(key: string, value: any, description: string | null = null): Promise<Setting> {
     const setting = await this.findBy({ key })
-
-    // Infer type safely
-    let inferredType: SettingType = 'string'
-    if (typeof value === 'number') inferredType = 'number'
-    else if (typeof value === 'boolean') inferredType = 'boolean'
-    else if (typeof value === 'object' && value !== null) inferredType = 'json'
-    else if (typeof value === 'string' && value.includes('@')) inferredType = 'email'
 
     let save: Promise<Setting>
     if (setting) {
@@ -99,7 +113,7 @@ export default class Setting extends BaseModel {
       save = this.create({
         key,
         value: String(value).trim(),
-        type: inferredType,
+        type: inferType(value),
         description,
       })
     }

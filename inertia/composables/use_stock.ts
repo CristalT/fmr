@@ -6,9 +6,10 @@ import { Ref } from "vue"
 
 type Params = {
   terms: string,
-  page: number
-
+  page: number,
+  filter: Record<string, any>
 }
+
 const queryFn = (path: string, params: Params) => http(path)
   .cancellable('fetch_products_list')
   .query({ ...params })
@@ -17,8 +18,7 @@ const queryFn = (path: string, params: Params) => http(path)
 export default function useProduct() {
   const fetchAll = (params: Ref<Params>) => useQuery({
     queryKey: ['products', params],
-    queryFn: () => queryFn('products/list', params.value),
+    queryFn: () => queryFn('admin/stock', params.value),
   })
-
   return { fetchAll }
 }

@@ -77,6 +77,6 @@ function search() {
         </p>
       </Card>
     </div>
-    <Paginator v-if="metadata.lastPage > 1" class="mt-4" :last-page="metadata.lastPage" :current-page="metadata.currentPage" @change="changePage" />
+    <Paginator v-if="metadata.lastPage > 1" class="mt-4" :last-page="metadata.lastPage" v-model="metadata.currentPage" @change="changePage" />
   </AdminLayout>
 </template>

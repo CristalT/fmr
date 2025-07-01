@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import { Button, Icon } from '~/components/ui'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { PAGE_INTERVAL } from './page_interval'
 
-const props = defineProps(['lastPage', 'currentPage'])
+const props = defineProps(['lastPage'])
 
 const emit = defineEmits<{ (e: 'change', page: number): void }>()
 
-
-const page = ref(props.currentPage)
+const model = defineModel<number>({ required: true })
 
 function handlePageChange(n: number) {
   if (n < 1 || n > props.lastPage) return
-  page.value = n
+  model.value = n
   emit('change', n)
 }
 
 const pageNumbers = computed(() => {
-  const prev = props.currentPage - PAGE_INTERVAL
-  const next = props.currentPage + PAGE_INTERVAL
+  const prev = model.value - PAGE_INTERVAL
+  const next = model.value + PAGE_INTERVAL
 
   const pages = []
 
@@ -29,7 +28,7 @@ const pageNumbers = computed(() => {
   }
 
   // prepend first page
-  if (props.currentPage > 1 + PAGE_INTERVAL) {
+  if (model.value > 1 + PAGE_INTERVAL) {
     const prepend = [1, '...']
     pages.unshift(...prepend)
   }
@@ -46,19 +45,19 @@ const pageNumbers = computed(() => {
 </script>
 <template>
   <div class="flex justify-center gap-4">
-    <Button id="paginator__prev-page" variant="tertiary" @click="handlePageChange(currentPage - 1)">
+    <Button id="paginator__prev-page" variant="tertiary" @click="handlePageChange(model - 1)">
       <template #icon>
         <Icon name="chevronLeft" />
       </template>
     </Button>
-    <ul class="flex gap-2 items-center" :key="currentPage">
+    <ul class="flex gap-2 items-center" :key="model">
       <li v-for="page of pageNumbers" :key="page">
-        <Button :variant="currentPage === page ? 'primary' : 'tertiary'" :label="page" v-if="page !== '...'"
+        <Button :variant="model === page ? 'primary' : 'tertiary'" :label="page" v-if="page !== '...'"
           @click="handlePageChange(page)" />
         <span v-else class="text-gray-400">{{ page }}</span>
       </li>
     </ul>
-    <Button id="paginator__next-page" variant="tertiary" @click="handlePageChange(currentPage + 1)">
+    <Button id="paginator__next-page" variant="tertiary" @click="handlePageChange(model + 1)">
       <template #icon>
         <Icon name="chevronRight" />
       </template>

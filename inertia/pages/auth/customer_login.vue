@@ -24,7 +24,7 @@ const error = computed(() => {
     class="flex flex-row h-screen w-screen items-center justify-center absolute inset-0 bg-cover bg-center bg-no-repeat"
     style="background-image: url('/static/customer-login-bg.webp')"
   >
-    <div class="h-full bg-black bg-opacity-40 p-28 text-white w-1/3">
+    <div class="h-full bg-black bg-opacity-40 p-28 text-white w-full md:w-2/3 lg:w-2/4 xl:w-2/5">
       <div class="flex flex-col gap-4">
         <h1 class="uppercase text-center font-semibold">Acceso Clientes</h1>
         <Alert variant="danger" v-if="error"> {{ error }} </Alert>
@@ -58,6 +58,6 @@ const error = computed(() => {
         </form>
       </div>
     </div>
-    <div class="w-2/3"></div>
+    <div class="w-0 md:w-1/3 lg:w-2/4 xl:w-3/5"></div>
   </div>
 </template>

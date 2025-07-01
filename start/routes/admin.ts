@@ -1,7 +1,7 @@
 import router from '@adonisjs/core/services/router'
 
 const AdminController = () => import('#controllers/admin_controller')
-const ProductController = () => import('#controllers/admin/product_controller')
+const StockController = () => import('#controllers/admin/stock_controller')
 const ProviderController = () => import('#controllers/provider_controller')
 const OrderController = () => import('#controllers/admin/order_controller')
 const CustomerController = () => import('#controllers/customer_controller')
@@ -12,8 +12,8 @@ const SettingController = () => import('#controllers/setting_controller')
 
 export default function adminRoutes() {
   router.get('/', [AdminController, 'index']).as('home')
-  router.get('/products/view', [ProductController, 'view']).as('products.view')
-  router.resource('/products', ProductController).as('products')
+  router.get('/stock/view', [StockController, 'view']).as('stock.view')
+  router.resource('/stock', StockController).as('stock')
   router.get('/customers/view', [CustomerController, 'view']).as('customers.view')
   router.resource('/customers', CustomerController).as('customers')
   router

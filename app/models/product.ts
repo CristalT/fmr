@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, computed, scope } from '@adonisjs/lucid/orm'
+import { afterFetch, BaseModel, column, scope } from '@adonisjs/lucid/orm'
+import setting from '#helpers/setting'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -7,6 +8,9 @@ export default class Product extends BaseModel {
 
   @column()
   declare code: string
+
+  @column()
+  declare factoryCode: string | null
 
   @column()
   declare provider: string
@@ -20,10 +24,8 @@ export default class Product extends BaseModel {
   @column()
   declare price: number
 
-  @computed()
-  get roundedPrice(): number {
-    return Math.round(this.price / 100) * 100
-  }
+  @column()
+  declare roundedPrice: number
 
   @column()
   declare stock: number
@@ -58,6 +60,22 @@ export default class Product extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
+  @afterFetch()
+  static async afterFetchHook(products: Product[]) {
+    const interval = Number(await setting('stock_round_interval'))
+
+    if (interval === 0) {
+      products.forEach(product => {
+        product.roundedPrice = product.price
+      })
+      return
+    }
+
+    products.forEach(product => {
+      product.roundedPrice = Math.round(product.price / interval) * interval
+    })
+  }
+
   static readonly getForEdit = scope((query, id: string) => {
     return query
       .select([
@@ -71,6 +89,7 @@ export default class Product extends BaseModel {
         'image',
         'stock',
         'location',
+        'factoryCode'
       ])
       .where('id', id)
   })
@@ -89,6 +108,7 @@ export default class Product extends BaseModel {
     if (terms) {
       query.where('name', 'LIKE', `%${terms.replaceAll(' ', '%')}%`)
       query.orWhere('code', 'LIKE', terms)
+      query.orWhere('factoryCode', 'LIKE', terms)
     }
   })
 
@@ -96,11 +116,17 @@ export default class Product extends BaseModel {
    * Scope for public search
    * This search criteria is used for listing products for Customer Users
    */
-  static readonly publicSearch = scope((query, { terms }) => {
-    query.where((query) => {
-      query.where('stock', '>', 0)
+  static readonly publicSearch = scope((query, { terms, hideZeroStock, hideZeroPrice, interval }) => {
+    query.where(async (query) => {
+      if (hideZeroStock) {
+        query.where('stock', '>', 0)
+      }
+
+      if (hideZeroPrice) {
+        query.where('price', '>=', interval)
+      }
+
       query.where('public', 1)
-      query.where('price', '>=', 100)
     })
 
     if (terms) {

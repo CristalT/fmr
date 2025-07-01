@@ -31,9 +31,7 @@ export default function useConfirm() {
     }
 
     const handleCancel = () => {
-      resolve(false)
-      app.unmount()
-      document.body.removeChild(container)
+      removeDialog(false)
     }
 
     const app = createApp({

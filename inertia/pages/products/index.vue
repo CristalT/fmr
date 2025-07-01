@@ -6,18 +6,12 @@ import Input from '~/components/ui/input/Input.vue'
 import { Paginator } from '~/components/ui'
 import type Product from '#models/product'
 import type { Meta } from '~/types/metadata'
-import { computed, reactive, ref } from 'vue'
-import http from '~/shared/http'
+import { computed,  ref } from 'vue'
+import { useProduct } from '~/composables'
 
-const data = ref<{ data: Product[]; meta: Meta }>()
+const { fetchAll } = useProduct()
 
-const products = computed(() => data.value?.data as Product[] || [])
-const meta = computed<Meta>(() => data.value?.meta as Meta || {})
-
-const isFetching = ref(false)
-
-
-const params = reactive<{
+const params = ref<{
   terms: string
   page: number
 }>({
@@ -25,26 +19,11 @@ const params = reactive<{
   page: 1,
 })
 
-async function doFetch() {
-  isFetching.value = true
-  try {
-    const response = await http('products/list')
-      .query(params)
-      .cancellable('get_public_products_list')
-      .get<{ data: { data: Product[]; meta: Meta } }>()
+const { data, isFetching } = fetchAll(params)
 
-    data.value = response.data
-  } catch (err) {
-    console.error(err)
-  } finally {
-    isFetching.value = false
-  }
-}
+const products = computed(() => data.value?.data as Product[] || [])
+const meta = computed<Meta>(() => data.value?.meta as Meta || {})
 
-const search = () => {
-  params.page = 1
-  doFetch()
-}
 </script>
 
 <template>
@@ -54,7 +33,7 @@ const search = () => {
     </template>
 
     <div class="bg-white rounded p-4 shadow-sm mb-4">
-      <Input placeholder="Buscar ..." v-model="params.terms" @update:model-value="search" :debounce="800" clearable/>
+      <Input placeholder="Buscar ..." v-model="params.terms" :debounce="800" clearable @update:model-value="params.page = 1"/>
     </div>
 
     <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -62,10 +41,9 @@ const search = () => {
     </div>
     <Paginator
       v-if="products.length"
+      v-model="params.page"
       class="mt-4 pb-4"
       :last-page="meta.lastPage"
-      :current-page="meta.currentPage"
-      @change="(page) => { params.page = page; doFetch() }"
     />
   </MainLayout>
 </template>

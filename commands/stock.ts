@@ -7,6 +7,7 @@ import { CommandOptions } from '@adonisjs/core/types/ace'
 import { exit } from 'node:process'
 import { Transform } from 'node:stream'
 import Provider from '#models/provider'
+import { truncate } from 'lodash-es'
 
 /**
  * Creates a transform stream that removes double quotes from the data
@@ -79,6 +80,7 @@ export default class StockCommand extends BaseCommand {
           subcategory: row.subcategoryName,
           origin: row.originName,
           public: 1,
+          factoryCode: truncate(row.factoryCode, { length: 20 })
         })
 
         providerAliases.add(row.provider)

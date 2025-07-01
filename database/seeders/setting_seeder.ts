@@ -51,11 +51,29 @@ export default class extends BaseSeeder {
         value: 'mostradorforclaz@gmail.com',
         type: 'email',
         description: 'Correo electrónico (contacto)'
+      },
+      {
+        key: 'stock_round_interval',
+        value: 100,
+        type: 'number',
+        description: 'Intervalo de redondeo de precios'
+      },
+      {
+        key: 'stock_hide_products_with_zero_stock',
+        value: true,
+        type: 'boolean',
+        description: 'Ocultar productos sin stock'
+      },
+      {
+        key: 'stock_hide_products_with_zero_price',
+        value: true,
+        type: 'boolean',
+        description: 'Ocultar productos sin precio'
       }
     ]
 
     for (const setting of defaultSettings) {
-      await Setting.set(setting.key, setting.value, setting.description)
+      await Setting.createIfNotExists(setting.key, setting.value, setting.description)
     }
   }
 }

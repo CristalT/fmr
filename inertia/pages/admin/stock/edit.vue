@@ -19,6 +19,7 @@ const form = useForm({
   id: product.id,
   code: product.code,
   provider: product.provider,
+  factoryCode: product.factoryCode,
   name: product.name,
   fob: product.fob,
   price: product.price,
@@ -60,11 +61,13 @@ const isPublic = computed({
       <div class="flex p-4 gap-4 bg-white shadow-md rounded-md">
         <div class="basis-4/6">
           <div class="flex flex-row gap-2">
-            <Input class="basis-1/6" label="Código" v-model="form.code" disabled />
-            <Input class="basis-1/6" label="Proveedor" v-model="form.provider" disabled />
-            <Input class="basis-4/6" label="Descripción" v-model="form.name" disabled />
+            <Input class="basis-2/6" label="Código" v-model="form.code" disabled />
+            <Input class="basis-2/6" label="Proveedor" v-model="form.provider" disabled />
+            <Input class="basis-2/6" label="Catálogo" v-model="form.factoryCode" disabled />
           </div>
-
+          <div class="w-full">
+            <Input label="Descripción" v-model="form.name" disabled />
+          </div>
           <div class="flex gap-2">
             <div class="w-full">
               <Input label="Costo" v-model="form.fob" disabled />

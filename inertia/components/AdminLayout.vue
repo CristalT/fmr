@@ -10,8 +10,8 @@ const slots = defineSlots()
 <template>
   <Toast />
   <main class="bg-gray-200 h-screen flex">
-    <AdminSideMenu class="basis-2/12"/>
-    <article class="basis-10/12 overflow-y-auto relative">
+    <AdminSideMenu />
+    <article class="flex-grow overflow-y-auto relative">
       <header v-if="$slots.topbar" class="sticky top-0 flex justify-end items-center bg-white shadow-sm p-2">
         <slot name="topbar"></slot>
       </header>
