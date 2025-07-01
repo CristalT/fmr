@@ -9,7 +9,7 @@ describe('Paginator', () => {
     const wrapper = mount(Paginator, {
       props: {
         lastPage: 10,
-        currentPage: 1,
+        modelValue: 1,
       },
     })
 
@@ -32,7 +32,7 @@ describe('Paginator', () => {
     const wrapper = mount(Paginator, {
       props: {
         lastPage: 10,
-        currentPage: 1,
+        modelValue: 1,
       },
     })
 
