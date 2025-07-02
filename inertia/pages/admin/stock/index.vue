@@ -4,7 +4,7 @@ import ProductImage from '~/components/ProductImage.vue'
 import ProviderSelect from '~/components/ProviderSelect.vue'
 import { Button, Icon } from '~/components/ui'
 
-import { computed, watch, ref, onMounted, onUnmounted } from 'vue'
+import { computed, watch, ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { router } from '@inertiajs/vue3'
 import { Input, Paginator, Toggle } from '~/components/ui'
@@ -25,7 +25,10 @@ const { data, isFetched } = fetchAll(params)
 
 // Reset page number when search or filter changes
 watch(
-  () => params,
+  () => {
+    const { terms, filter, onlyPublic } = params.value
+    return { terms, filter, onlyPublic }
+  },
   () => params.value.page = 1,
   { deep: true }
 )
