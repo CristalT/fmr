@@ -99,10 +99,10 @@ async function createOrder() {
         </thead>
         <tbody>
           <tr v-for="item of cartItems" :key="item.code" class="border-b">
-            <td class="py-2 px-4 text-center">
+            <td class="py-2 px-4 flex justify-center">
               <ProductImage :product="item.product" class="h-20 w-20" rounded />
             </td>
-            <td class="py-2 px-4">{{ item.code }}</td>
+            <td class="py-2 px-4 text-center">{{ item.code }}</td>
             <td class="py-2 px-4">{{ item.name }}</td>
             <td class="py-2 px-4 currency">{{ toLocaleNumber(item.product.price) }}</td>
             <td class="py-2 px-4 text-center">{{ item.quantity }}</td>

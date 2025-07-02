@@ -1,5 +1,6 @@
 import { UPLOADS_FOLDER } from '#config/constants'
 import Product from '#models/product'
+import { MultipartFile } from '@adonisjs/core/bodyparser'
 import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import sharp from 'sharp'
@@ -13,9 +14,10 @@ export default class StockController {
     const limit = request.input('limit', 12)
     const terms = request.input('terms', null)
     const filter = request.input('filter')
+    const onlyPublic = request.input('onlyPublic', false)
 
     const data = await Product.query()
-      .withScopes((scope) => scope.search({ terms, filter }))
+      .withScopes((scope) => scope.search({ terms, filter, onlyPublic }))
       .select('id', 'name', 'image', 'code', 'price', 'stock', 'location', 'public', 'provider', 'factoryCode')
       .orderBy('name')
       .paginate(page, limit)
@@ -32,11 +34,13 @@ export default class StockController {
 
   async update({ request, params, response, logger }: HttpContext) {
     const data = request.all()
+
     const product = await Product.findOrFail(params.id)
+
     const imageFile = request.file('imageFile')
     const imageName = `${params.id}.webp`
 
-    if (imageFile) {
+    if (imageFile instanceof MultipartFile) {
       try {
         await sharp(imageFile.tmpPath)
           .webp({ quality: 80 })
@@ -50,7 +54,6 @@ export default class StockController {
     }
 
     product.fill(data)
-
     await product.save()
 
     response.redirect().toRoute('admin.stock.view')

@@ -90,11 +90,15 @@ export default class Product extends BaseModel {
    * Scope for search
    * This search criteria is used for listing products for Admin Users
    */
-  static readonly search = scope((query, { terms, filter }) => {
+  static readonly search = scope((query, { terms, filter, onlyPublic }) => {
     if (filter) {
       for (const [key, value] of Object.entries(filter)) {
-        if (value) query.where(key, '=', String(value))
+        if (value) query.where(key, String(value))
       }
+    }
+
+    if (onlyPublic === 'true') {
+      query.where('public', 1)
     }
 
     if (terms) {
@@ -102,6 +106,8 @@ export default class Product extends BaseModel {
       query.orWhere('code', 'LIKE', terms)
       query.orWhere('factoryCode', 'LIKE', terms)
     }
+
+
   })
 
   /**

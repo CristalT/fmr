@@ -4,7 +4,7 @@ import { Toggle } from '~/components/ui'
 
 const { type } = useAttrs() as { type: InputTypeHTMLAttribute }
 
-const props = defineProps<{
+const { size = 'md', ...props } = defineProps<{
   name?: string
   placeholder?: string
   label?: string
@@ -13,7 +13,8 @@ const props = defineProps<{
   autofocus?: boolean
   debounce?: number
   clearable?: boolean
-  alignment?: 'left' | 'center' | 'right'
+  alignment?: 'left' | 'center' | 'right',
+  size?: 'sm' | 'md' | 'lg'
 }>()
 
 const model = defineModel<string | number | boolean>({ default: ''})
@@ -56,7 +57,7 @@ onMounted(() => {
 
 <template>
   <div class="relative" :class="{ 'flex items-center gap-2': type === 'boolean' }">
-    <Toggle v-if="type === 'boolean'" v-model="model as boolean" @update:model-value="model = $event" />
+    <Toggle :size v-if="type === 'boolean'" v-model="model as boolean" @update:model-value="model = $event" />
 
     <div v-if="label" class="py-1 font-medium text-gray-700 text-sm"  id="input__label">{{ label }}</div>
     <input

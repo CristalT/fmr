@@ -8,6 +8,7 @@ type Params = {
   terms: string,
   page: number,
   filter: Record<string, any>
+  onlyPublic: boolean
 }
 
 const queryFn = (path: string, params: Params) => http(path)

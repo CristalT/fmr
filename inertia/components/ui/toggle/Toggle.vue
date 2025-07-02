@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{
+const { size = 'md', ...props } = defineProps<{
   modelValue: boolean | 0 | 1 | undefined
   disabled?: boolean
   label?: string
-  class?: string
+  class?: string,
+  size?: 'sm' | 'md' | 'lg'
 }>()
 
 const emit = defineEmits<{
@@ -20,13 +21,25 @@ const checked = computed({
     emit('change', val)
   }
 })
+
+const sizes = {
+  sm: 'w-10 h-5',
+  md: 'w-11 h-6',
+  lg: 'w-12 h-7'
+}
+
+const dotSizes = {
+  sm: 'w-3 h-3',
+  md: 'w-4 h-4',
+  lg: 'w-5 h-5'
+}
 </script>
 
 <template>
   <label class="flex items-center gap-2 cursor-pointer select-none" :class="props.class">
     <span
-      class="relative inline-block w-11 h-6 transition"
-      :class="{ 'opacity-50 pointer-events-none': props.disabled }"
+      class="relative inline-block transition"
+      :class="[{ 'opacity-50 pointer-events-none': props.disabled }, sizes[size]]"
     >
       <input
         type="checkbox"
@@ -36,15 +49,15 @@ const checked = computed({
         @change="checked = !checked"
       />
       <span
-        class="block w-11 h-6 rounded-full transition bg-gray-300"
-        :class="{ 'bg-primary-500': checked }"
+        class="block rounded-full transition bg-gray-300"
+        :class="[{ 'bg-primary-500': checked }, sizes[size]]"
       ></span>
       <span
-        class="dot absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transition"
-        :class="{ 'translate-x-5': checked }"
+        class="dot absolute left-1 top-1 bg-white rounded-full shadow transition"
+        :class="[{ 'translate-x-5': checked }, dotSizes[size]]"
       ></span>
     </span>
-    <span v-if="props.label" class="ml-2 text-gray-700">{{ props.label }}</span>
+    <span v-if="props.label" class="ml-2 text-gray-700" :class="`text-${size}`">{{ props.label }}</span>
   </label>
 </template>
 

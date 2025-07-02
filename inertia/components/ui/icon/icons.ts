@@ -16,6 +16,7 @@ import PowerIcon from '~/components/icons/PowerIcon.vue';
 import RegistryIcon from '~/components/icons/RegistryIcon.vue';
 import StockIcon from '~/components/icons/StockIcon.vue';
 import ChevronUpIcon from '~/components/icons/ChevronUpIcon.vue'
+import AdjustmentsIcon from '~/components/icons/AdjustmentsIcon.vue'
 
 
 export const icons = {
@@ -37,4 +38,5 @@ export const icons = {
   registry: RegistryIcon,
   stock: StockIcon,
   chevronUp: ChevronUpIcon,
+  adjustments: AdjustmentsIcon,
 }

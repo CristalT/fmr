@@ -19,6 +19,8 @@ const props = withDefaults(
   }
 )
 
+const emit = defineEmits(['delete'])
+
 const model = defineModel<File | null>()
 const inputFile = ref()
 const preview = ref<string>(props.product.image || '')
@@ -50,6 +52,7 @@ function loadImage(event: Event) {
 function deleteImage() {
   preview.value = ''
   model.value = null
+  emit('delete')
 }
 
 onMounted(() => {

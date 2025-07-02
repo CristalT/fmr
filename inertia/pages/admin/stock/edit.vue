@@ -19,13 +19,14 @@ const form = useForm({
   id: product.id,
   code: product.code,
   provider: product.provider,
-  factoryCode: product.factoryCode,
+  factoryCode: product.factoryCode || '',
   name: product.name,
   fob: product.fob,
   price: product.price,
   stock: product.stock,
   location: product.location,
   public: product.public,
+  image: product.image,
 })
 
 
@@ -89,13 +90,13 @@ const isPublic = computed({
           </div>
         </div>
         <div class="basis-2/6 flex justify-center">
-          <ImageUpload :product :src="imagePath(product.image)" label="Imagen" v-model="image" accept="image/png,image/jpg,image/jpeg,image/webp" />
+          <ImageUpload :product :src="imagePath(product.image)" label="Imagen" v-model="image" accept="image/png,image/jpg,image/jpeg,image/webp"  @delete="form.image = ''"/>
         </div>
       </div>
     </form>
     <template #footer>
       <nav class="flex justify-end gap-2">
-        <Button label="Cancelar" variant="tertiary" @click="router.visit('/admin/products/view')" />
+        <Button label="Cancelar" variant="tertiary" @click="router.visit('/admin/stock/view')" />
         <Button type="button" label="Guardar" @click="submit" />
       </nav>
     </template>
