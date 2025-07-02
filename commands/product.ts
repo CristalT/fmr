@@ -6,8 +6,8 @@ import sharp from 'sharp'
 import app from '@adonisjs/core/services/app'
 import { UPLOADS_FOLDER } from '#config/constants'
 
-export default class ProductCommand extends BaseCommand {
-  static readonly commandName = 'product:image:update:all'
+export default class StockImageUpdateCommand extends BaseCommand {
+  static readonly commandName = 'stock:images:update'
   static readonly description = 'Update product images according the storage.'
 
   static readonly options: CommandOptions = {
