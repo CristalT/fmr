@@ -79,7 +79,6 @@ export default class StockCommand extends BaseCommand {
           category: row.categoryName,
           subcategory: row.subcategoryName,
           origin: row.originName,
-          public: 1,
           factoryCode: truncate(row.factoryCode, { length: 20 })
         })
 
