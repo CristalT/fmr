@@ -2,12 +2,12 @@
 import { ref, computed } from 'vue'
 import { Button, Input, Icon } from '~/components/ui'
 import ProductImage from './ProductImage.vue'
-import { useCart, useToast } from '~/composables'
+import { useCart, useToast, useCustomer } from '~/composables'
 import Dialog from '~/components/ui/dialog/Dialog.vue'
 import { router } from '@inertiajs/vue3'
 import type Product from '#models/product'
 
-
+const { isLoggedIn } = useCustomer()
 const cart = useCart()
 const showQtyDialog = ref(false)
 const qty = ref(1)
@@ -17,8 +17,6 @@ const { toast } = useToast()
 const props = defineProps<{
   product: Product
 }>()
-
-const isLoggedInView = computed(() => props.product.price !== undefined)
 
 function addToCart() {
   if (qty.value) {
@@ -41,7 +39,7 @@ function addToCart() {
       <ProductImage :product rounded />
     </div>
     <div class="text-center p-2 text-sm uppercase text-gray-500 font-bold">
-      {{ product.code }} <span v-if="isLoggedInView">{{ product.provider }} {{ product.brand }}</span>
+      {{ product.code }} <span v-if="isLoggedIn">{{ product.provider }} {{ product.brand }}</span>
     </div>
     <div class="text-center p-2 h-14 text-sm uppercase">
       {{ product.name }}
@@ -53,7 +51,7 @@ function addToCart() {
         variant="primary"
         full
         label="Agregar al Carrito"
-        v-if="isLoggedInView"
+        v-if="isLoggedIn"
         @click="showQtyDialog = true"
       >
       <template #icon>
