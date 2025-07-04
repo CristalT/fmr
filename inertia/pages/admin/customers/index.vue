@@ -48,7 +48,9 @@ onMounted(() => {
 <template>
   <AdminLayout>
     <template #topbar>
-      <Button variant="primary" label="Crear Usuario" @click="router.get('/admin/customers/create')" />
+      <div class="flex justify-end">
+        <Button variant="primary" label="Crear Usuario" @click="router.get('/admin/customers/create')" />
+      </div>
     </template>
 
     <div class="flex flex-col gap-2">

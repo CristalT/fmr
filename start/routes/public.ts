@@ -9,6 +9,7 @@ const MessageController = () => import('#controllers/message_controller')
 const CaptchaController = () => import('#controllers/captcha_controller')
 const RegistryController = () => import('#controllers/registry_controller')
 const PasswordResetController = () => import('#controllers/password_reset_controller')
+const ShowcaseController = () => import('#controllers/showcase_controller')
 
 export default function publicRoutes() {
   router.get('/', [HomeController, 'index'])
@@ -28,4 +29,5 @@ export default function publicRoutes() {
   router.resource('/captcha', CaptchaController)
   router.resource('/registries', RegistryController).only(['create', 'store'])
   router.post('/contact', [MessageController, 'store'])
+  router.get('/showcases', [ShowcaseController, 'index']).as('showcases')
 }

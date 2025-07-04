@@ -66,8 +66,8 @@ const print = () => {
         <Select class="w-60" :options="statusOptions" v-model="order.status"
           @change="({ value }) => setStatus(value as OrderStatus)" />
 
-        <Button label = "Imprimir" variant = "tertiary" @click="print" >
-          <template #icon >
+        <Button label="Imprimir" variant="tertiary" @click="print">
+          <template #icon>
             <Icon name="print" />
           </template>
         </Button>
@@ -88,7 +88,7 @@ const print = () => {
       <thead class="border-b">
         <tr>
           <th v-for="(col, key) of columns" :key="key" class="p-2" :class="`text-${col.align || 'left'}`">{{ col.label
-            }}
+          }}
           </th>
         </tr>
       </thead>
@@ -108,21 +108,21 @@ const print = () => {
       </tbody>
     </table>
     <template #footer>
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-center gap-4">
         <SavingIndicator :is-saving="isSaving" :is-saved="isSaving === false" />
-      </div>
-      <div class="flex justify-end items-center gap-4">
-        <div>
-          <span>Items pendientes</span> <span class="text-right font-semibold">{{ asked - delivered }}</span>
+        <div class="flex items-center gap-4">
+          <div>
+            <span>Items pendientes</span> <span class="text-right font-semibold">{{ asked - delivered }}</span>
+          </div>
+          <div>
+            <span>Total</span> <span class="text-right currency font-semibold"> {{ Math.round(total) }}</span>
+          </div>
+          <Button label="Finalizar" variant="primary" @click="setStatus(OrderStatus.Completed)">
+            <template #icon>
+              <Icon name="check" />
+            </template>
+          </Button>
         </div>
-        <div>
-          <span>Total</span> <span class="text-right currency font-semibold"> {{ Math.round(total) }}</span>
-        </div>
-        <Button label="Finalizar" variant="primary" @click="setStatus(OrderStatus.Completed)">
-          <template #icon>
-            <Icon name="check" />
-          </template>
-        </Button>
       </div>
     </template>
   </AdminLayout>

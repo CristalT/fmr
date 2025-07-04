@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { Input, Button, Toggle } from '~/components/ui'
+import { Input, Button, Toggle, Icon } from '~/components/ui'
 import AdminLayout from '~/components/AdminLayout.vue'
 import ImageUpload from '~/components/ImageUpload.vue'
 import usePath from '~/composables/use_path'
-import { computed, ref } from 'vue'
-import { useForm, router } from '@inertiajs/vue3'
+import { computed, reactive, ref, watch } from 'vue'
 import type Product from '#models/product'
+import { useStock, useToast } from '~/composables'
+import { router } from '@inertiajs/vue3'
+import SavingIndicator from '~/components/SavingIndicator.vue'
+import http from '~/shared/http'
+
+const { toast } = useToast()
+const { update } = useStock()
 
 const { imagePath } = usePath('')
 
@@ -15,7 +21,7 @@ const { product } = defineProps<{
 
 const image = ref<File>()
 
-const form = useForm({
+const form = reactive({
   id: product.id,
   code: product.code,
   provider: product.provider,
@@ -29,24 +35,24 @@ const form = useForm({
   image: product.image,
 })
 
+const { mutate, isPending, isSuccess, isError } = update(product.id, form)
 
-function submit() {
-  const formData = new FormData()
+watch(form, () => {
+  mutate()
+}, { deep: true })
 
-  Object.entries(form.data()).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      formData.append(key, value.toString())
-    }
-  })
-
-  if (image.value) {
-    formData.append('imageFile', image.value)
+watch(image, (value) => {
+  if (!value) {
+    form.image = ''
+    return
   }
-
-  router.put(`/admin/stock/${product.id}`, formData, {
-    forceFormData: true,
-  })
-}
+  http(`/admin/stock/${product.id}/image`)
+    .upload({ imageFile: value })
+    .catch((error) => {
+      console.error('Image upload failed:', error)
+      toast.error('Error al subir la imagen.')
+    })
+})
 
 const isPublic = computed({
   get: () => Boolean(form.public),
@@ -58,6 +64,16 @@ const isPublic = computed({
 
 <template>
   <AdminLayout>
+    <template #topbar>
+      <nav class="flex justify-between gap-2 items-center">
+        <Button label="Volver" variant="tertiary" @click="router.visit('/admin/stock/view')">
+          <template #icon>
+            <Icon name="chevronLeft" />
+          </template>
+        </Button>
+        <SavingIndicator class="mr-4" :is-saving="isPending" :is-saved="isSuccess" :is-error="isError" />
+      </nav>
+    </template>
     <form>
       <div class="flex p-4 gap-4 bg-white shadow-md rounded-md">
         <div class="basis-4/6">
@@ -85,20 +101,15 @@ const isPublic = computed({
               <Input label="Ubicación" v-model="form.location" disabled />
             </div>
           </div>
-          <div class="flex gap-2 items-center mt-4 border-t py-4">
+          <div class="flex gap-4 items-center justify-between mt-4 border-t pt-4">
             <Toggle label="Público" v-model="isPublic" />
           </div>
         </div>
         <div class="basis-2/6 flex justify-center">
-          <ImageUpload :product :src="imagePath(product.image)" label="Imagen" v-model="image" accept="image/png,image/jpg,image/jpeg,image/webp"  @delete="form.image = ''"/>
+          <ImageUpload :product :src="imagePath(product.image)" label="Imagen" v-model="image"
+            accept="image/png,image/jpg,image/jpeg,image/webp" />
         </div>
       </div>
     </form>
-    <template #footer>
-      <nav class="flex justify-end gap-2">
-        <Button label="Cancelar" variant="tertiary" @click="router.visit('/admin/stock/view')" />
-        <Button type="button" label="Guardar" @click="submit" />
-      </nav>
-    </template>
   </AdminLayout>
 </template>

@@ -5,8 +5,8 @@ import type { Meta } from "~/types/metadata"
 import { Ref } from "vue"
 
 type Params = {
-  terms: string,
-  page: number
+  terms?: string,
+  page?: number
 
 }
 const queryFn = (path: string, params: Params) => http(path)

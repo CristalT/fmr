@@ -9,11 +9,13 @@ const MessageController = () => import('#controllers/message_controller')
 const RegistryController = () => import('#controllers/registry_controller')
 const CartItemController = () => import('#controllers/admin/cart_item_controller')
 const SettingController = () => import('#controllers/setting_controller')
+const ShowcaseController = () => import('#controllers/showcase_controller')
 
 export default function adminRoutes() {
   router.get('/', [AdminController, 'index']).as('home')
   router.get('/stock/view', [StockController, 'view']).as('stock.view')
   router.resource('/stock', StockController).as('stock')
+  router.post('/stock/:id/image', [StockController, 'uploadImage']).as('stock.uploadImage')
   router.get('/customers/view', [CustomerController, 'view']).as('customers.view')
   router.resource('/customers', CustomerController).as('customers')
   router
@@ -27,4 +29,7 @@ export default function adminRoutes() {
   router.resource('/cart-items', CartItemController)
   router.get('/settings/view', [SettingController, 'view']).as('settings.view')
   router.resource('/settings', SettingController).as('settings')
+  router.get('/showcases/create', [ShowcaseController, 'create']).as('showcases.create')
+  router.resource('/showcases', ShowcaseController).only(['index', 'store', 'destroy', 'edit', 'update']).as('showcases')
+  router.get('/showcases/list', [ShowcaseController, 'list']).as('showcases.list')
 }

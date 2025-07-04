@@ -4,7 +4,6 @@ import { MultipartFile } from '@adonisjs/core/bodyparser'
 import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import sharp from 'sharp'
-
 export default class StockController {
   async view({ inertia }: HttpContext) {
     return inertia.render('admin/stock/index')
@@ -32,30 +31,32 @@ export default class StockController {
     return inertia.render('admin/stock/edit', { product })
   }
 
-  async update({ request, params, response, logger }: HttpContext) {
-    const data = request.all()
-
-    const product = await Product.findOrFail(params.id)
-
+  async uploadImage({request, params, response, logger}: HttpContext) {
     const imageFile = request.file('imageFile')
     const imageName = `${params.id}.webp`
 
     if (imageFile instanceof MultipartFile) {
+      const product = await Product.findOrFail(params.id)
+
       try {
         await sharp(imageFile.tmpPath)
           .webp({ quality: 80 })
           .toFile(app.makePath(UPLOADS_FOLDER, 'images', imageName))
+
+        product.image = imageName
+        await product.save()
+        return response.json(product)
       } catch (error) {
         logger.error('Failed to process image. ' + error.message)
+        return response.status(500).json({ error: 'Failed to process image' })
       }
-      data.image = imageName
-    } else {
-      delete product.image
     }
+  }
 
+  async update({ request, params }: HttpContext) {
+    const data = request.all()
+    const product = await Product.findOrFail(params.id)
     product.fill(data)
     await product.save()
-
-    response.redirect().toRoute('admin.stock.view')
   }
 }

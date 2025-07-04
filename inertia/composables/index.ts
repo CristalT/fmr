@@ -7,3 +7,6 @@ export { default as useCustomer } from './use_customer'
 export { default as useStock } from './use_stock'
 export { default as useProduct } from './use_product'
 export { default as useSetting } from './use_setting'
+export { default as useShowcase } from './use_showcase'
+export { default as useAdmin } from './use_admin'
+

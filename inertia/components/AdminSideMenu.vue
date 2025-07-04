@@ -26,6 +26,7 @@ const options: MenuOption[] = [
   { label: 'Clientes', to: '/admin/customers/view', icon: 'clients' },
   { label: 'Pedidos', to: '/admin/orders', icon: 'orders' },
   { label: 'Stock', to: '/admin/stock/view', icon: 'stock' },
+  { label: 'Vidrieras', to: '/admin/showcases/list', icon: 'showcase' },
   { label: 'Configuración', to: '/admin/settings/view', icon: 'settings' },
   { label: 'Salir', to: logout, icon: 'power' },
 ]

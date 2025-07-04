@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon'
-import { afterFetch, BaseModel, column, scope } from '@adonisjs/lucid/orm'
+import { afterFetch, BaseModel, column, manyToMany, scope } from '@adonisjs/lucid/orm'
 import setting from '#helpers/setting'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import Showcase from '#models/showcase'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -56,6 +58,11 @@ export default class Product extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+
+  @manyToMany(() => Showcase, {
+    pivotTable: 'product_showcase'
+  })
+  declare showcases: ManyToMany<typeof Showcase>
 
   @afterFetch()
   static async afterFetchHook(products: Product[]) {

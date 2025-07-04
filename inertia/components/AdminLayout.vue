@@ -12,7 +12,7 @@ const slots = defineSlots()
   <main class="bg-gray-200 h-screen flex">
     <AdminSideMenu />
     <article class="flex-grow overflow-y-auto relative">
-      <header v-if="$slots.topbar" class="sticky top-0 flex justify-end items-center bg-white shadow-sm p-2">
+      <header v-if="$slots.topbar" class="sticky top-0 z-10 items-center bg-white shadow-sm p-2">
         <slot name="topbar"></slot>
       </header>
 
@@ -22,6 +22,7 @@ const slots = defineSlots()
         <slot name="default"></slot>
       </div>
 
+      <div class="h-[300px]"></div>
       <footer v-if="$slots.footer" class="border-t box-border w-full p-2 bg-white sticky bottom-0">
         <slot name="footer"></slot>
       </footer>

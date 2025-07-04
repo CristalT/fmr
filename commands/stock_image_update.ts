@@ -18,25 +18,42 @@ export default class StockImageUpdateCommand extends BaseCommand {
     const path = app.makePath(UPLOADS_FOLDER, 'images')
     const files = readdirSync(path)
 
-    for (const file of files) {
-      const [id, extension] = file.split('.')
-      const imageName = `${id}.webp`
+  for (const file of files) {
+    const [id, extension] = file.split('.')
 
-      if (extension !== 'webp') {
-        sharp(app.makePath(UPLOADS_FOLDER, 'images', file))
+    // Validate file name format
+    if (!id || !extension) {
+      this.logger.warning(`Skipping invalid file: ${file}`)
+      continue
+    }
+
+    const imageName = `${id}.webp`
+
+    if (extension !== 'webp') {
+      try {
+        await sharp(app.makePath(UPLOADS_FOLDER, 'images', file))
           .webp({ quality: 80 })
           .toFile(app.makePath(UPLOADS_FOLDER, 'images', imageName))
-          .then(() => {
-            unlinkSync(app.makePath(UPLOADS_FOLDER, 'images', file))
-          })
+
+        unlinkSync(app.makePath(UPLOADS_FOLDER, 'images', file))
+        this.logger.info(`Converted ${file} to WebP format`)
+      } catch (error) {
+        this.logger.error(`Failed to convert ${file}: ${error.message}`)
+        continue
       }
+    }
+
+    try {
       const item = await Product.findBy({ id })
       if (item && !item?.image) {
         this.logger.info(`Updating product ${item.code}`)
         item.image = imageName
-        item?.save()
+        await item.save()
       }
+    } catch (error) {
+      this.logger.error(`Failed to update product ${id}: ${error.message}`)
     }
+  }
 
     this.logger.info('Products updated with the available images')
   }
