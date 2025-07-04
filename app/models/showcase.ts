@@ -11,7 +11,7 @@ export default class Showcase extends BaseModel {
   declare name: string
 
   @column()
-  declare description: string
+  declare description: string | null
 
   @manyToMany(() => Product, {
     pivotTable: 'product_showcase'
