@@ -16,8 +16,15 @@ export default class ShowcaseController {
     return inertia.render('admin/showcases/edit', { showcase })
   }
 
-  async index({ response }: HttpContext) {
-    const showcases = await Showcase.query().preload('products')
+  async index({ response, auth }: HttpContext) {
+    const isCustomerLoggedIn = await auth.use('customer').check()
+    const showcases = await Showcase.query().preload('products', async (query) => {
+      const fields = ['id', 'name', 'code']
+      if (isCustomerLoggedIn) {
+        fields.push('price')
+      }
+      query.select(fields)
+    })
     return response.send(showcases)
   }
 
