@@ -19,7 +19,7 @@ export default class ShowcaseController {
   async index({ response, auth }: HttpContext) {
     const isCustomerLoggedIn = await auth.use('customer').check()
     const showcases = await Showcase.query().preload('products', async (query) => {
-      const fields = ['id', 'name', 'code']
+      const fields = ['id', 'name', 'code', 'image']
       if (isCustomerLoggedIn) {
         fields.push('price')
       }
