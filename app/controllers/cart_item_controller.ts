@@ -1,35 +1,26 @@
-import CartItem from '#models/cart_item'
-import Product from '#models/product'
 import { HttpContext } from '@adonisjs/core/http'
+import Product from '#models/product'
+import CartItem from '#models/cart_item'
 import { CartItemStatus } from '#types/cart_item_status'
 
-export default class CartController {
-  async index({ inertia }: HttpContext) {
+export default class CartItemController {
+  async view({ inertia }: HttpContext) {
+    return inertia.render('cart/current')
+  }
+  
+  async index({ response }: HttpContext) {
     const items = await CartItem.query()
       .withScopes((scopes) => scopes.getItemsByStatus(CartItemStatus.Pending))
       .preload('product')
-
-    return inertia.render('cart/current', { items })
-  }
-
-  async getCartItems({ response }: HttpContext) {
-    const items = await CartItem.query()
-      .withScopes((scopes) => scopes.getItemsByStatus(CartItemStatus.Pending))
-      .preload('product')
-
-    return response.json(items)
-  }
-
-  async print({ response, auth }: HttpContext) {
-    const items = await CartItem.query()
-      .preload('product')
-      .where('customer_user_id', auth.user?.id!)
-      .whereHas('customerUser', (query) => query.where('id', auth.user?.id!))
 
     return response.json(items)
   }
 
   async store({ request, auth, response }: HttpContext) {
+    if (!auth.user) {
+      return response.unauthorized()
+    }
+
     const { id, quantity } = request.all()
 
     const product = await Product.findOrFail(id)

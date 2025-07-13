@@ -16,7 +16,7 @@ export default class RegistryController {
   }
 
   async create({ inertia }: HttpContext) {
-    return inertia.render('registry/create_user')
+    return inertia.render('registry/ask')
   }
 
   async store({ request, response }: HttpContext) {

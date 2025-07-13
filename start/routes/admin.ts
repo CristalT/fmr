@@ -18,10 +18,7 @@ export default function adminRoutes() {
   router.post('/stock/:id/image', [StockController, 'uploadImage']).as('stock.uploadImage')
   router.get('/customers/view', [CustomerController, 'view']).as('customers.view')
   router.resource('/customers', CustomerController).as('customers')
-  router
-    .resource('/messages', MessageController)
-    .only(['index', 'show', 'destroy'])
-    .as('messages')
+  router.resource('/messages', MessageController).only(['index', 'show', 'destroy']).as('messages')
   router.get('/providers', [ProviderController, 'index']).as('providers')
   router.resource('/registries', RegistryController).only(['index', 'edit']).as('registries')
   router.resource('/orders', OrderController).as('orders')
@@ -30,6 +27,9 @@ export default function adminRoutes() {
   router.get('/settings/view', [SettingController, 'view']).as('settings.view')
   router.resource('/settings', SettingController).as('settings')
   router.get('/showcases/create', [ShowcaseController, 'create']).as('showcases.create')
-  router.resource('/showcases', ShowcaseController).only(['index', 'store', 'destroy', 'edit', 'update']).as('showcases')
+  router
+    .resource('/showcases', ShowcaseController)
+    .only(['index', 'store', 'destroy', 'edit', 'update'])
+    .as('showcases')
   router.get('/showcases/list', [ShowcaseController, 'list']).as('showcases.list')
 }

@@ -45,8 +45,8 @@ const onSubmit = async () => {
 
   if (!isValid.value) return toast.error('Revise los campos del formulario.')
 
-  http
-    .post('registries', registry)
+  http('registries')
+    .post(registry)
     .then(() => {
       toast.success('Formulario enviado con exito.')
       cleanForm()

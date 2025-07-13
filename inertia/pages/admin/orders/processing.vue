@@ -7,7 +7,7 @@ import type CartItem from '#models/cart_item'
 
 // Components
 import { Button, Card, Icon, Input, Select } from '~/components/ui'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import StatusBadge from '~/components/StatusBadge.vue'
 import SavingIndicator from '~/components/SavingIndicator.vue'
 

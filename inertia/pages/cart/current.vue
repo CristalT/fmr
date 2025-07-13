@@ -72,7 +72,7 @@ async function createOrder() {
   if (!conf) return
   http('orders').post({}).then(() => {
     toast.success('Pedido enviado! Gracias por su compra.')
-    router.get('carts')
+    router.get('cart-items')
   }).catch(err => {
     console.error(err)
     toast.error('Ocurrió un error al enviar el pedido.')

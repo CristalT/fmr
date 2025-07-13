@@ -11,9 +11,11 @@ export default class extends BaseSchema {
   }
 
   async down() {
-    this.schema.alterTable(this.tableName, (table) => {
-      table.dropColumn('factory_code')
-      table.dropIndex('factory_code')
-    })
+    if (await this.schema.hasColumn(this.tableName, 'factory_code')) {
+      this.schema.alterTable(this.tableName, (table) => {
+        table.dropIndex('factory_code')
+        table.dropColumn('factory_code')
+      })
+    }
   }
 }

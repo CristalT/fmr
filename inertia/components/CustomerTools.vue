@@ -20,7 +20,7 @@ const customer = useCustomer()
         </Button>
       </li>
       <li>
-        <Button label="Carrito" variant="tertiary" @click="router.get('/carts')" :badge="cart.length.value">
+        <Button label="Carrito" variant="tertiary" @click="router.get('/cart-items/view')" :badge="cart.length.value">
           <template #icon>
             <Icon name="cart" />
           </template>

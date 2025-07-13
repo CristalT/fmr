@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import useValidation from '~/composables/use_validation'
 import { Button, Card, Input } from '~/components/ui'
 import { toRef } from 'vue';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type Order from '#models/order'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import { Table, Card, Select } from '~/components/ui'
 import StatusBadge from '~/components/StatusBadge.vue'
 import type { Column } from '~/components/ui/table/Table.vue'

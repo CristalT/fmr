@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Paginator from './Paginator.vue'
 import { PAGE_INTERVAL } from './page_interval'
-import { findByText } from '~/test-utils'
+import { findByText } from '~/test_utils'
 
 describe('Paginator', () => {
   it('renders correctly', () => {
@@ -36,7 +36,7 @@ describe('Paginator', () => {
       },
     })
 
-    const pageButton = findByText(wrapper, '2')
+    const pageButton = findByText(wrapper, '2', 'button')
     await pageButton?.trigger('click')
 
     expect(wrapper.emitted().change).toEqual([[2]])

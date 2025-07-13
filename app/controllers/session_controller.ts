@@ -4,7 +4,7 @@ import { HttpContext } from '@adonisjs/core/http'
 
 export default class SessionController {
   async loginView({ inertia }: HttpContext) {
-    return inertia.render('auth/login')
+    return inertia.render('auth/admin_login')
   }
 
   async login({ request, auth, response }: HttpContext) {

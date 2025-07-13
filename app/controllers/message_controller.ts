@@ -43,7 +43,8 @@ export default class MessageController {
     const data = {
       name,
       from: `${email} | ${phone}`,
-      content: `${subject}\n\n${message}`,
+      subject,
+      content: message,
     }
 
     try {

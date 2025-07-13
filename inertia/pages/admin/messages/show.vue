@@ -1,30 +1,43 @@
 <script lang="ts" setup>
 import { Message } from '~/types/message'
 import { Button, Icon } from '~/components/ui'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import { router } from '@inertiajs/vue3'
+import { useConfirm, useToast } from '~/composables'
+
+const { confirmation } = useConfirm()
+const { toast } = useToast()
 
 const props = defineProps<{ message: Message }>()
 
-const handleDelete = () => {
-  if (confirm('Está por eliminar el mensaje, ¿desea continuar?')) {
-    router.delete(`/admin/messages/${props.message.id}`, {
-      onSuccess: () => {
-        router.visit('/admin/messages')
-      },
-    })
-  }
+const handleDelete = async () => {
+  const conf = await confirmation({ 
+    title: 'Eliminar mensaje', 
+    type: 'danger', 
+    message: `Está por eliminar el mensaje #${props.message.id}. ¿Desea continuar?`,
+    confirm: 'Eliminar'
+  })
+
+  if (!conf) return
+  router.delete(`/admin/messages/${props.message.id}`, {
+    onSuccess: () => {
+      router.visit('/admin/messages')
+    },
+    onError: () => {
+      toast.error('Ocurrió un error al eliminar el mensaje, intente nuevamente.')
+    }
+  })
 }
 </script>
 
 <template>
   <AdminLayout>
     <div class="w-full mx-auto p-4">
-      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="bg-white shadow-sm rounded-lg overflow-hidden">
         <div class="px-6 py-4">
           <div class="flex items-center justify-between mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Mensaje #{{ message.id }}</h1>
-            <Button variant="danger" @click="handleDelete" label="Eliminar">
+            <Button variant="danger" flat @click="handleDelete" label="Eliminar">
               <template #icon>
                 <Icon name="delete" />
               </template>

@@ -1,6 +1,6 @@
 {
   "name": "fmr-site",
-  "version": "1.11.4",
+  "version": "1.12.0",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@adonisjs/assembler": "7.8.2",
-    "@adonisjs/eslint-config": "2.0.0",
+    "@adonisjs/eslint-config": "^2.0.0",
     "@adonisjs/prettier-config": "1.4.4",
     "@adonisjs/tsconfig": "1.4.0",
     "@japa/api-client": "^3.1.0",
@@ -111,9 +111,6 @@
       "./app/controllers/**/*.ts",
       "./app/middleware/*.ts"
     ]
-  },
-  "eslintConfig": {
-    "extends": "@adonisjs/eslint-config/app"
   },
   "prettier": "@adonisjs/prettier-config"
 }

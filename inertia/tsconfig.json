@@ -9,5 +9,5 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["./**/*.ts", "./**/*.vue", "helpers/debounce.js", "components/image_upload.test.js"]
+  "include": ["./**/*.ts", "./**/*.vue", "helpers/debounce.js", "components/ImageUpload/image_upload.test.js"]
 }

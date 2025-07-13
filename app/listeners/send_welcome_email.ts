@@ -15,7 +15,7 @@ export default class SendWelcomeEmail {
         message
           .from('forclazmr.com <no-responder@forclazmr.com>')
           .to(to)
-          .subject('Bienvenido a forclazmr.com')
+          .subject('Te damos la bienvenida a forclazmr.com')
           .htmlView('emails/customer_user_welcome', { name, passwordResetUrl, to })
       })
       .catch((error) => {

@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/vue-query"
 import type Showcase from "#models/showcase"
 
 export default function useShowcase() {
-  const fetchAll = useQuery({
+  const fetchAll = () => useQuery({
     queryKey: ['showcases'],
     queryFn: () => http('showcases')
       .cancellable('fetch_showcase')

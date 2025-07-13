@@ -19,7 +19,7 @@ onMounted(() => {
 <template>
   <Toast />
   <div class="bg-gray-200 h-min-screen">
-    <div class="sticky top-0 z-10">
+    <div class="sticky top-0 z-20">
       <slot name="header"></slot>
     </div>
     <div class="p-4 lg:max-w-[1400px] m-auto min-h-screen">

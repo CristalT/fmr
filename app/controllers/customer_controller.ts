@@ -1,6 +1,6 @@
 import UserCreated from '#events/user_created'
 import CustomerUser from '#models/customer_user'
-import { createCustomerValidator } from '#validators/customer'
+import { createCustomerValidator, updateCustomerValidator } from '#validators/customer'
 import { HttpContext } from '@adonisjs/core/http'
 import logger from '@adonisjs/core/services/logger'
 import string from '@adonisjs/core/helpers/string'
@@ -24,7 +24,12 @@ export default class CustomerController {
       query.orWhere('lastName', 'LIKE', `%${terms.replaceAll(' ', '%')}%`)
     }
 
-    return await query.paginate(page, limit)
+    return await query.orderBy('firstName', 'asc').paginate(page, limit)
+  }
+
+  async edit({ inertia, params }: HttpContext) {
+    const user = await CustomerUser.findOrFail(params.id)
+    return inertia.render('admin/customers/edit', { user })
   }
 
   async create({ inertia }: HttpContext) {
@@ -32,9 +37,7 @@ export default class CustomerController {
   }
 
   async store({ request, response }: HttpContext) {
-    await request.validateUsing(createCustomerValidator)
-
-    const data = request.except(['id', 'createdAt', 'updatedAt'])
+    const data = await request.validateUsing(createCustomerValidator)
 
     const user = new CustomerUser()
 
@@ -42,7 +45,7 @@ export default class CustomerController {
     const resetPasswordTokenExpirationDate = DateTime.now().plus({ days: 1 }).toString()
 
     try {
-      user.fill({ ...data, resetPasswordToken, resetPasswordTokenExpirationDate })
+      Object.assign(user, { ...data, resetPasswordToken, resetPasswordTokenExpirationDate })
       await user.save()
       UserCreated.dispatch(user)
       return response.redirect('/admin/customers/view')
@@ -50,5 +53,15 @@ export default class CustomerController {
       logger.error(error)
       return response.badRequest()
     }
+  }
+
+  async update({ request, response, params }: HttpContext) {
+    const data  = await request.validateUsing(updateCustomerValidator, { meta: { customerId: params.id }})
+
+    const user = await CustomerUser.findOrFail(params.id)
+
+    Object.assign(user, data)
+    await user.save()
+    return response.redirect().toRoute('admin.customers.view')
   }
 }

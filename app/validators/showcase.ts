@@ -7,15 +7,14 @@ export const createShowcaseValidator = vine.compile(
       return !showcase
     }),
     description: vine.string().nullable(),
-    products: vine.array(vine.string()).minLength(1)
+    products: vine.array(vine.string()).minLength(1),
   })
 )
-
 
 export const updateShowcaseValidator = vine.compile(
   vine.object({
     name: vine.string(),
     description: vine.string().nullable(),
-    products: vine.array(vine.string()).minLength(1)
+    products: vine.array(vine.string()).minLength(1),
   })
 )

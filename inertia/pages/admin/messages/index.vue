@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import { Input, Table } from '~/components/ui'
 import type { Message } from '~/types/message'
 import { Meta } from '~/types/metadata'
@@ -47,7 +47,7 @@ onMounted(() => {
   <AdminLayout>
     <div class="flex flex-col gap-2">
       <div class="p-2 bg-white shadow-sm rounded-md">
-        <Input v-model="terms" placeholder="Buscar ..." @update:model-value="search" :debounce="800" autofocus />
+        <Input v-model="terms" placeholder="Buscar ..." @update:model-value="(value) => search(value as string)" :debounce="800" autofocus />
       </div>
       <Table :columns :data="messages" :metadata="meta" @pageChange="changePage" @rowClick="showMessage" />
     </div>

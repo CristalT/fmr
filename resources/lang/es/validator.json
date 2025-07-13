@@ -1,0 +1,23 @@
+{
+  "shared": {
+    "fields": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "password": "Contraseña",
+      "passwordConfirmation": "Confirmación de Contraseña",
+      "dni": "DNI o CUIT",
+      "code": "Código",
+      "provider": "Proveedor",
+      "name": "Descripción",
+      "fob": "Costo",
+      "price": "Precio",
+      "stock": "Stock"
+    },
+    "messages": {
+      "required": "Ingrese {field}",
+      "dni.unique": "El DNI / CUIT ingresado corresponde a otro cliente"
+    }
+  }
+}

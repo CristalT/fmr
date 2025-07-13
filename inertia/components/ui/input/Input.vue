@@ -65,7 +65,7 @@ onMounted(() => {
       v-if="type !== 'boolean' && type !== 'textarea'"
       :class="[{ 'border-red-500 border-2': error, '!text-gray-500': disabled }, align]"
       :name
-      class="border rounded w-full py-2 px-4 outline-primary text-gray-700"
+      class="border rounded-md w-full py-2 px-4 outline-primary text-gray-700"
       :disabled
       :type
       :placeholder="placeholder"

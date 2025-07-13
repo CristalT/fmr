@@ -2,10 +2,10 @@
 import { router } from '@inertiajs/vue3'
 import { useDebounceFn, useLocalStorage } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import { Input, Table, Button } from '~/components/ui'
 import http from '~/shared/http'
-import type { Customer } from '~/types/customer'
+import type Customer from '#models/customer_user'
 import { Meta } from '~/types/metadata'
 
 const users = ref<Customer[]>([])
@@ -49,7 +49,7 @@ onMounted(() => {
   <AdminLayout>
     <template #topbar>
       <div class="flex justify-end">
-        <Button variant="primary" label="Crear Usuario" @click="router.get('/admin/customers/create')" />
+        <Button variant="primary" label="Crear Cliente" @click="router.get('/admin/customers/create')" />
       </div>
     </template>
 
@@ -62,7 +62,7 @@ onMounted(() => {
         { label: 'Nombre', key: 'fullName' },
         { label: 'Teléfono', key: 'phone' },
         { label: 'Email', key: 'email' },
-      ]" :data="users" :metadata @page-change="changePage" />
+      ]" :data="users" :metadata @page-change="changePage" @row-click="router.get(`/admin/customers/${$event.id}/edit`)" />
     </div>
 
   </AdminLayout>

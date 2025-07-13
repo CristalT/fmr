@@ -5,7 +5,7 @@ import type Setting from '#models/setting'
 
 // Components
 import { Input, Card } from '~/components/ui'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import SavingIndicator from '~/components/SavingIndicator.vue'
 
 // Composables

@@ -1,8 +1,23 @@
 {
   "shared": {
     "fields": {
-      "password": "Contraseña",
-      "passwordConfirmation": "Confirmación de contraseña"
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "password": "Password",
+      "passwordConfirmation": "Password Confirmation",
+      "dni": "SSN",
+      "code": "Code",
+      "provider": "Provider",
+      "name": "Description",
+      "fob": "Fob",
+      "price": "Price",
+      "stock": "Stock"
+    },
+    "messages": {
+      "required": "Enter {field}",
+      "dni.unique": "The entered SSN belongs to another client"
     }
   }
 }

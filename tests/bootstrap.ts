@@ -6,7 +6,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import { authApiClient } from '@adonisjs/auth/plugins/api_client'
 import { sessionApiClient } from '@adonisjs/session/plugins/api_client'
 import { apiClient } from '@japa/api-client'
-
+import { inertiaApiClient } from '@adonisjs/inertia/plugins/api_client'
 /**
  * This file is imported by the "bin/test.ts" entrypoint file
  */
@@ -18,9 +18,10 @@ import { apiClient } from '@japa/api-client'
 export const plugins: Config['plugins'] = [
   assert(),
   apiClient(),
-  pluginAdonisJS(app),
   authApiClient(app),
+  pluginAdonisJS(app),
   sessionApiClient(app),
+  inertiaApiClient(app),
 ]
 
 /**

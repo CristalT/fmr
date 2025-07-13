@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { friendlyDate } from '~/shared/utils'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import { Input, Table } from '~/components/ui'
 import { Column } from '~/components/ui/table/Table.vue';
 import type Registry from '#models/registry'

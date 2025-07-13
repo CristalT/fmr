@@ -2,11 +2,8 @@ import { middleware } from '#start/kernel'
 import { sep, normalize } from 'node:path'
 import app from '@adonisjs/core/services/app'
 
-const CartController = () => import('#controllers/cart_controller')
-const OrderController = () => import('#controllers/order_controller')
-
 import router from '@adonisjs/core/services/router'
-import { publicRoutes, adminRoutes } from '#start/routes/index'
+import { publicRoutes, adminRoutes, customerRoutes } from '#start/routes/index'
 import env from '#start/env'
 
 // Public routes
@@ -20,14 +17,7 @@ router
   .use(middleware.auth({ guards: ['admin'] }))
 
 // Customer routes
-router
-  .group(() => {
-    router.resource('/carts', CartController)
-    router.get('/cart/items', [CartController, 'getCartItems'])
-    router.get('/pdfs/current-cart', [CartController, 'print'])
-    router.resource('/orders', OrderController)
-  })
-  .use(middleware.auth({ guards: ['customer', 'admin'] }))
+router.group(() => customerRoutes()).use(middleware.auth({ guards: ['customer', 'admin'] }))
 
 const PATH_TRAVERSAL_REGEX = /(?:^|[\\/])\.\.(?:[\\/]|$)/
 

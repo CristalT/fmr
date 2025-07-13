@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AdminLayout from '~/components/AdminLayout.vue';
+import { AdminLayout } from '~/components';
 import { Input, Card, Button } from '~/components/ui';
 import { useForm } from '@inertiajs/vue3'
 import { ref } from 'vue';

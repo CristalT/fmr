@@ -1,6 +1,17 @@
 import { computed } from "vue"
-import { usePage } from "@inertiajs/vue3"
+import { useForm, usePage } from "@inertiajs/vue3"
 
+const form = useForm({
+  firstName: '',
+  lastName: '',
+  dni: '',
+  phone: '',
+  email: '',
+  address: '',
+  city: '',
+  province: '',
+  postalCode: '',
+})
 
 export default function useCustomer() {
   const page = usePage()
@@ -10,5 +21,5 @@ export default function useCustomer() {
   const isLoggedIn = computed(() => props.auth.isCustomerLoggedIn)
   const userId = computed(() => props.auth.userId)
 
-  return { isLoggedIn, userId, fullName }
+  return { isLoggedIn, userId, fullName, form }
 }

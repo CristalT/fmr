@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Input, Card, Table, Icon, Button } from '~/components/ui';
-import { computed, ref, defineModel } from 'vue';
+import { computed, ref } from 'vue';
 import type Product from '#models/product'
 import { useProduct } from '~/composables'
 import ProductImage from '~/components/ProductImage.vue';

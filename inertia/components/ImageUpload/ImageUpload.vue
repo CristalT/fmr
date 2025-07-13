@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { Icon } from '~/components/ui'
 import type Product from '#models/product'
-import ProductImage from './ProductImage.vue'
-import { usePath } from '~/composables'
+import ProductImage from '../ProductImage.vue'
+import { usePath, useConfirm } from '~/composables'
 
 const { staticPath } = usePath()
+const { confirmation } = useConfirm()
+
+useTemplateRef('deleteAction')
 
 const props = withDefaults(
   defineProps<{
@@ -29,6 +32,8 @@ const imageSrc = computed(() => {
   return preview.value || staticPath('image-placeholder.webp')
 })
 
+const isDeletable = computed(() => preview.value || model.value)
+
 function changeImage() {
   inputFile.value.click()
 }
@@ -49,7 +54,15 @@ function loadImage(event: Event) {
   reader.readAsDataURL(file)
 }
 
-function deleteImage() {
+async function deleteImage() {
+  const conf = await confirmation({
+    title: 'Borrar imagen',
+    type: 'danger',
+    message: '¿Desea eliminar la imagen?',
+  })
+
+  if (!conf) return
+
   preview.value = ''
   model.value = null
   emit('delete')
@@ -61,16 +74,33 @@ onMounted(() => {
 </script>
 <template>
   <div class="flex flex-col">
-
     <p v-if="label">{{ label }}</p>
     <div class="rounded-md overflow-hidden relative">
-      <div class="h-full w-full absolute opacity-0 hover:opacity-100 hover:bg-black/50 transition-all flex gap-4 items-center justify-center">
-        <Icon name="edit" class="text-white cursor-pointer hover:scale-150 transition-transform" @click="changeImage"  />
-        <Icon name="delete" class="text-white cursor-pointer hover:scale-150 transition-transform" @click="deleteImage" />
+      <div
+        class="h-full w-full absolute opacity-0 hover:opacity-100 hover:bg-black/50 transition-all flex gap-4 items-center justify-center"
+      >
+        <Icon
+          name="edit"
+          class="text-white cursor-pointer hover:scale-150 transition-transform"
+          @click="changeImage"
+        />
+        <Icon
+          v-if="isDeletable"
+          ref="deleteAction"
+          name="delete"
+          class="text-white cursor-pointer hover:scale-150 transition-transform"
+          @click="deleteImage"
+        />
       </div>
       <input :accept="accept" type="file" v-show="false" ref="inputFile" @change="loadImage" />
       <ProductImage v-if="!preview && !product.image" rounded :product class="w-full mx-auto" />
-      <img id="img-preview" v-else :src="imageSrc" class="object-cover min-h-full max-w-full" alt="Product Image" />
+      <img
+        id="img-preview"
+        v-else
+        :src="imageSrc"
+        class="object-cover min-h-full max-w-full"
+        alt="Product Image"
+      />
     </div>
   </div>
 </template>

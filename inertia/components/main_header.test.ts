@@ -6,7 +6,8 @@ const usePageMock = vi.hoisted(() => ({
   usePage: vi.fn(),
 }))
 
-vi.mock('@inertiajs/vue3', () => ({
+vi.mock('@inertiajs/vue3', async (importOriginal) => ({
+  ...(await importOriginal()),
   usePage: usePageMock.usePage,
 }))
 

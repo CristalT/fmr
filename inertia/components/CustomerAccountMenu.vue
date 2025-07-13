@@ -93,7 +93,7 @@ onUnmounted(() => {
         {{ customer.fullName.value }}
       </div>
       <a
-        href="/carts"
+        href="/cart-items"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
         @click="closeMenu"
       >

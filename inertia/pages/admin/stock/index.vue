@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import ProductImage from '~/components/ProductImage.vue'
 import ProviderSelect from '~/components/ProviderSelect.vue'
 import { Button, Icon } from '~/components/ui'
@@ -47,6 +47,11 @@ const showContextMenu = ref(false)
 
 <template>
   <AdminLayout>
+    <template #topbar>
+      <div class="flex justify-end">
+        <Button variant="primary" label="Crear Producto" @click="router.visit('/admin/stock/create')" />
+      </div>
+    </template>
     <div class="flex flex-col gap-2">
       <div class="p-2 bg-white shadow-sm rounded-md flex gap-2">
         <div class="basis-9/12">

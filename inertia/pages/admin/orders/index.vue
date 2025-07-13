@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import type Order from '#models/order'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 import { Card, Select, Paginator, Input } from '~/components/ui'
 import { friendlyDate } from '~/shared/utils'
 import { router } from '@inertiajs/vue3'

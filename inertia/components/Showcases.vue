@@ -1,31 +1,45 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import ProductCard from '~/components/ProductCard.vue'
 import { Icon } from '~/components/ui'
 import { useShowcase, useAdmin } from '~/composables'
-import { router } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
+import type Showcase from '#models/showcase'
 
 const { isLoggedIn } = useAdmin()
-interface Product {
-  id: string
-  name: string
-  // Add other product properties as needed
-}
 
-interface Showcase {
-  id: number
-  name: string
-  description: string
-  products: Product[]
-}
+const { data } = useShowcase().fetchAll()
 
-const { data } = useShowcase().fetchAll
+const page = usePage()
+
 const showcases = computed(() => data.value || [])
 
 // Carousel state for each showcase
 const carouselStates = ref<Record<number, { currentPage: number }>>({})
 
-const itemsPerPage = 4
+const itemsPerPage = ref(4)
+
+function updateItemsPerPage() {
+  const width = window.innerWidth
+  if (width < 640) {
+    itemsPerPage.value = 1
+  } else if (width < 1024) {
+    itemsPerPage.value = 2
+  } else {
+    itemsPerPage.value = 4
+  }
+}
+
+onMounted(() => {
+  updateItemsPerPage()
+  window.addEventListener('resize', updateItemsPerPage)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateItemsPerPage)
+})
+
+const isAdminContext = computed(() => page.url.includes('admin'))
 
 const initializeCarousel = (showcaseId: number) => {
   if (!carouselStates.value[showcaseId]) {
@@ -35,7 +49,7 @@ const initializeCarousel = (showcaseId: number) => {
 
 
 const getTotalPages = (showcase: Showcase) => {
-  return Math.ceil(showcase.products.length / itemsPerPage)
+  return Math.ceil(showcase.products.length / itemsPerPage.value)
 }
 
 const canGoNext = (showcase: Showcase) => {
@@ -76,7 +90,7 @@ const goToPage = (showcase: Showcase, page: number) => {
           <h1 class="text-2xl font-light uppercase">{{ showcase.name }}</h1>
           <p class="text-gray-600">{{ showcase.description }}</p>
         </div>
-        <Icon v-if="isLoggedIn" name="edit" size="lg" class="text-gray-600 cursor-pointer hover:text-primary" @click="router.visit(`/admin/showcases/${showcase.id}/edit`)"/>
+        <Icon v-if="isLoggedIn && isAdminContext" name="edit" size="lg" class="text-gray-600 cursor-pointer hover:text-primary" @click="router.visit(`/admin/showcases/${showcase.id}/edit`)"/>
       </div>
 
 

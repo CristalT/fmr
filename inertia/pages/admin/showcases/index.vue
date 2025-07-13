@@ -2,7 +2,7 @@
 import Showcases from '~/components/Showcases.vue';
 import { router } from '@inertiajs/vue3'
 import { Button } from '~/components/ui'
-import AdminLayout from '~/components/AdminLayout.vue'
+import { AdminLayout } from '~/components'
 </script>
 
 <template>

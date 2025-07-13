@@ -55,7 +55,7 @@ export default class CustomerUser extends compose(BaseModel, AuthFinder) {
 
   @column({
     consume: (value: string) => new Date(value),
-    prepare: (value: string) => value.slice(0, 19).replace('T', ' '),
+    prepare: (value: string) => value ? value.slice(0, 19).replace('T', ' ') : null,
   })
   declare resetPasswordTokenExpirationDate: string | null
 

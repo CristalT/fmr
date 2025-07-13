@@ -22,8 +22,7 @@ export default class ProductController {
 
     if (await auth.check()) fields = fields.concat(['price', 'stock', 'brand', 'provider'])
 
-    const query = Product
-      .query()
+    const query = Product.query()
       .withScopes((scope) => scope.publicSearch(queryOptions))
       .select(fields)
       .orderBy('name')
