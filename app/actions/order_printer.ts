@@ -25,10 +25,10 @@ export default class OrderPrinter extends Printer<Order> {
         firstName: order.customerUser.firstName,
         lastName: order.customerUser.lastName,
       },
-      items: order.cartItems.map(({ code, name, quantity }) => ({
-        code,
-        name,
-        quantity: String(quantity),
+      items: order.cartItems.map((item) => ({
+        code: item.product.code,
+        name: item.product.name,
+        quantity: String(item.quantity),
       })),
     }
 
