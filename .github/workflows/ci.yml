@@ -34,8 +34,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run tests
+      - name: Run UI tests
         run: pnpm test:ui
+
+      - name: Run functional tests
+        run: node ace test functional
 
   build:
     runs-on: ubuntu-latest
