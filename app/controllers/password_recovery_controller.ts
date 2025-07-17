@@ -23,6 +23,6 @@ export default class PasswordRecoveryController {
 
     PasswordForgot.dispatch(user)
 
-    response.redirect().toRoute('password_recovery.success')
+    return response.redirect().toRoute('password_recovery.success')
   }
 }

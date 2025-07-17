@@ -56,12 +56,22 @@ export default class CustomerController {
   }
 
   async update({ request, response, params }: HttpContext) {
-    const data  = await request.validateUsing(updateCustomerValidator, { meta: { customerId: params.id }})
+    const data = await request.validateUsing(updateCustomerValidator, {
+      meta: { customerId: params.id },
+    })
 
     const user = await CustomerUser.findOrFail(params.id)
 
     Object.assign(user, data)
     await user.save()
     return response.redirect().toRoute('admin.customers.view')
+  }
+
+  async destroy({ response, params }: HttpContext) {
+    console.log('Deleting customer with ID:', params.id)
+    const user = await CustomerUser.findOrFail(params.id)
+    user.deletedAt = DateTime.now()
+    await user.save()
+    return response.noContent()
   }
 }

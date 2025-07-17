@@ -1,6 +1,20 @@
-import { Readable } from 'node:stream'
-import { Printer } from '#actions/printer'
 import Order from '#models/order'
+import PdfPrinter from 'pdfmake'
+import type Product from '#models/product'
+import { resolve } from 'node:path'
+import { Readable } from 'node:stream'
+import { TDocumentDefinitions } from 'pdfmake/interfaces.js'
+
+const fonts = {
+  Roboto: {
+    normal: resolve('./fonts/Roboto_Condensed-Regular.ttf'),
+    bold: resolve('./fonts/Roboto_Condensed-Medium.ttf'),
+    italics: resolve('./fonts/Roboto_Condensed-Italic.ttf'),
+    bolditalics: resolve('./fonts/Roboto_Condensed-MediumItalic.ttf'),
+  },
+}
+
+const printer = new PdfPrinter(fonts)
 
 type PrintableOrder = {
   id: string
@@ -8,14 +22,10 @@ type PrintableOrder = {
     firstName: string
     lastName: string
   }
-  items: Array<{
-    code: string
-    name: string
-    quantity: string
-  }>
+  items: Array<Partial<Product> & { quantity: string }>
 }
 
-export default class OrderPrinter extends Printer<Order> {
+export default class OrderPrinter {
   private order!: PrintableOrder
 
   setData(order: Order): this {
@@ -29,6 +39,7 @@ export default class OrderPrinter extends Printer<Order> {
         code: item.product.code,
         name: item.product.name,
         quantity: String(item.quantity),
+        location: item.product.location || '',
       })),
     }
 
@@ -36,59 +47,67 @@ export default class OrderPrinter extends Printer<Order> {
   }
 
   async generatePDF() {
-    const doc = this.doc
-
-    doc.fontSize(14)
-    doc.text(`Pedido #${this.order.id}`, { align: 'center', underline: true })
-    doc.moveDown()
-    doc.fontSize(12)
-    doc
-      .table({ columnStyles: ['*', '*'] })
-      .row([
-        { text: 'Cliente:', padding: '0.5em', border: [1, 0, 0, 1] },
+    const items = this.order.items.map((item) => [
+      [{ text: item.code, alignment: 'left' }],
+      [{ text: item.name, alignment: 'left' }],
+      [{ text: item.quantity, alignment: 'center' }],
+      [{ text: item.location, alignment: 'left' }],
+    ])
+    const dd = {
+      content: [
+        {
+          text: `Pedido #${this.order.id}`,
+          style: 'header',
+          alignment: 'left',
+        },
         {
           text: `${this.order.customer.firstName} ${this.order.customer.lastName}`,
-          padding: '0.5em',
-          border: [1, 1, 0, 0],
+          style: 'subheader',
+          alignment: 'left',
         },
-      ])
-      .row([
-        { text: 'Fecha:', padding: '0.5em', border: [0, 0, 1, 1] },
         {
-          text: new Date().toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          }),
-          padding: '0.5em',
-          border: [0, 1, 1, 0],
+          text: `Fecha: ${new Date().toLocaleDateString()}`,
+          style: 'subheader',
+          alignment: 'left',
         },
-      ])
-
-    doc.moveDown()
-    doc.table({
-      rowStyles: (i) => {
-        return i < 1
-          ? { border: [0, 0, 2, 0], borderColor: 'black' }
-          : { border: [0, 0, 1, 0], borderColor: '#aaa' }
-      },
-      columnStyles: [80, '*', 50],
-      data: [
-        [
-          { text: 'CODIGO', padding: '0.5em' },
-          { text: 'DESCRIPCION', padding: '0.5em' },
-          { text: 'CANT.', padding: '0.5em' },
-        ],
-        ...this.order.items.map((item) => [
-          { text: item.code, padding: '0.5em' },
-          { text: item.name, padding: '0.5em' },
-          { text: item.quantity, padding: '0.5em' },
-        ]),
+        {
+          table: {
+            widths: [60, '*', 50, 100],
+            headerRows: 1,
+            body: [
+              [
+                { text: 'CODIGO', style: 'tableHeader', alignment: 'left' },
+                { text: 'DESCRIPCION', style: 'tableHeader', alignment: 'left' },
+                { text: 'CANT.', style: 'tableHeader', alignment: 'center' },
+                { text: 'UBICACION', style: 'tableHeader', alignment: 'left' },
+              ],
+              ...items,
+            ],
+          },
+        },
       ],
-    })
-
+      styles: {
+        tableHeader: {
+          bold: true,
+          fontSize: 10,
+          color: 'black',
+          fillColor: '#f3f3f3',
+          alignment: 'center',
+        },
+        header: {
+          fontSize: 18,
+          bold: true,
+          // margin: [0, 0, 0, 10],
+        },
+        subheader: {
+          fontSize: 14,
+          bold: true,
+          margin: [0, 0, 0, 15],
+        },
+      },
+    }
+    const doc = printer.createPdfKitDocument(dd as unknown as TDocumentDefinitions)
     doc.end()
-
     return doc as unknown as Readable
   }
 }
