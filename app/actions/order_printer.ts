@@ -54,6 +54,7 @@ export default class OrderPrinter {
       [{ text: item.location, alignment: 'left' }],
     ])
     const dd = {
+      pageSize: 'A4',
       content: [
         {
           text: `Pedido #${this.order.id}`,
@@ -97,7 +98,6 @@ export default class OrderPrinter {
         header: {
           fontSize: 18,
           bold: true,
-          // margin: [0, 0, 0, 10],
         },
         subheader: {
           fontSize: 14,
