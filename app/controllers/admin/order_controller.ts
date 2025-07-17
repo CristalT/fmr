@@ -18,14 +18,20 @@ export default class OrderController {
 
     const query = Order.query()
       .whereHas('customerUser', (q) => {
-        q
+        q.where('firstName', 'LIKE', `%${request.input('terms', '')}%`).orWhere(
+          'lastName',
+          'LIKE',
+          `%${request.input('terms', '')}%`
+        )
+      })
+      .preload('customerUser', (builder) => {
+        builder
           .where('firstName', 'LIKE', `%${request.input('terms', '')}%`)
           .orWhere('lastName', 'LIKE', `%${request.input('terms', '')}%`)
+        builder.select(['id', 'firstName', 'lastName'])
       })
-      .preload('customerUser')
       .preload('cartItems')
       .orderBy('createdAt', 'asc')
-
 
     if (status) {
       query.where('status', status)

@@ -7,7 +7,8 @@ import type { Column } from '~/components/ui/table/Table.vue'
 import { useOrder } from '~/composables'
 import { friendlyDate } from '~/shared/utils'
 import { OrderStatus } from '#types/order_status'
-import { statusOptions } from '~/shared/status_options';
+import { statusOptions } from '~/shared/status_options'
+import { computed } from 'vue'
 
 const { order } = defineProps<{ order: Order }>()
 
@@ -21,15 +22,33 @@ const columns: Column[] = [
   { label: 'Cantidad', key: 'quantity', align: 'center' },
 ]
 
+const cartItems = computed(() =>
+  order.cartItems.map((item) => ({
+    ...item,
+    code: item.product.code,
+    name: item.product.name,
+  }))
+)
 </script>
 
 <template>
   <AdminLayout>
     <template #topbar>
       <div class="flex items-center justify-between gap-2">
-        <Select class="w-60" :options="statusOptions" v-model="order.status"
-        @change="({ value }) => setStatus(value as OrderStatus)" />
-        <Button v-if="order.status === OrderStatus.Cancelled" label="Eliminar" variant="danger" flat @click="destroy"><template #icon><Icon name="delete" /></template></Button>
+        <Select
+          class="w-60"
+          :options="statusOptions"
+          v-model="order.status"
+          @change="({ value }) => setStatus(value as OrderStatus)"
+        />
+        <Button
+          v-if="order.status === OrderStatus.Cancelled"
+          label="Eliminar"
+          variant="danger"
+          flat
+          @click="destroy"
+          ><template #icon><Icon name="delete" /></template
+        ></Button>
       </div>
     </template>
     <Card class="flex flex-col mb-4">
@@ -42,6 +61,6 @@ const columns: Column[] = [
       <h2 class="text-lg font-bold">{{ customerFullName }}</h2>
       <h3 class="text-md font-bold">{{ friendlyDate(order.createdAt) }}</h3>
     </Card>
-    <Table :columns="columns" :data="order.cartItems" />
+    <Table :columns="columns" :data="cartItems" />
   </AdminLayout>
 </template>

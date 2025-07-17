@@ -50,7 +50,7 @@ function update() {
 async function remove(item: CartItem) {
   const conf = await confirmation({
     title: 'Eliminar',
-    message: `¿Desea eliminar el producto ${item.name}?`,
+    message: `¿Desea eliminar el producto ${item.product.name}?`,
     confirm: 'Eliminar',
     cancel: 'Cancelar'
   })
@@ -72,7 +72,7 @@ async function createOrder() {
   if (!conf) return
   http('orders').post({}).then(() => {
     toast.success('Pedido enviado! Gracias por su compra.')
-    router.get('cart-items')
+    router.visit('/orders')
   }).catch(err => {
     console.error(err)
     toast.error('Ocurrió un error al enviar el pedido.')
@@ -98,12 +98,12 @@ async function createOrder() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item of cartItems" :key="item.code" class="border-b">
+          <tr v-for="item of cartItems" :key="item.product.code" class="border-b">
             <td class="py-2 px-4 flex justify-center">
               <ProductImage :product="item.product" class="h-20 w-20" rounded />
             </td>
-            <td class="py-2 px-4 text-center">{{ item.code }}</td>
-            <td class="py-2 px-4">{{ item.name }}</td>
+            <td class="py-2 px-4 text-center">{{ item.product.code }}</td>
+            <td class="py-2 px-4">{{ item.product.name }}</td>
             <td class="py-2 px-4 currency">{{ toLocaleNumber(item.product.price) }}</td>
             <td class="py-2 px-4 text-center">{{ item.quantity }}</td>
             <td class="py-2 px-4 currency">{{ amount(item) }}</td>
@@ -138,8 +138,8 @@ async function createOrder() {
           <ProductImage :product="selectedItem?.product!" class="w-[150px]" rounded />
         </div>
         <div class="flex flex-col gap-2 w-[300px]">
-          <div class="text-gray-600 font-mono">{{ selectedItem?.code }}</div>
-          <div>{{ selectedItem?.name }}</div>
+          <div class="text-gray-600 font-mono">{{ selectedItem?.product.code }}</div>
+          <div>{{ selectedItem?.product.name }}</div>
           <Input autofocus type="number" placeholder="Cantidad" v-model="qty" />
           <div class="flex justify-end gap-2">
             <Button variant="tertiary" label="Cancelar" @click="showQtyDialog = false" />

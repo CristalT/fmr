@@ -1,16 +1,16 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Product from '#models/product'
 import CartItem from '#models/cart_item'
-import { CartItemStatus } from '#types/cart_item_status'
+import { OrderStatus } from '#types/order_status'
 
 export default class CartItemController {
   async view({ inertia }: HttpContext) {
     return inertia.render('cart/current')
   }
-  
+
   async index({ response }: HttpContext) {
     const items = await CartItem.query()
-      .withScopes((scopes) => scopes.getItemsByStatus(CartItemStatus.Pending))
+      .withScopes((scopes) => scopes.getItemsByStatus(OrderStatus.InCart))
       .preload('product')
 
     return response.json(items)
@@ -25,19 +25,19 @@ export default class CartItemController {
 
     const product = await Product.findOrFail(id)
 
-    const cartItem = await CartItem.query()
-      .withScopes((scopes) => scopes.getItemByCode(product.code))
+    const exists = await CartItem.query()
+      .where('productId', product.id)
+      .where('customerUserId', auth.user.id)
+      .where('status', OrderStatus.InCart)
       .first()
 
-    if (cartItem) {
+    if (exists) {
       return response.conflict('El producto ya se encuentra en el carrito')
     }
 
     const cart = await CartItem.create({
       customerUserId: auth.user?.id,
       quantity,
-      code: product.code,
-      name: product.name,
     })
 
     await cart.related('product').associate(product)

@@ -39,6 +39,5 @@ export default function useCart() {
 
   const length = computed<number>(() => items.value.length)
 
-
   return { items, add, update, remove, length, getItems }
 }

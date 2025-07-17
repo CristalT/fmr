@@ -47,7 +47,6 @@ export default class StockController {
 
   async create({ inertia }: HttpContext) {
     const providers = await Provider.all()
-    console.log(providers)
     return inertia.render('admin/stock/create', { providers })
   }
 

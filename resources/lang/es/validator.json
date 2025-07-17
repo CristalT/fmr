@@ -16,6 +16,7 @@
       "stock": "Stock"
     },
     "messages": {
+      "unique": "El {field} ingresado ya existe",
       "required": "Ingrese {field}",
       "dni.unique": "El DNI / CUIT ingresado corresponde a otro cliente"
     }

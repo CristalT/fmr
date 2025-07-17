@@ -12,7 +12,7 @@ const dbConfig = defineConfig({
         port: env.get('DB_PORT'),
         user: env.get('DB_USER'),
         password: env.get('DB_PASSWORD'),
-        database: env.get('NODE_ENV') === 'test' ? 'fmr_site_test' : env.get('DB_DATABASE'),
+        database: env.get('DB_DATABASE'),
         timezone: 'Z',
         dateStrings: ['DATE', 'DATETIME'],
         typeCast: true,

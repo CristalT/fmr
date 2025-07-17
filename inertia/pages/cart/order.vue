@@ -7,9 +7,9 @@ import type { Column } from '~/components/ui/table/Table.vue'
 import { useOrder } from '~/composables'
 import { friendlyDate } from '~/shared/utils'
 import MainHeader from '~/components/MainHeader.vue'
+import { computed } from 'vue'
 
 const { order } = defineProps<{ order: Order }>()
-
 
 const { customerFullName } = useOrder(order)
 
@@ -20,6 +20,13 @@ const columns: Column[] = [
   { label: 'Entregado', key: 'delivered', align: 'center' },
 ]
 
+const cartItems = computed(() =>
+  order.cartItems.map((item) => ({
+    ...item,
+    code: item.product.code,
+    name: item.product.name,
+  }))
+)
 </script>
 
 <template>
@@ -27,6 +34,7 @@ const columns: Column[] = [
     <template #header>
       <MainHeader />
     </template>
+    {{ order }}
     <Card class="flex flex-col mb-4">
       <template #header>
         <div class="flex items-center justify-between">
@@ -38,6 +46,6 @@ const columns: Column[] = [
       <h3 class="text-md font-bold">{{ friendlyDate(order.createdAt) }}</h3>
     </Card>
 
-    <Table :columns="columns" :data="order.cartItems" />
+    <Table :columns="columns" :data="cartItems" />
   </MainLayout>
 </template>
