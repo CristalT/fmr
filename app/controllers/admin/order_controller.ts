@@ -1,6 +1,6 @@
 import Order from '#models/order'
 import { HttpContext } from '@adonisjs/core/http'
-import OrderPrinter from '#actions/order_printer'
+import OrderPrinter from '#services/order_printer'
 import OrderService from '#services/order_service'
 import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
@@ -96,8 +96,8 @@ export default class OrderController {
       return response.notFound('Order not found')
     }
 
-    const printer = new OrderPrinter()
-    const doc = await printer.setData(order).generatePDF()
+    const printer = new OrderPrinter(order)
+    const doc = await printer.generatePDF()
 
     response.header('content-type', 'application/pdf')
     response.stream(doc)
