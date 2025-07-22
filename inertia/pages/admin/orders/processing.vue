@@ -94,8 +94,8 @@ const print = () => {
       </thead>
       <tbody>
         <tr v-for="(row, key) of cartItems" :key="key" class="border-b">
-          <td class="text-center p-2">{{ row.code }}</td>
-          <td class="p-2">{{ row.name }}</td>
+          <td class="text-center p-2">{{ row.product.code }}</td>
+          <td class="p-2">{{ row.product.name }}</td>
           <td class="text-center p-2">{{ row.quantity }}</td>
           <td class="text-right p-2 currency">{{ Math.round(row.product.price) }}</td>
           <td class="flex justify-center p-2">

@@ -60,16 +60,16 @@ export default class Product extends BaseModel {
   declare updatedAt: DateTime | null
 
   @manyToMany(() => Showcase, {
-    pivotTable: 'product_showcase'
+    pivotTable: 'product_showcase',
   })
   declare showcases: ManyToMany<typeof Showcase>
 
   @afterFetch()
   static async afterFetchHook(products: Product[]) {
-    const interval = Number(await setting('stock_round_interval'))
+    const interval = Number(await setting('stock_round_interval', 0))
 
     if (interval > 0) {
-      products.forEach(product => {
+      products.forEach((product) => {
         product.price = Math.round(product.price / interval) * interval
       })
     }
@@ -88,7 +88,7 @@ export default class Product extends BaseModel {
         'image',
         'stock',
         'location',
-        'factoryCode'
+        'factoryCode',
       ])
       .where('id', id)
   })
@@ -113,32 +113,32 @@ export default class Product extends BaseModel {
       query.orWhere('code', 'LIKE', terms)
       query.orWhere('factoryCode', 'LIKE', terms)
     }
-
-
   })
 
   /**
    * Scope for public search
    * This search criteria is used for listing products for Customer Users
    */
-  static readonly publicSearch = scope((query, { terms, hideZeroStock, hideZeroPrice, interval }) => {
-    query.where(async (query) => {
-      if (hideZeroStock) {
-        query.where('stock', '>', 0)
-      }
+  static readonly publicSearch = scope(
+    (query, { terms, hideZeroStock, hideZeroPrice, interval }) => {
+      query.where(async (q) => {
+        if (hideZeroStock) {
+          q.where('stock', '>', 0)
+        }
 
-      if (hideZeroPrice) {
-        query.where('price', '>=', interval)
-      }
+        if (hideZeroPrice) {
+          q.where('price', '>=', interval)
+        }
 
-      query.where('public', 1)
-    })
-
-    if (terms) {
-      query.where((query) => {
-        query.where('name', 'LIKE', `%${terms.replaceAll(' ', '%')}%`)
-        query.orWhere('code', 'LIKE', terms)
+        q.where('public', 1)
       })
+
+      if (terms) {
+        query.where((q) => {
+          q.where('name', 'LIKE', `%${terms.replaceAll(' ', '%')}%`)
+          q.orWhere('code', 'LIKE', terms)
+        })
+      }
     }
-  })
+  )
 }

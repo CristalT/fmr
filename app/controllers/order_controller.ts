@@ -1,5 +1,6 @@
 import CartItem from '#models/cart_item'
 import Order from '#models/order'
+import { OrderStatus } from '#types/order_status'
 import { HttpContext } from '@adonisjs/core/http'
 
 export default class OrderController {
@@ -18,8 +19,14 @@ export default class OrderController {
     const order = await Order.query()
       .where('customer_user_id', auth.user?.id!)
       .where('id', params.id)
-      .preload('cartItems')
-      .preload('customerUser')
+      .preload('cartItems', (query) => {
+        query.preload('product', (productQuery) => {
+          productQuery.select(['id', 'code', 'name'])
+        })
+      })
+      .preload('customerUser', (query) => {
+        query.select(['id', 'firstName', 'lastName'])
+      })
       .firstOrFail()
 
     return inertia.render('cart/order', { order })
@@ -30,11 +37,17 @@ export default class OrderController {
       customerUserId: auth.user?.id!,
     })
 
-    await CartItem.query().where('customer_user_id', auth.user?.id!).where('status', 0).update({
-      order_id: order.id,
-      status: 1,
-    })
+    // associate cart items with the order
+    await CartItem.query()
+      .where('customer_user_id', auth.user?.id!)
+      .where('status', OrderStatus.InCart)
+      .update({
+        order_id: order.id,
+        status: OrderStatus.Pending,
+      })
 
-    return response.created()
+    await order.load('cartItems')
+
+    return response.created(order)
   }
 }

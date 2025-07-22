@@ -5,7 +5,7 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import CustomerUser from './customer_user.js'
 import Order from './order.js'
 import { HttpContext } from '@adonisjs/core/http'
-import { CartItemStatus } from '#types/cart_item_status'
+import { OrderStatus } from '#types/order_status'
 
 export default class CartItem extends BaseModel {
   @column({ isPrimary: true })
@@ -24,19 +24,13 @@ export default class CartItem extends BaseModel {
   declare product: BelongsTo<typeof Product>
 
   @column()
-  declare code: string
-
-  @column()
   declare quantity: number
 
   @column()
   declare delivered: number
 
   @column()
-  declare name: string
-
-  @column()
-  declare status: CartItemStatus
+  declare status: OrderStatus
 
   @belongsTo(() => Order)
   declare order: BelongsTo<typeof Order>
@@ -59,13 +53,12 @@ export default class CartItem extends BaseModel {
     return user
   }
 
-  static readonly getItemsByStatus = scope((query, status: CartItemStatus) => {
+  static readonly getItemsByStatus = scope((query, status: OrderStatus) => {
     const user = this.getCustomerUser()
-    query.where('customerUserId', user.id).where('status', status)
-  })
 
-  static readonly getItemByCode = scope((query, code: string) => {
-    const user = this.getCustomerUser()
-    query.where('customerUserId', user.id).where('code', code).where('status', 0)
+    query
+      .where('customerUserId', user.id)
+      .where('status', status)
+      .select('id', 'delivered', 'orderId', 'quantity', 'status', 'productId')
   })
 }

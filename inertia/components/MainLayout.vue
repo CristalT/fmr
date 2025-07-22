@@ -3,9 +3,10 @@ import Footer from '~/components/Footer.vue'
 import WhatsApp from '~/components/WhatsApp.vue'
 import Toast from './Toast.vue'
 import { onMounted } from 'vue'
-import { useCart } from '~/composables'
+import { useCart, useCustomer } from '~/composables'
 import { useSetting } from '~/composables'
 
+const { isLoggedIn } = useCustomer()
 const { settings } = useSetting()
 
 const cart = useCart()
@@ -13,7 +14,9 @@ const cart = useCart()
 defineProps<{ loading?: boolean, whatsappHidden?: boolean }>()
 
 onMounted(() => {
-  cart.getItems()
+  if (isLoggedIn.value) {
+    cart.getItems()
+  }
 })
 </script>
 <template>

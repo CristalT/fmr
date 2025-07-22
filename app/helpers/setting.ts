@@ -1,5 +1,5 @@
 import Setting from '#models/setting'
 
-export default function setting(key: string) {
-  return Setting.get(key)
+export default function setting(key: string, defaultValue?: any) {
+  return Setting.get(key, defaultValue)
 }

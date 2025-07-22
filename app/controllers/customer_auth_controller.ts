@@ -13,10 +13,15 @@ export default class CustomerAuthController {
 
     try {
       const user = await CustomerUser.verifyCredentials(email, password)
+
       await auth.use('customer').login(user)
       return response.redirect('/')
     } catch (error) {
-      return inertia.render('auth/customer_login', { errors: { message: error.message } })
+      return inertia.render(
+        'auth/customer_login',
+        { errors: { message: error.message } },
+        { status: 401 }
+      )
     }
   }
 

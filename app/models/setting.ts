@@ -43,7 +43,7 @@ export default class Setting extends BaseModel {
       factory: async () => await this.all(),
     })
 
-    return new Map(data.map(s => [s.key, s.value]))
+    return new Map(data.map((s) => [s.key, s.value]))
   }
 
   static async get(key: string, defaultValue: any = undefined) {
@@ -79,10 +79,10 @@ export default class Setting extends BaseModel {
     try {
       const setting = await this.findOrFail(id)
       setting.value = String(value).trim()
-      return setting.save().then((setting) => {
-        cache.delete({ key: `setting:${setting.key}` })
+      return setting.save().then((s) => {
+        cache.delete({ key: `setting:${s.key}` })
         cache.delete({ key: 'setting:all' })
-        return setting
+        return s
       })
     } catch (error) {
       logger.error(`Error trying to update setting ${id}: ${error.message}`)
@@ -90,7 +90,11 @@ export default class Setting extends BaseModel {
     }
   }
 
-  static async createIfNotExists(key: string, value: any, description: string | null = null): Promise<Setting> {
+  static async createIfNotExists(
+    key: string,
+    value: any,
+    description: string | null = null
+  ): Promise<Setting> {
     const setting = await this.findBy({ key })
     if (setting) return setting
 

@@ -7,17 +7,17 @@ import { publicRoutes, adminRoutes, customerRoutes } from '#start/routes/index'
 import env from '#start/env'
 
 // Public routes
-router.group(() => publicRoutes())
+router.group(publicRoutes)
 
 // Admin routes
 router
-  .group(() => adminRoutes())
+  .group(adminRoutes)
   .prefix('/admin')
   .as('admin')
   .use(middleware.auth({ guards: ['admin'] }))
 
 // Customer routes
-router.group(() => customerRoutes()).use(middleware.auth({ guards: ['customer', 'admin'] }))
+router.group(customerRoutes).use(middleware.auth({ guards: ['customer', 'admin'] }))
 
 const PATH_TRAVERSAL_REGEX = /(?:^|[\\/])\.\.(?:[\\/]|$)/
 

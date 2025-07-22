@@ -6,7 +6,7 @@ import { friendlyDate } from '~/shared/utils'
 import { statusOptions } from '~/shared/status_options'
 import { router } from '@inertiajs/vue3'
 import type { Meta } from '~/types/metadata'
-import { Table } from '~/components/ui'
+import { Table, Card } from '~/components/ui'
 
 const { data } = defineProps<{ data: { data: Order[], meta: Meta } }>()
 
@@ -27,8 +27,11 @@ const changePage = (page: number) => {
     <template #header>
       <MainHeader />
     </template>
-    <div class="bg-white rounded-md">
+    <div>
+      <h1 class="text-2xl font-semibold mb-4 p-2 text-gray-700">Mis Pedidos</h1>
+      
       <Table
+      class="shadow-sm"
         :columns="[
           { label: '#', key: 'id' },
           { label: 'Fecha', key: 'createdAt' },

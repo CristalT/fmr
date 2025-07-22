@@ -1,16 +1,11 @@
 import Order from '#models/order'
 import { HttpContext } from '@adonisjs/core/http'
-import OrderPrinter from '#actions/order_printer'
-import OrderService from '#services/order_service'
-import { inject } from '@adonisjs/core'
+import OrderPrint from '#services/doc_prints/order'
 import logger from '@adonisjs/core/services/logger'
 import cache from '@adonisjs/cache/services/main'
 import { OrderStatus } from '#types/order_status'
 
-@inject()
 export default class OrderController {
-  constructor(private orderService: OrderService) {}
-
   async index({ inertia, request }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 16)
@@ -18,14 +13,20 @@ export default class OrderController {
 
     const query = Order.query()
       .whereHas('customerUser', (q) => {
-        q
+        q.where('firstName', 'LIKE', `%${request.input('terms', '')}%`).orWhere(
+          'lastName',
+          'LIKE',
+          `%${request.input('terms', '')}%`
+        )
+      })
+      .preload('customerUser', (builder) => {
+        builder
           .where('firstName', 'LIKE', `%${request.input('terms', '')}%`)
           .orWhere('lastName', 'LIKE', `%${request.input('terms', '')}%`)
+        builder.select(['id', 'firstName', 'lastName'])
       })
-      .preload('customerUser')
       .preload('cartItems')
       .orderBy('createdAt', 'asc')
-
 
     if (status) {
       query.where('status', status)
@@ -37,7 +38,7 @@ export default class OrderController {
   }
 
   async show({ inertia, params, response }: HttpContext) {
-    const order = await this.orderService.getById(params.id)
+    const order = await Order.byId(params.id)
     if (!order) {
       return response.notFound('Order not found')
     }
@@ -85,13 +86,23 @@ export default class OrderController {
   }
 
   async print({ params, response }: HttpContext) {
-    const order = await this.orderService.getById(params.id)
+    const order = await Order.byId(params.id)
+
     if (!order) {
       return response.notFound('Order not found')
     }
 
-    const printer = new OrderPrinter()
-    const doc = await printer.setData(order).generatePDF()
+    const print = new OrderPrint(order.id)
+
+    const doc = await print
+      .customer(order.customerUser)
+      .items(
+        order.cartItems.map((item) => ({
+          ...item.product,
+          quantity: item.quantity,
+        }))
+      )
+      .generatePDF()
 
     response.header('content-type', 'application/pdf')
     response.stream(doc)

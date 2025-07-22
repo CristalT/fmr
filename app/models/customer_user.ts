@@ -1,15 +1,18 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column, computed } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeFetch, beforeFind, column, computed } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import string from '@adonisjs/core/helpers/string'
+import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
+
 
 export default class CustomerUser extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
@@ -55,7 +58,7 @@ export default class CustomerUser extends compose(BaseModel, AuthFinder) {
 
   @column({
     consume: (value: string) => new Date(value),
-    prepare: (value: string) => value ? value.slice(0, 19).replace('T', ' ') : null,
+    prepare: (value: string) => (value ? value.slice(0, 19).replace('T', ' ') : null),
   })
   declare resetPasswordTokenExpirationDate: string | null
 
@@ -65,10 +68,23 @@ export default class CustomerUser extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
+  @column.dateTime()
+  declare deletedAt: DateTime | null
+
   static readonly accessTokens = DbAccessTokensProvider.forModel(CustomerUser)
 
   generateResetPasswordToken() {
     this.resetPasswordToken = string.generateRandom(64)
     this.resetPasswordTokenExpirationDate = DateTime.now().plus({ hours: 1 }).toString()
+  }
+
+  @beforeFetch()
+  static ignoreDeleted(query: ModelQueryBuilderContract<typeof CustomerUser>) {
+    query.whereNull('deletedAt')
+  }
+
+  @beforeFind()
+  static ignoreDeletedForFind(query: ModelQueryBuilderContract<typeof CustomerUser>) {
+    query.whereNull('deletedAt')
   }
 }
