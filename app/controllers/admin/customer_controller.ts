@@ -68,7 +68,6 @@ export default class CustomerController {
   }
 
   async destroy({ response, params }: HttpContext) {
-    console.log('Deleting customer with ID:', params.id)
     const user = await CustomerUser.findOrFail(params.id)
     user.deletedAt = DateTime.now()
     await user.save()
