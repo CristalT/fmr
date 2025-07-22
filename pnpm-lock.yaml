@@ -147,9 +147,6 @@ importers:
       '@types/node':
         specifier: 22.15.18
         version: 22.15.18
-      '@types/pdfkit':
-        specifier: ^0.14.0
-        version: 0.14.0
       '@types/pdfmake':
         specifier: ^0.2.11
         version: 0.2.11
