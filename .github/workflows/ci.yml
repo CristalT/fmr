@@ -60,11 +60,9 @@ jobs:
       - name: Build project
         run: pnpm build
 
-      # - name: Prepare build files
-      #   run: |
-      #     cp -r ./inertia ./build/inertia
-      #     cp ./tailwind.config.js ./build/tailwind.config.js
-      #     cp ./postcss.config.js ./build/postcss.config.js
+      - name: Copy fonts folder
+        run: |
+          cp -r ./fonts ./build/fonts
 
       - name: Create build archive
         run: |
