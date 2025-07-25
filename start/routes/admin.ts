@@ -19,7 +19,11 @@ export default function adminRoutes() {
   router.get('/customers/view', [CustomerController, 'view']).as('customers.view')
   router.resource('/customers', CustomerController).as('customers')
   router.resource('/messages', MessageController).only(['index', 'show', 'destroy']).as('messages')
-  router.get('/providers', [ProviderController, 'index']).as('providers')
+  router
+    .resource('/providers', ProviderController)
+    .only(['index', 'edit', 'update'])
+    .as('providers')
+  router.get('/providers/list', [ProviderController, 'list']).as('providers.list')
   router.resource('/registries', RegistryController).only(['index', 'edit']).as('registries')
   router.resource('/orders', OrderController).as('orders')
   router.get('/orders/:id/print', [OrderController, 'print']).as('orders.print')

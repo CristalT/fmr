@@ -10,7 +10,7 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   passwordColumnName: 'password',
 })
 
-export default class AdminUser extends compose(BaseModel, AuthFinder) {
+export default class Administrator extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: number
 
@@ -35,5 +35,5 @@ export default class AdminUser extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
-  static readonly accessTokens = DbAccessTokensProvider.forModel(AdminUser)
+  static readonly accessTokens = DbAccessTokensProvider.forModel(Administrator)
 }

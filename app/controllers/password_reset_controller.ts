@@ -1,5 +1,5 @@
 import PasswordReset from '#events/password_reset'
-import CustomerUser from '#models/customer_user'
+import Customer from '#models/customer'
 
 import { passwordResetValidator } from '#validators/login'
 import { HttpContext } from '@adonisjs/core/http'
@@ -12,7 +12,7 @@ export default class PasswordResetController {
   async reset({ request, response }: HttpContext) {
     const { token, email, password } = await request.validateUsing(passwordResetValidator)
 
-    const user = await CustomerUser.query()
+    const user = await Customer.query()
       .where('reset_password_token', token)
       .where('email', email)
       .firstOrFail()

@@ -63,8 +63,19 @@ const print = () => {
   <AdminLayout>
     <template #topbar>
       <div class="flex items-center justify-between gap-2">
-        <Select class="w-60" :options="statusOptions" v-model="order.status"
-          @change="({ value }) => setStatus(value as OrderStatus)" />
+        <Select
+          class="w-60"
+          :options="statusOptions.map(option => ({
+            value: option.value,
+            label: option.label,
+            component: {
+              name: 'StatusBadge',
+              props: { status: option.value }
+            }
+          }))"
+          v-model="order.status"
+          @change="({ value }) => setStatus(value as OrderStatus)"
+        />
 
         <Button label="Imprimir" variant="tertiary" @click="print">
           <template #icon>
@@ -111,13 +122,15 @@ const print = () => {
       <div class="flex justify-between items-center gap-4">
         <SavingIndicator :is-saving="isSaving" :is-saved="isSaving === false" />
         <div class="flex items-center gap-4">
-          <div>
-            <span>Items pendientes</span> <span class="text-right font-semibold">{{ asked - delivered }}</span>
+          <div class="flex flex-col items-center gap-1">
+            <div class="text-sm">Items pendientes</div>
+            <div class="text-sm font-semibold">{{ asked - delivered }}</div>
           </div>
-          <div>
-            <span>Total</span> <span class="text-right currency font-semibold"> {{ Math.round(total) }}</span>
+          <div class="flex flex-col items-center gap-1">
+            <div class="text-sm">Total</div>
+            <div class="font-semibold text-sm"> $ {{ Math.round(total) }}</div>
           </div>
-          <Button label="Finalizar" variant="primary" @click="setStatus(OrderStatus.Completed)">
+          <Button class="ml-4" label="Finalizar" variant="primary" @click="setStatus(OrderStatus.Completed)">
             <template #icon>
               <Icon name="check" />
             </template>

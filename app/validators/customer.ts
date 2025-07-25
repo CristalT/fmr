@@ -6,7 +6,7 @@ export const createCustomerValidator = vine.compile(
       .string()
       .email()
       .unique(async (db, value) => {
-        const email = await db.from('customer_users').where('email', value).first()
+        const email = await db.from('customers').where('email', value).first()
         return !email
       }),
     firstName: vine.string(),
@@ -14,7 +14,7 @@ export const createCustomerValidator = vine.compile(
     dni: vine
       .string()
       .unique(async (db, value) => {
-        const dni = await db.from('customer_users').where('dni', value).first()
+        const dni = await db.from('customers').where('dni', value).first()
         return !dni
       })
       .optional(),
@@ -35,7 +35,7 @@ export const updateCustomerValidator = vine.compile(
       .string()
       .unique(async (db, value, { meta }) => {
         const dni = await db
-          .from('customer_users')
+          .from('customers')
           .where('dni', value)
           .whereNot('id', meta.customerId)
           .first()

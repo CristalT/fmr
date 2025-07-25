@@ -1,8 +1,8 @@
 import factory from '@adonisjs/lucid/factories'
-import AdminUser from '#models/admin_user'
+import Customer from '#models/customer'
 
-export const AdminUserFactory = factory
-  .define(AdminUser, async ({ faker }) => {
+export const CustomerFactory = factory
+  .define(Customer, async ({ faker }) => {
     return {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),

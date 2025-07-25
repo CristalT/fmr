@@ -22,7 +22,7 @@ export default defineConfig({
         companyZipCode: settings.get('company_zip_code'),
         companyPhone: settings.get('company_phone'),
         companyEmail: settings.get('company_email'),
-        whatsapp: settings.get('company_whatsapp')
+        whatsapp: settings.get('company_whatsapp'),
       }
     },
     auth: async ({ auth }) => {

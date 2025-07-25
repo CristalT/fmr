@@ -1,5 +1,5 @@
 import PasswordForgot from '#events/password_forgot'
-import CustomerUser from '#models/customer_user'
+import Customer from '#models/customer'
 import { forgotPasswordValidator } from '#validators/login'
 import { HttpContext } from '@adonisjs/core/http'
 
@@ -15,7 +15,7 @@ export default class PasswordRecoveryController {
   async store({ request, response }: HttpContext) {
     const { email } = await request.validateUsing(forgotPasswordValidator)
 
-    const user = await CustomerUser.query().where('email', email).firstOrFail()
+    const user = await Customer.query().where('email', email).firstOrFail()
 
     user.generateResetPasswordToken()
 

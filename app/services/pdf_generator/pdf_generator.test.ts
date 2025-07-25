@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import PdfGenerator from '#services/pdf_generator/pdf_generator'
-import type CustomerUser from '#models/customer_user'
+import type Customer from '#models/customer'
 
 describe('PDF Generator', () => {
   it('initializes with an empty document definition', () => {
@@ -52,7 +52,7 @@ describe('PDF Generator', () => {
       city: 'Anytown',
       phone: '123-456-7890',
       email: 'test@email.com',
-    } as CustomerUser
+    } as Customer
 
     pdfGenerator.clientHeader(customer)
 
@@ -62,7 +62,14 @@ describe('PDF Generator', () => {
         widths: ['*', '*'],
         body: [
           [
-            { text: 'CLIENTE', colSpan: 2, alignment: 'center', fillColor: '#f3f3f3', bold: true },
+            {
+              text: 'CLIENTE',
+              colSpan: 2,
+              alignment: 'center',
+              fillColor: '#f3f3f3',
+              bold: true,
+              fontSize: 10,
+            },
             {},
           ],
           [
@@ -71,16 +78,17 @@ describe('PDF Generator', () => {
               colSpan: 2,
               bold: true,
               border: [1, 0, 1, 0],
+              fontSize: 10,
             },
             {},
           ],
           [
-            { text: customer.address, border: [1, 0, 0, 0] },
-            { text: customer.city, border: [0, 0, 1, 0] },
+            { text: customer.address, border: [1, 0, 0, 0], fontSize: 10 },
+            { text: customer.city, border: [0, 0, 1, 0], fontSize: 10 },
           ],
           [
-            { text: customer.phone, border: [1, 0, 0, 1] },
-            { text: customer.email, border: [0, 0, 1, 1] },
+            { text: customer.phone, border: [1, 0, 0, 1], fontSize: 10 },
+            { text: customer.email, border: [0, 0, 1, 1], fontSize: 10 },
           ],
         ],
       },
@@ -116,9 +124,9 @@ describe('PDF Generator', () => {
             { text: 'Header 3', alignment: 'center', style: 'tableHeader' },
           ],
           [
-            { text: 'Row 1, Cell 1', alignment: 'left' },
-            { text: 'Row 1, Cell 2', alignment: 'left' },
-            { text: 'Row 1, Cell 3', alignment: 'left' },
+            { text: 'Row 1, Cell 1', alignment: 'left', fontSize: 10 },
+            { text: 'Row 1, Cell 2', alignment: 'left', fontSize: 10 },
+            { text: 'Row 1, Cell 3', alignment: 'left', fontSize: 10 },
           ],
         ],
       },

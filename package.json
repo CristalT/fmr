@@ -1,6 +1,6 @@
 {
   "name": "fmr-site",
-  "version": "1.13.1",
+  "version": "1.14.0",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -12,7 +12,6 @@
     "start": "pm2 start ./bin/server.js --n fmr",
     "stop": "pm2 stop fmr",
     "build": "node ace build",
-    "deploy": "sh ./scripts/deploy.sh",
     "dev": "node ace serve --watch",
     "test": "node ace test",
     "test:ui": "vitest",

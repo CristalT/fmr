@@ -7,16 +7,6 @@ import { router, useForm } from '@inertiajs/vue3'
 import type Product from '#models/product'
 import ProviderSelect from '~/components/ProviderSelect.vue'
 
-const { providers } = defineProps<{
-  providers: { alias: string }[]
-}>()
-
-const providersOptions = computed(() => {
-  return providers.map(provider => ({
-    label: provider.alias,
-    value: provider.alias,
-  }))
-})
 const { toast } = useToast()
 
 const form = useForm({
@@ -81,9 +71,8 @@ function save() {
                 v-model="form.provider"
                 :error="form.errors?.provider"
                 label="Proveedor"
-                :placeholder="'Seleccione un proveedor'"
-                :options="providersOptions"
-                
+                placeholder="Seleccione un proveedor"
+
               />
               <Input
                 class="basis-2/6"

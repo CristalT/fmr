@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch, watchEffect, defineAsyncComponent } from 'vue'
+import type { OrderStatus } from '#types/order_status'
+import { Input } from '~/components/ui'
 
 
 const asyncComponents = {
@@ -12,13 +14,23 @@ const currentComponent = (name: keyof typeof asyncComponents) => {
 
 const emit = defineEmits<{ (e: 'change', option: { value: string | number, label: string }): void }>()
 
-const props = defineProps<{
-  options: Array<{ value: string | number, label: string, component?: { name: string, props: Record<string, unknown> } }>
+type StatusBadgeProps = { status: OrderStatus }
+
+const { clearable = false, ...props } = defineProps<{
+  options: Array<{
+    value: string | number,
+    label: string,
+    component?: {
+      name: 'StatusBadge',
+      props: StatusBadgeProps
+    }
+  }>
   placeholder?: string
   label?: string
   disabled?: boolean
   error?: string | string[]
   searchable?: boolean
+  clearable?: boolean
   searchPlaceholder?: string
   noResultsText?: string
 }>()
@@ -160,6 +172,11 @@ function onClickOutside(event: MouseEvent) {
   }
 }
 
+function clearSelection() {
+  model.value = null
+  selectedOption.value = null
+}
+
 // Adds and removes listeners on mount and unmount
 onMounted(() => {
   document.addEventListener('click', onClickOutside)
@@ -176,11 +193,11 @@ onUnmounted(() => {
 
     <!-- Select visible -->
     <div @click="toggleDropdown" @keydown="handleKeydown" :class="{
-      'border-red-500 border-2': error,
+      'border-red-500': error,
       'bg-gray-100': disabled,
-      'border-primary': isOpen && !error
+      'border-primary border-2': isOpen && !error
     }"
-      class="border rounded w-full py-2 px-4 flex justify-between items-center cursor-pointer outline-none text-black"
+      class="border rounded-md w-full py-2 px-4 flex justify-between items-center cursor-pointer outline-none text-black"
       :tabindex="disabled ? -1 : 0">
       <div v-if="selectedOption" class="text-black">
         {{ selectedOption.label }}
@@ -188,7 +205,15 @@ onUnmounted(() => {
       <div v-else class="text-gray-400">
         {{ placeholder || 'Seleccione una opción' }}
       </div>
-      <div class="pointer-events-none">
+
+      <div class="flex gap-2">
+        <div v-if="clearable && selectedOption" @click.stop="clearSelection" class="cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </div>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400"
           :class="{ 'transform rotate-180': isOpen }" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd"
@@ -202,8 +227,7 @@ onUnmounted(() => {
     <div v-if="isOpen" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg">
       <!-- Search input -->
       <div class="sticky top-0 bg-white p-2 border-b" v-if="props.searchable">
-        <input ref="searchInput" v-model="searchQuery" type="text"
-          class="border rounded w-full py-1 px-3 outline-primary text-black"
+        <Input ref="searchInput" v-model="searchQuery" type="text"
           :placeholder="searchPlaceholder || 'Buscar...'" @click.stop @keydown.stop="handleKeydown" />
       </div>
 

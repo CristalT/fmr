@@ -32,7 +32,7 @@ export default class StockCommand extends BaseCommand {
 
   async run() {
     const products: any = []
-    const providerAliases = new Set<string>()
+    const providerAliases = new Map<string, string>()
     const source = env.get('STOCK_LIST_UTF8')
     if (!source) throw new Error('STOCK_LIST_UTF8 is not defined')
     this.logger.info('Updating stock...')
@@ -43,7 +43,7 @@ export default class StockCommand extends BaseCommand {
           separator: ';',
           headers: [
             'code',
-            'provider',
+            'providerAlias',
             'providerName',
             'name',
             'fob',
@@ -67,9 +67,9 @@ export default class StockCommand extends BaseCommand {
       })
       .on('data', (row) => {
         products.push({
-          id: `${row.code}${row.provider}`,
+          id: `${row.code}${row.providerAlias}`,
           code: row.code,
-          provider: row.provider,
+          provider: row.providerAlias,
           location: row.location,
           name: row.name,
           fob: Number(row.fob?.replace(',', '.') ?? 0),
@@ -79,10 +79,10 @@ export default class StockCommand extends BaseCommand {
           category: row.categoryName,
           subcategory: row.subcategoryName,
           origin: row.originName,
-          factoryCode: truncate(row.factoryCode, { length: 20 })
+          factoryCode: truncate(row.factoryCode, { length: 20 }),
         })
 
-        providerAliases.add(row.provider)
+        providerAliases.set(row.providerAlias, row.providerName)
       })
       .on('end', () => {
         const promises = []
@@ -94,7 +94,7 @@ export default class StockCommand extends BaseCommand {
               this.logger.info('Stock updated')
             })
             .catch((error) => {
-              this.logger.error('Error updating stock', error.message)
+              this.logger.error('Error updating stock ' + error.message)
             })
         )
 
@@ -102,8 +102,9 @@ export default class StockCommand extends BaseCommand {
         promises.push(
           Provider.updateOrCreateMany(
             'alias',
-            Array.from(providerAliases).map((alias) => ({
+            Array.from(providerAliases).map(([alias, name]) => ({
               alias,
+              name,
             }))
           )
             .then(() => {

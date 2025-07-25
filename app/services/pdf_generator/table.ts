@@ -27,8 +27,9 @@ export default class Table {
     return this
   }
 
-  rows(row: { text: string; alignment?: string; style?: string }[]) {
-    this.tableDefinition.table.body.push(row)
+  rows(content: { text: string; alignment?: string; style?: string }[]) {
+    const formattedRows = content.map((row) => ({ ...row, fontSize: 10 }))
+    this.tableDefinition.table.body.push(formattedRows)
     return this
   }
 

@@ -1,4 +1,4 @@
-import type CustomerUser from '#models/customer_user'
+import type Customer from '#models/customer'
 import Table from '#services/pdf_generator/table'
 import { resolve } from 'node:path'
 import PdfPrinter from 'pdfmake'
@@ -39,9 +39,9 @@ export default class PdfGenerator {
   docHeader(data: { title: string }) {
     this.docDefinition.content.push([
       {
+        fontSize: 16,
         text: data.title,
         alignment: 'left',
-        fontSize: 16,
         bold: true,
         border: [1, 1, 0, 0],
         margin: [0, 0, 0, 10],
@@ -49,14 +49,22 @@ export default class PdfGenerator {
     ])
   }
 
-  clientHeader(customer: CustomerUser) {
+  clientHeader(customer: Customer) {
+    const fontSize = 10
     this.docDefinition.content.push({
       style: 'clientHeader',
       table: {
         widths: ['*', '*'],
         body: [
           [
-            { text: 'CLIENTE', colSpan: 2, alignment: 'center', fillColor: '#f3f3f3', bold: true },
+            {
+              text: 'CLIENTE',
+              colSpan: 2,
+              alignment: 'center',
+              fillColor: '#f3f3f3',
+              bold: true,
+              fontSize,
+            },
             {},
           ],
           [
@@ -65,16 +73,17 @@ export default class PdfGenerator {
               colSpan: 2,
               bold: true,
               border: [1, 0, 1, 0],
+              fontSize,
             },
             {},
           ],
           [
-            { text: customer.address, border: [1, 0, 0, 0] },
-            { text: customer.city, border: [0, 0, 1, 0] },
+            { text: customer.address, border: [1, 0, 0, 0], fontSize },
+            { text: customer.city, border: [0, 0, 1, 0], fontSize },
           ],
           [
-            { text: customer.phone, border: [1, 0, 0, 1] },
-            { text: customer.email, border: [0, 0, 1, 1] },
+            { text: customer.phone, border: [1, 0, 0, 1], fontSize },
+            { text: customer.email, border: [0, 0, 1, 1], fontSize },
           ],
         ],
       },

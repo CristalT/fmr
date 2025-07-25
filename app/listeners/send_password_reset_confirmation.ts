@@ -1,10 +1,10 @@
 import appUrl from '#helpers/app_url'
-import CustomerUser from '#models/customer_user'
+import type Customer from '#models/customer'
 import logger from '@adonisjs/core/services/logger'
 import mail from '@adonisjs/mail/services/main'
 
 export default class SendWelcomeEmail {
-  handle(data: { user: CustomerUser }) {
+  handle(data: { user: Customer }) {
     const to = data.user.email
     const name = data.user.firstName
     const subject = 'Problema de seguridad con la contraseña de la cuenta.'

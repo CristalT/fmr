@@ -7,14 +7,12 @@ import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import string from '@adonisjs/core/helpers/string'
 import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
-
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
 
-
-export default class CustomerUser extends compose(BaseModel, AuthFinder) {
+export default class Customer extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: number
 
@@ -71,7 +69,7 @@ export default class CustomerUser extends compose(BaseModel, AuthFinder) {
   @column.dateTime()
   declare deletedAt: DateTime | null
 
-  static readonly accessTokens = DbAccessTokensProvider.forModel(CustomerUser)
+  static readonly accessTokens = DbAccessTokensProvider.forModel(Customer)
 
   generateResetPasswordToken() {
     this.resetPasswordToken = string.generateRandom(64)
@@ -79,12 +77,12 @@ export default class CustomerUser extends compose(BaseModel, AuthFinder) {
   }
 
   @beforeFetch()
-  static ignoreDeleted(query: ModelQueryBuilderContract<typeof CustomerUser>) {
+  static ignoreDeleted(query: ModelQueryBuilderContract<typeof Customer>) {
     query.whereNull('deletedAt')
   }
 
   @beforeFind()
-  static ignoreDeletedForFind(query: ModelQueryBuilderContract<typeof CustomerUser>) {
+  static ignoreDeletedForFind(query: ModelQueryBuilderContract<typeof Customer>) {
     query.whereNull('deletedAt')
   }
 }

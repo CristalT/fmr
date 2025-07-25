@@ -1,6 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { customerLoginValidator } from '#validators/login'
-import CustomerUser from '#models/customer_user'
+import Customer from '#models/customer'
 
 export default class CustomerAuthController {
   async show({ inertia }: HttpContext) {
@@ -12,7 +12,7 @@ export default class CustomerAuthController {
     const { email, password } = request.only(['email', 'password'])
 
     try {
-      const user = await CustomerUser.verifyCredentials(email, password)
+      const user = await Customer.verifyCredentials(email, password)
 
       await auth.use('customer').login(user)
       return response.redirect('/')

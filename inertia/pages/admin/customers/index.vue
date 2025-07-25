@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue'
 import { AdminLayout } from '~/components'
 import { Input, Table, Button } from '~/components/ui'
 import http from '~/shared/http'
-import type Customer from '#models/customer_user'
+import type Customer from '#models/customer'
 import { Meta } from '~/types/metadata'
 
 const users = ref<Customer[]>([])

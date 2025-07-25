@@ -5,19 +5,20 @@ import PrintIcon from '~/components/icons/PrinterIcon.vue'
 import SendIcon from '~/components/icons/SendIcon.vue'
 import AddIcon from '~/components/icons/AddIcon.vue'
 import OrdersIcon from '~/components/icons/OrdersIcon.vue'
-import CheckIcon from '~/components/icons/CheckIcon.vue';
+import CheckIcon from '~/components/icons/CheckIcon.vue'
 import ChevronLeftIcon from '~/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '~/components/icons/ChevronRightIcon.vue'
 import ExclamationIcon from '~/components/icons/ExclamationIcon.vue'
 import MessageIcon from '~/components/icons/MessageIcon.vue'
 import ClientsIcon from '~/components/icons/ClientsIcon.vue'
-import SettingsIcon from '~/components/icons/SettingsIcon.vue';
-import PowerIcon from '~/components/icons/PowerIcon.vue';
-import RegistryIcon from '~/components/icons/RegistryIcon.vue';
-import StockIcon from '~/components/icons/StockIcon.vue';
+import SettingsIcon from '~/components/icons/SettingsIcon.vue'
+import PowerIcon from '~/components/icons/PowerIcon.vue'
+import RegistryIcon from '~/components/icons/RegistryIcon.vue'
+import StockIcon from '~/components/icons/StockIcon.vue'
 import ChevronUpIcon from '~/components/icons/ChevronUpIcon.vue'
 import AdjustmentsIcon from '~/components/icons/AdjustmentsIcon.vue'
 import ShowcaseIcon from '~/components/icons/ShowcaseIcon.vue'
+import ProviderIcon from '~/components/icons/ProviderIcon.vue'
 
 export const icons = {
   edit: EditIcon,
@@ -40,4 +41,5 @@ export const icons = {
   chevronUp: ChevronUpIcon,
   adjustments: AdjustmentsIcon,
   showcase: ShowcaseIcon,
+  provider: ProviderIcon,
 }

@@ -24,7 +24,7 @@ const statusFilterOptions = [
 
 function getCustomerFullName(order: Order) {
   try {
-    return `${order.customerUser.firstName} ${order.customerUser.lastName}`
+    return `${order.customer.firstName} ${order.customer.lastName}`
   } catch (error) {
     return 'Unknown'
   }

@@ -85,13 +85,13 @@ const showContextMenu = ref(false)
           <thead class="table w-full table-fixed border-b-2 ">
             <tr>
               <th class="w-[100px]">Foto</th>
-              <th class="w-[120px] py-2 px-4 text-center">Código</th>
-              <th class="w-[145px] py-2 px-4 text-center">Catálogo</th>
+              <th class="w-[110px] py-2 px-4 text-center">Código</th>
+              <th class="w-[110px] py-2 px-4 text-center">Catálogo</th>
               <th class="w-[65px] py-2 px-4 text-left">Prov.</th>
               <th class="w-[500px] py-2 px-4 text-left">Descripción</th>
-              <th class="w-[120px] py-2 px-4 text-center">Ubicación</th>
+              <th class="w-[100px] py-2 px-4 text-center">Ubicación</th>
               <th class="w-[70px] py-2 px-4 text-center">Stock</th>
-              <th class="w-[80px] py-2 px-4 text-right">Precio</th>
+              <th class="w-[100px] py-2 px-4 text-right">Precio</th>
             </tr>
           </thead>
           <tbody class="overflow-auto block h-[calc(100vh-200px)]" v-if="products?.length">
@@ -101,13 +101,13 @@ const showContextMenu = ref(false)
               <td class="p-2 w-[100px] h-20 text-center border-r">
                 <ProductImage rounded :product class="w-20 mx-auto" />
               </td>
-              <td class="p-2 w-[120px] border-r text-center">{{ product.code }}</td>
-              <td class="p-2 w-[145px] border-r text-center">{{ product.factoryCode }}</td>
+              <td class="p-2 w-[110px] border-r text-center">{{ product.code }}</td>
+              <td class="p-2 w-[110px] border-r text-center">{{ product.factoryCode }}</td>
               <td class="p-2 w-[65px] border-r text-center">{{ product.provider }}</td>
               <td class="p-2 w-[500px] border-r">{{ product.name }}</td>
-              <td class="p-2 w-[120px] border-r text-center text-xs">{{ product.location }}</td>
+              <td class="p-2 w-[100px] border-r text-center text-xs">{{ product.location }}</td>
               <td class="p-2 w-[70px] border-r text-center">{{ product.stock }}</td>
-              <td class="pr-4 w-[80px] text-right">$ {{ product.price }}</td>
+              <td class="pr-4 w-[100px] text-right currency">{{ product.price }}</td>
             </tr>
           </tbody>
           <tbody class="font-mono" v-else-if="!products?.length && isFetched">

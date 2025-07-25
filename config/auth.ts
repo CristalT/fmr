@@ -8,13 +8,13 @@ const authConfig = defineConfig({
     customer: sessionGuard({
       useRememberMeTokens: false,
       provider: sessionUserProvider({
-        model: () => import('#models/customer_user'),
+        model: () => import('#models/customer'),
       }),
     }),
     admin: sessionGuard({
       useRememberMeTokens: false,
       provider: sessionUserProvider({
-        model: () => import('#models/admin_user'),
+        model: () => import('#models/administrator'),
       }),
     }),
   },

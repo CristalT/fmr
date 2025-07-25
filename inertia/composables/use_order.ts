@@ -10,7 +10,7 @@ export default function useOrder(order: Order) {
   const { confirmation } = useConfirm()
 
   const customerFullName = computed(() => {
-    return `${order.customerUser.firstName} ${order.customerUser.lastName}`
+    return `${order.customer.firstName} ${order.customer.lastName}`
   })
 
   const total = computed(() =>

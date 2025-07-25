@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Button, Icon } from '~/components/ui'
 import { AdminLayout } from '~/components'
-import type CustomerUser from '#models/customer_user'
+import type Customer from '#models/customer'
 import CustomerForm from '~/components/CustomerForm.vue'
 import { useCustomer, useConfirm } from '~/composables'
 import { router } from '@inertiajs/vue3'
 
 const { user } = defineProps<{
-  user: CustomerUser
+  user: Customer
 }>()
 
 const { form } = useCustomer()
@@ -47,7 +47,7 @@ async function deleteUser() {
               <Icon name="delete" />
             </template>
           </Button>
-            
+
           <Button type="submit" :disabled="form.processing" label="Aceptar" />
         </div>
       </template>

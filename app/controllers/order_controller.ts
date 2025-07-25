@@ -24,7 +24,7 @@ export default class OrderController {
           productQuery.select(['id', 'code', 'name'])
         })
       })
-      .preload('customerUser', (query) => {
+      .preload('customer', (query) => {
         query.select(['id', 'firstName', 'lastName'])
       })
       .firstOrFail()
@@ -34,7 +34,7 @@ export default class OrderController {
   async store({ response, auth }: HttpContext) {
     // create order
     const order = await Order.create({
-      customerUserId: auth.user?.id!,
+      customerId: auth.user?.id!,
     })
 
     // associate cart items with the order

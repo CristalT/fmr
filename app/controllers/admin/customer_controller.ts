@@ -1,5 +1,5 @@
 import UserCreated from '#events/user_created'
-import CustomerUser from '#models/customer_user'
+import Customer from '#models/customer'
 import { createCustomerValidator, updateCustomerValidator } from '#validators/customer'
 import { HttpContext } from '@adonisjs/core/http'
 import logger from '@adonisjs/core/services/logger'
@@ -17,7 +17,7 @@ export default class CustomerController {
     const limit = request.input('limit', 12)
     const terms = request.input('terms', null)
 
-    const query = CustomerUser.query().select(['id', 'firstName', 'lastName', 'phone', 'email'])
+    const query = Customer.query().select(['id', 'firstName', 'lastName', 'phone', 'email'])
 
     if (terms) {
       query.where('firstName', 'LIKE', `%${terms.replaceAll(' ', '%')}%`)
@@ -28,7 +28,7 @@ export default class CustomerController {
   }
 
   async edit({ inertia, params }: HttpContext) {
-    const user = await CustomerUser.findOrFail(params.id)
+    const user = await Customer.findOrFail(params.id)
     return inertia.render('admin/customers/edit', { user })
   }
 
@@ -39,7 +39,7 @@ export default class CustomerController {
   async store({ request, response }: HttpContext) {
     const data = await request.validateUsing(createCustomerValidator)
 
-    const user = new CustomerUser()
+    const user = new Customer()
 
     const resetPasswordToken = string.generateRandom(64)
     const resetPasswordTokenExpirationDate = DateTime.now().plus({ days: 1 }).toString()
@@ -60,7 +60,7 @@ export default class CustomerController {
       meta: { customerId: params.id },
     })
 
-    const user = await CustomerUser.findOrFail(params.id)
+    const user = await Customer.findOrFail(params.id)
 
     Object.assign(user, data)
     await user.save()
@@ -68,7 +68,7 @@ export default class CustomerController {
   }
 
   async destroy({ response, params }: HttpContext) {
-    const user = await CustomerUser.findOrFail(params.id)
+    const user = await Customer.findOrFail(params.id)
     user.deletedAt = DateTime.now()
     await user.save()
     return response.noContent()

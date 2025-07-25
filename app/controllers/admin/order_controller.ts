@@ -12,14 +12,14 @@ export default class OrderController {
     const status = request.input('status', null)
 
     const query = Order.query()
-      .whereHas('customerUser', (q) => {
+      .whereHas('customer', (q) => {
         q.where('firstName', 'LIKE', `%${request.input('terms', '')}%`).orWhere(
           'lastName',
           'LIKE',
           `%${request.input('terms', '')}%`
         )
       })
-      .preload('customerUser', (builder) => {
+      .preload('customer', (builder) => {
         builder
           .where('firstName', 'LIKE', `%${request.input('terms', '')}%`)
           .orWhere('lastName', 'LIKE', `%${request.input('terms', '')}%`)
@@ -95,7 +95,7 @@ export default class OrderController {
     const print = new OrderPrint(order.id)
 
     const doc = await print
-      .customer(order.customerUser)
+      .customer(order.customer)
       .items(
         order.cartItems.map((item) => ({
           ...item.product,

@@ -7,11 +7,13 @@ import ProductImage from '~/components/ProductImage.vue';
 
 const { selectedProducts = [] } = defineProps<{ selectedProducts?: Product[] }>()
 const params = ref({
-  terms: ''
+  terms: '',
+  page: 1,
 })
 
 const { data } = useProduct().fetchAll(params)
 const products = computed(() => data.value?.data || [])
+const metadata = computed(() => data.value?.meta)
 
 const selected = defineModel<string[]>({ required: true })
 const _selectedProducts = ref<Product[]>(selectedProducts || []);
@@ -46,6 +48,8 @@ const removeProduct = (product: Product) => {
             ]"
             :data="products"
             :selected-rows="selected"
+            :metadata
+            @page-change="(value) => params.page = value"
             @row-click="addProduct"
           >
             <template #prepend="{ row }">

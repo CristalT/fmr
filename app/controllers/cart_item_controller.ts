@@ -27,7 +27,7 @@ export default class CartItemController {
 
     const exists = await CartItem.query()
       .where('productId', product.id)
-      .where('customerUserId', auth.user.id)
+      .where('customerId', auth.user.id)
       .where('status', OrderStatus.InCart)
       .first()
 
@@ -36,7 +36,7 @@ export default class CartItemController {
     }
 
     const cart = await CartItem.create({
-      customerUserId: auth.user?.id,
+      customerId: auth.user?.id,
       quantity,
     })
 

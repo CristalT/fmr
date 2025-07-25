@@ -5,6 +5,12 @@ export default class Provider extends BaseModel {
   @column({ isPrimary: true })
   declare alias: string
 
+  @column()
+  declare name: string
+
+  @column()
+  declare email: string
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

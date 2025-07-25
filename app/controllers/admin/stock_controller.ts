@@ -1,6 +1,5 @@
 import { UPLOADS_FOLDER } from '#config/constants'
 import Product from '#models/product'
-import Provider from '#models/provider'
 import { createStockItemValidator } from '#validators/stock'
 import { MultipartFile } from '@adonisjs/core/bodyparser'
 import { HttpContext } from '@adonisjs/core/http'
@@ -46,8 +45,7 @@ export default class StockController {
   }
 
   async create({ inertia }: HttpContext) {
-    const providers = await Provider.all()
-    return inertia.render('admin/stock/create', { providers })
+    return inertia.render('admin/stock/create')
   }
 
   async store({ request, response }: HttpContext) {

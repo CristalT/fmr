@@ -9,4 +9,4 @@ export { default as useProduct } from './use_product'
 export { default as useSetting } from './use_setting'
 export { default as useShowcase } from './use_showcase'
 export { default as useAdmin } from './use_admin'
-
+export { default as useProvider } from './use_provider'

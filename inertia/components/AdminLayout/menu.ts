@@ -39,6 +39,13 @@ menu.addOption({
 })
 
 menu.addOption({
+  label: 'Proveedores',
+  action: () => router.visit('/admin/providers/list'),
+  icon: 'provider',
+  section: 'providers',
+})
+
+menu.addOption({
   label: 'Vidrieras',
   action: () => router.visit('/admin/showcases/list'),
   icon: 'showcase',

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+
 import type { Meta } from '~/types/metadata';
 import { Paginator } from '~/components/ui';
+import { computed } from 'vue';
 
 export type Column = {
   label: string
@@ -8,8 +10,19 @@ export type Column = {
   align?: 'left' | 'right' | 'center',
 }
 
-defineProps<{ columns: Column[]; data: any[]; metadata?: Meta; selectedRows?: string[] }>()
+const slots = defineSlots()
+
+const { columns } = defineProps<{ columns: Column[]; data: any[]; metadata?: Meta; selectedRows?: string[] }>()
 defineEmits<{ (e: 'pageChange', page: number): void; (e: 'rowClick', row: any): void }>()
+
+const footerColspan = computed(() => {
+  let colspan = columns.length
+
+  if (slots.prepend) colspan += 1
+  if (slots.append) colspan += 1
+
+  return colspan
+})
 </script>
 
 <template>
@@ -44,9 +57,9 @@ defineEmits<{ (e: 'pageChange', page: number): void; (e: 'rowClick', row: any): 
     </tbody>
     <tfoot v-if="metadata && metadata.lastPage > 1">
         <tr>
-          <td :colspan="columns.length" class="p-2">
+          <td :colspan="footerColspan" class="p-2">
             <Paginator
-              v-model="metadata.currentPage"
+              :modelValue="metadata.currentPage"
               :last-page="metadata.lastPage"
               @change="$emit('pageChange', $event)"
             />

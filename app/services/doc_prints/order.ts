@@ -1,4 +1,4 @@
-import type CustomerUser from '#models/customer_user'
+import type Customer from '#models/customer'
 import PdfGenerator from '#services/pdf_generator/pdf_generator'
 import type DocPrint from '#services/doc_prints/doc'
 import { Readable } from 'node:stream'
@@ -22,7 +22,7 @@ export default class OrderPrint implements DocPrint {
     return this
   }
 
-  customer(customer: CustomerUser) {
+  customer(customer: Customer) {
     this.pdf.clientHeader(customer)
     return this
   }
