@@ -99,7 +99,7 @@ const showContextMenu = ref(false)
               class="table-fixed table w-full border-b hover:bg-gray-100 cursor-pointer"
               :class="{ 'opacity-30': !product.public }" @click="openEdit(product.id)">
               <td class="p-2 w-[100px] h-20 text-center border-r">
-                <ProductImage rounded :product class="w-20 mx-auto" />
+                <ProductImage rounded :product class="h-20 mx-auto" />
               </td>
               <td class="p-2 w-[110px] border-r text-center">{{ product.code }}</td>
               <td class="p-2 w-[110px] border-r text-center">{{ product.factoryCode }}</td>
