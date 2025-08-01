@@ -44,7 +44,7 @@ function addToCart({ qty }: { qty: number }) {
     <div class="h-14 p-2 text-center text-sm uppercase">
       {{ product.name }}
     </div>
-    <div v-if="product.price" class="py-4 text-center text-lg font-medium">
+    <div v-if="product.price" class="py-4 text-center text-2xl font-medium">
       $ {{ product.price }}
     </div>
 

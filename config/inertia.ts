@@ -26,6 +26,7 @@ export default defineConfig({
       }
     },
     auth: async ({ auth }) => {
+      if (!auth) return null
       const isCustomerLoggedIn = await auth.use('customer').check()
       const isAdminLoggedIn = await auth.use('admin').check()
       const { fullName: userFullName, id: userId } = auth.use('customer').user ?? {}

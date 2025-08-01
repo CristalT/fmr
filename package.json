@@ -1,6 +1,6 @@
 {
   "name": "reycastor",
-  "version": "1.15.0",
+  "version": "1.15.2",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -9,8 +9,6 @@
     "email": "marceloforclaz@gmail.com"
   },
   "scripts": {
-    "start": "pm2 start ./bin/server.js --n fmr",
-    "stop": "pm2 stop fmr",
     "build": "node ace build",
     "dev": "node ace serve --watch",
     "test": "node ace test",

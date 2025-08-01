@@ -1,4 +1,4 @@
-import CartItem from '#models/cart_item'
+import Order from '#models/order'
 import env from '#start/env'
 import logger from '@adonisjs/core/services/logger'
 import { MercadoPagoConfig, Preference } from 'mercadopago'
@@ -26,13 +26,14 @@ export class MercadopagoService {
     return mpPublicKey
   }
 
-  async createPreference(items: Array<CartItem>) {
+  async createPreference(order: Order) {
     const preference = new Preference(this.client)
 
     return preference
       .create({
         body: {
-          items: items.map((item) => ({
+          external_reference: String(order.id),
+          items: order.cartItems.map((item) => ({
             id: item.product.id,
             title: item.product.name,
             quantity: item.quantity,

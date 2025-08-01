@@ -3,17 +3,14 @@ import { sep, normalize } from 'node:path'
 import app from '@adonisjs/core/services/app'
 
 import router from '@adonisjs/core/services/router'
-import { publicRoutes, adminRoutes, customerRoutes } from '#start/routes/index'
+import { publicRoutes, adminRoutes, customerRoutes, webhookRoutes } from '#start/routes/index'
 import env from '#start/env'
 
 // Public routes
 router.group(publicRoutes)
 
-// Temp route for Mercado Pago webhooks
-router.post('/webhooks/mercadopago', ({ request, response }) => {
-  console.log(request.body(), request.headers(), request.qs())
-  response.ok('Webhook received successfully')
-})
+// Webhook routes
+router.group(webhookRoutes).as('webhook')
 
 // Admin routes
 router

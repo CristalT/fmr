@@ -17,7 +17,7 @@ export class PaymentService {
 
       this.paymentMethods.set('mercadopago', {
         publicKey: mercadopagoService.getPublicKey(),
-        preference: await mercadopagoService.createPreference(this.order.cartItems),
+        preference: await mercadopagoService.createPreference(this.order),
       })
     }
 
