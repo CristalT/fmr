@@ -9,4 +9,6 @@ export default function friendlyDate(date: string | DateTime<boolean>) {
     .setLocale('es')
     .toLocaleString(DateTime.DATETIME_SHORT)
     .replace(',', ' ')
+    .replaceAll('/', '•')
+    .split(' ')[0]
 }

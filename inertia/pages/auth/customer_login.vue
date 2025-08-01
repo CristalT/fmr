@@ -16,40 +16,35 @@ const error = computed(() => {
   }
   return ''
 })
-
 </script>
 
 <template>
   <div
-    class="flex flex-row h-screen w-screen items-center justify-center absolute inset-0 bg-cover bg-center bg-no-repeat"
-    style="background-image: url('/static/customer-login-bg.webp')"
-  >
-    <div class="h-full bg-black bg-opacity-40 p-28 text-white w-full md:w-2/3 lg:w-2/4 xl:w-2/5">
+    class="absolute inset-0 flex h-screen w-screen flex-row items-center justify-center bg-cover bg-center bg-no-repeat"
+    style="background-image: url('/static/customer-login-bg.webp')">
+    <div class="h-full w-full bg-black bg-opacity-40 p-28 md:w-2/3 lg:w-2/4 xl:w-2/5">
       <div class="flex flex-col gap-4">
-        <h1 class="uppercase text-center font-semibold">Acceso Clientes</h1>
-        <Alert variant="danger" v-if="error"> {{ error }} </Alert>
+        <h1 class="text-center font-semibold uppercase text-white">Acceso Clientes</h1>
+        <Alert variant="danger" v-if="error">{{ error }}</Alert>
         <form @submit.prevent="form.post('/auth/customers')">
           <div class="flex flex-col gap-4">
             <div>
-              <Input
-                placeholder="Usuario"
-                v-model="form.email"
-                :error="form.errors.email"
-              />
+              <Input placeholder="Usuario" v-model="form.email" :error="form.errors.email" />
             </div>
             <div>
               <Input
                 type="password"
                 placeholder="Password"
                 v-model="form.password"
-                :error="form.errors.password"
-              />
+                :error="form.errors.password" />
             </div>
             <div class="flex justify-center">
               <Button label="Ingresar" type="submit" variant="primary" class="w-full" />
             </div>
             <div class="flex justify-center">
-              <a href="/auth/password-recovery" class="text-white underline">Olvidé mi contraseña</a>
+              <a href="/auth/password-recovery" class="text-white underline">
+                Olvidé mi contraseña
+              </a>
             </div>
             <div class="flex justify-center">
               <a href="/registries/create" class="text-white underline">Quiero ser cliente</a>

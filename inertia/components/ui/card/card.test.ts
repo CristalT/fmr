@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import Card from './Card.vue'
 import { mount } from '@vue/test-utils'
+import { findByText } from '~/test_utils'
+
+import Card from './Card.vue'
 
 describe('Card', () => {
   it('renders the card with header', () => {
@@ -37,5 +39,16 @@ describe('Card', () => {
     const footer = wrapper.find('footer')
     expect(footer.exists()).toBe(true)
     expect(footer.text()).toBe('Test Card Footer')
+  })
+
+  it('renders the card with title', () => {
+    const wrapper = mount(Card, {
+      props: {
+        title: 'Test Card Title',
+      },
+    })
+
+    const title = findByText(wrapper, 'Test Card Title')
+    expect(title.exists()).toBe(true)
   })
 })

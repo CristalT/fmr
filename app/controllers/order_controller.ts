@@ -1,8 +1,12 @@
 import CartItem from '#models/cart_item'
+import Customer from '#models/customer'
 import Order from '#models/order'
+import { PaymentService } from '#services/payment_service'
 import { OrderStatus } from '#types/order_status'
+import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
+@inject()
 export default class OrderController {
   async index({ request, inertia, auth }: HttpContext) {
     const page = request.input('page', 1)
@@ -13,7 +17,7 @@ export default class OrderController {
       .orderBy('created_at', 'desc')
       .paginate(page, 10)
 
-    return inertia.render('cart/orders', { data })
+    return inertia.render('order/list', { data })
   }
   async show({ params, auth, inertia }: HttpContext) {
     const order = await Order.query()
@@ -21,7 +25,7 @@ export default class OrderController {
       .where('id', params.id)
       .preload('cartItems', (query) => {
         query.preload('product', (productQuery) => {
-          productQuery.select(['id', 'code', 'name'])
+          productQuery.select(['id', 'code', 'name', 'price'])
         })
       })
       .preload('customer', (query) => {
@@ -29,13 +33,27 @@ export default class OrderController {
       })
       .firstOrFail()
 
-    return inertia.render('cart/order', { order })
+    return inertia.render('order/show', { order })
   }
+
+  async edit({ inertia, params }: HttpContext) {
+    const order = await Order.byId(params.id)
+
+    const renderProps: Record<string, any> = { order }
+
+    const payment = new PaymentService(order)
+
+    renderProps.paymentMethods = await payment.methods()
+
+    return inertia.render('order/edit', renderProps)
+  }
+
   async store({ response, auth }: HttpContext) {
+    const customer = await Customer.findOrFail(auth.user?.id!)
+
     // create order
-    const order = await Order.create({
-      customerId: auth.user?.id!,
-    })
+    const order = new Order()
+    await order.related('customer').associate(customer)
 
     // associate cart items with the order
     await CartItem.query()
@@ -46,8 +64,10 @@ export default class OrderController {
         status: OrderStatus.Pending,
       })
 
-    await order.load('cartItems')
+    if (customer.paymentOnDelivery) {
+      return response.redirect().toRoute('orders.show', { id: order.id })
+    }
 
-    return response.created(order)
+    return response.redirect(`/orders/${order.id}/edit`)
   }
 }

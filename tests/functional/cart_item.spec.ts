@@ -1,5 +1,7 @@
+import { AdministratorFactory } from '#database/factories/admin_factory'
 import { CartItemFactory } from '#database/factories/cart_item_factory'
 import { CustomerFactory } from '#database/factories/customer_factory'
+import { OrderFactory } from '#database/factories/order_factory'
 import { ProductFactory } from '#database/factories/product_factory'
 import { OrderStatus } from '#types/order_status'
 import { test } from '@japa/runner'
@@ -122,5 +124,61 @@ test.group('Cart item create', () => {
         },
       }))
     )
+  })
+
+  test('update cart item quantity as customer user', async ({ client }) => {
+    const customer = await CustomerFactory.create()
+    const item = await CartItemFactory.with('product')
+      .merge({
+        customerId: customer.id,
+        status: OrderStatus.InCart,
+      })
+      .create()
+    const response = await client.put(`/cart-items/${item.id}`).loginAs(customer).form({
+      quantity: 2,
+    })
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      id: item.id,
+      quantity: '2',
+      delivered: 0,
+      orderId: null,
+      customerId: customer.id,
+      status: OrderStatus.InCart,
+      productId: item.productId,
+    })
+  })
+
+  test('update cart item delivered field as admin user', async ({ client }) => {
+    const admin = await AdministratorFactory.create()
+    const customer = await CustomerFactory.create()
+    const order = await OrderFactory.create()
+    const item = await CartItemFactory.with('product')
+      .merge({
+        customerId: customer.id,
+        status: OrderStatus.InCart,
+        orderId: order.id,
+      })
+      .create()
+
+    const response = await client
+      .put(`/cart-items/${item.id}?orderId=${order.id}`)
+      .withGuard('admin')
+      .loginAs(admin)
+      .form({
+        delivered: 1,
+      })
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      id: item.id,
+      quantity: item.quantity,
+      delivered: '1',
+      orderId: String(order.id),
+      customerId: customer.id,
+      status: OrderStatus.InCart,
+      productId: item.productId,
+    })
   })
 })

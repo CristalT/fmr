@@ -13,12 +13,15 @@
       "name": "Descripción",
       "fob": "Costo",
       "price": "Precio",
-      "stock": "Stock"
+      "stock": "Stock",
+      "amount": "Monto",
+      "customerId": "Cliente"
     },
     "messages": {
       "unique": "El {field} ingresado ya existe",
       "required": "Ingrese {field}",
-      "dni.unique": "El DNI / CUIT ingresado corresponde a otro cliente"
+      "dni.unique": "El DNI / CUIT ingresado corresponde a otro cliente",
+      "amount.min": "El {field} debe ser igual o mayor o igual al total a cobrar"
     }
   }
 }

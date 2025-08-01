@@ -47,5 +47,6 @@ export const updateCustomerValidator = vine.compile(
     city: vine.string().optional(),
     province: vine.string().optional(),
     postalCode: vine.string().optional(),
+    paymentOnDelivery: vine.boolean().optional(),
   })
 )

@@ -19,6 +19,7 @@ import ChevronUpIcon from '~/components/icons/ChevronUpIcon.vue'
 import AdjustmentsIcon from '~/components/icons/AdjustmentsIcon.vue'
 import ShowcaseIcon from '~/components/icons/ShowcaseIcon.vue'
 import ProviderIcon from '~/components/icons/ProviderIcon.vue'
+import TreasuryIcon from '~/components/icons/TreasuryIcon.vue'
 
 export const icons = {
   edit: EditIcon,
@@ -42,4 +43,5 @@ export const icons = {
   adjustments: AdjustmentsIcon,
   showcase: ShowcaseIcon,
   provider: ProviderIcon,
+  treasury: TreasuryIcon,
 }

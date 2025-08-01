@@ -43,13 +43,16 @@ export default class OrderController {
       return response.notFound('Order not found')
     }
 
-    if (order.status === OrderStatus.Processing) {
-      return inertia.render('admin/orders/processing', { order })
+    switch (order.status) {
+      case OrderStatus.Processing:
+        return inertia.render('admin/orders/processing', { order })
+      case OrderStatus.Completed:
+        return inertia.render('admin/orders/completed', { order })
+      case OrderStatus.Delivered:
+        return inertia.render('admin/orders/delivered', { order })
+      default:
+        return inertia.render('admin/orders/show', { order })
     }
-    if (order.status === OrderStatus.Completed) {
-      return inertia.render('admin/orders/completed', { order })
-    }
-    return inertia.render('admin/orders/show', { order })
   }
 
   async update({ params, request, response }: HttpContext) {

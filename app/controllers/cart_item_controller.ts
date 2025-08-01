@@ -1,7 +1,9 @@
 import { HttpContext } from '@adonisjs/core/http'
+import { OrderStatus } from '#types/order_status'
+
 import Product from '#models/product'
 import CartItem from '#models/cart_item'
-import { OrderStatus } from '#types/order_status'
+import cache from '@adonisjs/cache/services/main'
 
 export default class CartItemController {
   async view({ inertia }: HttpContext) {
@@ -46,12 +48,18 @@ export default class CartItemController {
   }
 
   async update({ request, response }: HttpContext) {
-    const { quantity } = request.only(['quantity'])
+    const orderId = request.input('orderId', null)
+
     const { id } = request.params()
 
     const cartItem = await CartItem.findOrFail(id)
-    cartItem.quantity = quantity
+
+    cartItem.merge(request.all())
     await cartItem.save()
+
+    if (orderId) {
+      cache.delete({ key: `order:${orderId}` })
+    }
 
     return response.json(cartItem)
   }

@@ -5,6 +5,7 @@ import CartItem from './cart_item.js'
 import Customer from './customer.js'
 import { OrderStatus } from '#types/order_status'
 import cache from '@adonisjs/cache/services/main'
+import Receipt from './receipt.js'
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
@@ -19,14 +20,20 @@ export default class Order extends BaseModel {
   @hasMany(() => CartItem)
   declare cartItems: HasMany<typeof CartItem>
 
+  @column()
+  declare status: OrderStatus
+
+  @column()
+  declare receiptId: number | null
+
+  @belongsTo(() => Receipt)
+  declare receipt: BelongsTo<typeof Receipt>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-
-  @column()
-  declare status: OrderStatus
 
   static readonly getPendingOrders = scope((query) => {
     query.where('status', OrderStatus.Pending)
@@ -45,5 +52,11 @@ export default class Order extends BaseModel {
       ttl: '1 hour',
       factory,
     })
+  }
+
+  static readonly byIds = (ids: Array<number>) => {
+    return this.query()
+      .whereIn('id', ids)
+      .preload('cartItems', (builder) => builder.preload('product'))
   }
 }

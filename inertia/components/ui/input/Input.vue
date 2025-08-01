@@ -13,11 +13,11 @@ const { size = 'md', ...props } = defineProps<{
   autofocus?: boolean
   debounce?: number
   clearable?: boolean
-  alignment?: 'left' | 'center' | 'right',
+  alignment?: 'left' | 'center' | 'right'
   size?: 'sm' | 'md' | 'lg'
 }>()
 
-const model = defineModel<string | number | boolean>({ default: ''})
+const model = defineModel<string | number | boolean>({ default: '' })
 
 let timeout: string | number | NodeJS.Timeout | undefined
 
@@ -49,33 +49,50 @@ const align = `text-${props.alignment || 'left'}`
 
 onMounted(() => {
   if (props.autofocus) {
-      const input = document.querySelector(`#${inputId}`) as HTMLInputElement
-      input?.focus()
+    const input = document.querySelector(`#${inputId}`) as HTMLInputElement
+    input?.focus()
   }
 })
 </script>
 
 <template>
   <div class="relative" :class="{ 'flex items-center gap-2': type === 'boolean' }">
-    <Toggle :size v-if="type === 'boolean'" v-model="model as boolean" @update:model-value="model = $event" />
+    <Toggle
+      :size
+      v-if="type === 'boolean'"
+      v-model="model as boolean"
+      @update:model-value="model = $event" />
 
-    <div v-if="label" class="py-1 font-medium text-gray-700 text-sm"  id="input__label">{{ label }}</div>
+    <div v-if="label" class="py-1 text-sm font-medium" id="input__label">{{ label }}</div>
     <input
       :id="inputId"
       v-if="type !== 'boolean' && type !== 'textarea'"
-      :class="[{ 'border-red-500 border-2': error, '!text-gray-500': disabled }, align]"
+      :class="[{ 'border-2 border-red-500': error, '!text-gray-500': disabled }, align]"
       :name
-      class="border rounded-md w-full py-2 px-4 outline-primary text-gray-700"
+      class="w-full rounded-md border px-4 py-2 outline-primary"
       :disabled
       :type
       :placeholder="placeholder"
-      v-model="debouncedModel"
-    />
+      v-model="debouncedModel" />
 
-    <div v-if="clearable && String(model).length && type !== 'textarea'" class="absolute top-[60%] right-0 -translate-x-1/2 -translate-y-1/2">
-      <button type="button" @click="model = ''" class="text-gray-500 hover:text-primary transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    <div
+      v-if="clearable && String(model).length && type !== 'textarea'"
+      class="absolute right-0 top-[60%] -translate-x-1/2 -translate-y-1/2">
+      <button
+        type="button"
+        @click="model = ''"
+        class="text-gray-500 transition-colors hover:text-primary">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
@@ -83,12 +100,11 @@ onMounted(() => {
     <textarea
       :id="inputId"
       v-if="type === 'textarea'"
-      :class="{ 'border-red-500 border-2': error }"
-      class="border rounded w-full py-2 px-4 outline-primary text-black"
+      :class="{ 'border-2 border-red-500': error }"
+      class="w-full rounded border px-4 py-2 text-black outline-primary"
       :disabled
       :placeholder="placeholder"
-      v-model="debouncedModel as string"
-    />
+      v-model="debouncedModel as string" />
 
     <div id="input__error" v-if="error" class="text-red-500">{{ concatErrors(error) }}</div>
   </div>

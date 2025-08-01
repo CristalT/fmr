@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { afterFetch, BaseModel, column, manyToMany, scope } from '@adonisjs/lucid/orm'
+import { afterFetch, afterFind, BaseModel, column, manyToMany, scope } from '@adonisjs/lucid/orm'
 import setting from '#helpers/setting'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Showcase from '#models/showcase'
@@ -72,6 +72,15 @@ export default class Product extends BaseModel {
       products.forEach((product) => {
         product.price = Math.round(product.price / interval) * interval
       })
+    }
+  }
+
+  @afterFind()
+  static async afterFindHook(product: Product) {
+    const interval = Number(await setting('stock_round_interval', 0))
+
+    if (interval > 0) {
+      product.price = Math.round(product.price / interval) * interval
     }
   }
 

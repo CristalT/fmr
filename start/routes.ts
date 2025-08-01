@@ -9,6 +9,12 @@ import env from '#start/env'
 // Public routes
 router.group(publicRoutes)
 
+// Temp route for Mercado Pago webhooks
+router.post('/webhooks/mercadopago', ({ request, response }) => {
+  console.log(request.body(), request.headers(), request.qs())
+  response.ok('Webhook received successfully')
+})
+
 // Admin routes
 router
   .group(adminRoutes)

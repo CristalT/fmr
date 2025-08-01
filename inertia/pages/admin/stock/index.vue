@@ -29,7 +29,7 @@ watch(
     const { terms, filter, onlyPublic } = params.value
     return { terms, filter, onlyPublic }
   },
-  () => params.value.page = 1,
+  () => (params.value.page = 1),
   { deep: true }
 )
 
@@ -42,35 +42,48 @@ function openEdit(productId: string) {
 
 // Context menu state
 const showContextMenu = ref(false)
-
 </script>
 
 <template>
   <AdminLayout>
     <template #topbar>
       <div class="flex justify-end">
-        <Button variant="primary" label="Crear Producto" @click="router.visit('/admin/stock/create')" />
+        <Button
+          variant="primary"
+          label="Crear Producto"
+          @click="router.visit('/admin/stock/create')" />
       </div>
     </template>
     <div class="flex flex-col gap-2">
-      <div class="p-2 bg-white shadow-sm rounded-md flex gap-2">
+      <div class="flex gap-2 rounded-md bg-white p-2 shadow-sm">
         <div class="basis-9/12">
-          <Input v-model="params.terms" placeholder="Buscar ..." :debounce="500" autofocus clearable />
+          <Input
+            v-model="params.terms"
+            placeholder="Buscar ..."
+            :debounce="500"
+            autofocus
+            clearable />
         </div>
-        <div class="basis-3/12 ">
+        <div class="basis-3/12">
           <ProviderSelect v-model="params.filter.provider" placeholder="Proveedor" />
         </div>
         <div class="relative">
-          <Button title="Opciones" variant="tertiary" @click="showContextMenu = !showContextMenu" class="relative">
+          <Button
+            title="Opciones"
+            variant="tertiary"
+            @click="showContextMenu = !showContextMenu"
+            class="relative">
             <template #icon>
               <Icon name="adjustments" />
             </template>
           </Button>
-          <div v-if="showContextMenu"
-            class="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50"
+          <div
+            v-if="showContextMenu"
+            class="absolute right-0 top-full z-50 mt-1 w-48 rounded-md border border-gray-200 bg-white shadow-lg"
             @click.stop>
             <div class="py-1">
-              <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b">
+              <div
+                class="border-b px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
                 Opciones
               </div>
               <div class="flex flex-col gap-2 p-2">
@@ -80,34 +93,37 @@ const showContextMenu = ref(false)
           </div>
         </div>
       </div>
-      <div class="rounded-md overflow-hidden shadow-sm">
-        <table class="bg-white w-full text-sm">
-          <thead class="table w-full table-fixed border-b-2 ">
+      <div class="overflow-hidden rounded-md shadow-sm">
+        <table class="w-full bg-white text-sm">
+          <thead class="table w-full table-fixed border-b-2">
             <tr>
               <th class="w-[100px]">Foto</th>
-              <th class="w-[110px] py-2 px-4 text-center">Código</th>
-              <th class="w-[110px] py-2 px-4 text-center">Catálogo</th>
-              <th class="w-[65px] py-2 px-4 text-left">Prov.</th>
-              <th class="w-[500px] py-2 px-4 text-left">Descripción</th>
-              <th class="w-[100px] py-2 px-4 text-center">Ubicación</th>
-              <th class="w-[70px] py-2 px-4 text-center">Stock</th>
-              <th class="w-[100px] py-2 px-4 text-right">Precio</th>
+              <th class="w-[110px] px-4 py-2 text-center">Código</th>
+              <th class="w-[110px] px-4 py-2 text-center">Catálogo</th>
+              <th class="w-[65px] px-4 py-2 text-left">Prov.</th>
+              <th class="w-[500px] px-4 py-2 text-left">Descripción</th>
+              <th class="w-[100px] px-4 py-2 text-center">Ubicación</th>
+              <th class="w-[70px] px-4 py-2 text-center">Stock</th>
+              <th class="w-[100px] px-4 py-2 text-right">Precio</th>
             </tr>
           </thead>
-          <tbody class="overflow-auto block h-[calc(100vh-200px)]" v-if="products?.length">
-            <tr v-for="product of products" :key="product.id"
-              class="table-fixed table w-full border-b hover:bg-gray-100 cursor-pointer"
-              :class="{ 'opacity-30': !product.public }" @click="openEdit(product.id)">
-              <td class="p-2 w-[100px] h-20 text-center border-r">
-                <ProductImage rounded :product class="h-20 mx-auto" />
+          <tbody class="block h-[calc(100vh-300px)] overflow-auto" v-if="products?.length">
+            <tr
+              v-for="product of products"
+              :key="product.id"
+              class="table w-full table-fixed cursor-pointer border-b hover:bg-gray-100"
+              :class="{ 'opacity-30': !product.public }"
+              @click="openEdit(product.id)">
+              <td class="h-20 w-[100px] border-r p-2 text-center">
+                <ProductImage rounded :product class="mx-auto h-20" />
               </td>
-              <td class="p-2 w-[110px] border-r text-center">{{ product.code }}</td>
-              <td class="p-2 w-[110px] border-r text-center">{{ product.factoryCode }}</td>
-              <td class="p-2 w-[65px] border-r text-center">{{ product.provider }}</td>
-              <td class="p-2 w-[500px] border-r">{{ product.name }}</td>
-              <td class="p-2 w-[100px] border-r text-center text-xs">{{ product.location }}</td>
-              <td class="p-2 w-[70px] border-r text-center">{{ product.stock }}</td>
-              <td class="pr-4 w-[100px] text-right currency">{{ product.price }}</td>
+              <td class="w-[110px] border-r p-2 text-center">{{ product.code }}</td>
+              <td class="w-[110px] border-r p-2 text-center">{{ product.factoryCode }}</td>
+              <td class="w-[65px] border-r p-2 text-center">{{ product.provider }}</td>
+              <td class="w-[500px] border-r p-2">{{ product.name }}</td>
+              <td class="w-[100px] border-r p-2 text-center text-xs">{{ product.location }}</td>
+              <td class="w-[70px] border-r p-2 text-center">{{ product.stock }}</td>
+              <td class="currency w-[100px] pr-4 text-right">{{ product.price }}</td>
             </tr>
           </tbody>
           <tbody class="font-mono" v-else-if="!products?.length && isFetched">

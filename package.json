@@ -1,6 +1,6 @@
 {
-  "name": "fmr-site",
-  "version": "1.14.1",
+  "name": "reycastor",
+  "version": "1.15.0",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -65,6 +65,7 @@
     "pino-pretty": "13.0.0",
     "postcss": "^8.4.38",
     "prettier": "3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.14",
     "ts-node": "10.9.2",
     "typescript": "5.8.3",
     "vite": "6.3.5",
@@ -95,12 +96,14 @@
     "i18next": "^24.2.1",
     "lodash-es": "^4.17.21",
     "luxon": "^3.4.4",
+    "mercadopago": "^2.8.0",
     "mysql2": "3.14.1",
     "pdfkit": "^0.17.1",
     "pdfmake": "^0.2.20",
     "reflect-metadata": "0.2.2",
     "resend": "^4.1.1",
     "sharp": "^0.34.2",
+    "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^3.4.3",
     "vue": "3.5.17",
     "zod": "^3.24.1",
@@ -111,6 +114,5 @@
       "./app/controllers/**/*.ts",
       "./app/middleware/*.ts"
     ]
-  },
-  "prettier": "@adonisjs/prettier-config"
+  }
 }

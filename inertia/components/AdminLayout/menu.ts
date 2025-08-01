@@ -45,6 +45,20 @@ menu.addOption({
   section: 'providers',
 })
 
+menu.addOption(
+  {
+    label: 'Tesorería',
+    icon: 'treasury',
+  },
+  (option) => {
+    option.addSubOption({
+      label: 'Recibos',
+      action: () => router.visit('/admin/receipts'),
+      section: 'receipts',
+    })
+  }
+)
+
 menu.addOption({
   label: 'Vidrieras',
   action: () => router.visit('/admin/showcases/list'),

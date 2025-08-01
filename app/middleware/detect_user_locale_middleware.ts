@@ -25,8 +25,8 @@ export default class DetectUserLocaleMiddleware {
    *
    * Feel free to use different mechanism for finding user language.
    */
-  protected getRequestLocale(ctx: HttpContext) {
-    const userLanguages = ctx.request.languages()
+  protected getRequestLocale() {
+    const userLanguages = ['es', 'en']
     return i18nManager.getSupportedLocaleFor(userLanguages)
   }
 
@@ -34,7 +34,7 @@ export default class DetectUserLocaleMiddleware {
     /**
      * Finding user language
      */
-    const language = this.getRequestLocale(ctx)
+    const language = this.getRequestLocale()
 
     /**
      * Assigning i18n property to the HTTP context

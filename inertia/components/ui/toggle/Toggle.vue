@@ -5,7 +5,7 @@ const { size = 'md', ...props } = defineProps<{
   modelValue: boolean | 0 | 1 | undefined
   disabled?: boolean
   label?: string
-  class?: string,
+  class?: string
   size?: 'sm' | 'md' | 'lg'
 }>()
 
@@ -19,45 +19,41 @@ const checked = computed({
   set: (val: boolean) => {
     emit('update:modelValue', val)
     emit('change', val)
-  }
+  },
 })
 
 const sizes = {
   sm: 'w-10 h-5',
   md: 'w-11 h-6',
-  lg: 'w-12 h-7'
+  lg: 'w-12 h-7',
 }
 
 const dotSizes = {
   sm: 'w-3 h-3',
   md: 'w-4 h-4',
-  lg: 'w-5 h-5'
+  lg: 'w-5 h-5',
 }
 </script>
 
 <template>
-  <label class="flex items-center gap-2 cursor-pointer select-none" :class="props.class">
+  <label class="flex cursor-pointer select-none items-center gap-2" :class="props.class">
     <span
       class="relative inline-block transition"
-      :class="[{ 'opacity-50 pointer-events-none': props.disabled }, sizes[size]]"
-    >
+      :class="[{ 'pointer-events-none opacity-50': props.disabled }, sizes[size]]">
       <input
         type="checkbox"
         class="sr-only"
         :checked="checked"
         :disabled="props.disabled"
-        @change="checked = !checked"
-      />
+        @change="checked = !checked" />
       <span
-        class="block rounded-full transition bg-gray-300"
-        :class="[{ 'bg-primary-500': checked }, sizes[size]]"
-      ></span>
+        class="block rounded-full bg-gray-300 transition"
+        :class="[{ 'bg-primary-500': checked }, sizes[size]]"></span>
       <span
-        class="dot absolute left-1 top-1 bg-white rounded-full shadow transition"
-        :class="[{ 'translate-x-5': checked }, dotSizes[size]]"
-      ></span>
+        class="dot absolute left-1 top-1 rounded-full bg-white shadow transition"
+        :class="[{ 'translate-x-5': checked }, dotSizes[size]]"></span>
     </span>
-    <span v-if="props.label" class="ml-2 text-gray-700" :class="`text-${size}`">{{ props.label }}</span>
+    <span v-if="props.label" class="ml-2" :class="`text-${size}`">{{ props.label }}</span>
   </label>
 </template>
 

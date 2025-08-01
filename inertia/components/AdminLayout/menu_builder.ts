@@ -1,35 +1,59 @@
 import { icons } from '~/components/ui/icon/icons'
 
-interface MenuOption {
+export interface MenuOptions {
   label: string
-  action: () => void
-  icon: keyof typeof icons
+  icon?: keyof typeof icons
+  action?: () => void
   section?: string
+  subOptions?: MenuOptions[]
 }
 
-export class MenuItem {
+export class MenuOption {
   label: string
-  icon: keyof typeof icons
-  action: () => void
+  icon?: keyof typeof icons
+  action?: () => void
   section?: string
+  subOptions: MenuOptions[]
 
-  constructor(option: MenuOption) {
+  constructor(option: MenuOptions) {
     this.label = option.label
     this.action = option.action
     this.icon = option.icon
     this.section = option.section
+    this.subOptions = []
+  }
+
+  addSubOption(subOption: MenuOptions) {
+    const subMenu = new SubMenuOption(subOption)
+    this.subOptions.push(subMenu)
+    return subMenu
+  }
+}
+
+export class SubMenuOption extends MenuOption {
+  subItems: MenuOptions[]
+
+  constructor(option: MenuOptions) {
+    super(option)
+    this.subItems = []
   }
 }
 
 export class Menu {
-  private items: Map<string, MenuItem> = new Map()
+  private items: Map<string, MenuOption> = new Map()
 
-  addOption(option: MenuOption): Menu {
-    this.items.set(option.label, new MenuItem(option))
+  addOption(option: MenuOptions, callback?: (option: MenuOption) => void): Menu {
+    const menuItem = new MenuOption(option)
+
+    if (callback) {
+      callback(menuItem)
+    }
+    this.items.set(option.label, menuItem)
+
     return this
   }
 
-  getItems(): MenuItem[] {
+  getItems(): MenuOption[] {
     return Array.from(this.items.values())
   }
 }

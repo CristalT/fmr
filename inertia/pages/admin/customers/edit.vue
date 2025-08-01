@@ -42,7 +42,13 @@ async function deleteUser() {
       <CustomerForm title="Editar cliente" />
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button type="button" variant="danger" flat @click="deleteUser" :disabled="form.processing" label="Eliminar">
+          <Button
+            type="button"
+            variant="danger"
+            flat
+            @click="deleteUser"
+            :disabled="form.processing"
+            label="Eliminar">
             <template #icon>
               <Icon name="delete" />
             </template>

@@ -49,6 +49,9 @@ export default class Customer extends compose(BaseModel, AuthFinder) {
   declare postalCode: string
 
   @column()
+  declare paymentOnDelivery: boolean
+
+  @column()
   declare password: string
 
   @column()

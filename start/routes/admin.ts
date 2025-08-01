@@ -7,9 +7,11 @@ const OrderController = () => import('#controllers/admin/order_controller')
 const CustomerController = () => import('#controllers/admin/customer_controller')
 const MessageController = () => import('#controllers/message_controller')
 const RegistryController = () => import('#controllers/registry_controller')
-const CartItemController = () => import('#controllers/admin/cart_item_controller')
+const CartItemController = () => import('#controllers/cart_item_controller')
 const SettingController = () => import('#controllers/setting_controller')
 const ShowcaseController = () => import('#controllers/showcase_controller')
+const ReceiptsController = () => import('#controllers/receipts_controller')
+const CustomerOrdersController = () => import('#controllers/admin/customer_orders_controller')
 
 export default function adminRoutes() {
   router.get('/', [AdminController, 'index']).as('home')
@@ -18,6 +20,7 @@ export default function adminRoutes() {
   router.post('/stock/:id/image', [StockController, 'uploadImage']).as('stock.uploadImage')
   router.get('/customers/view', [CustomerController, 'view']).as('customers.view')
   router.resource('/customers', CustomerController).as('customers')
+  router.resource('/customers/:customerId/orders', CustomerOrdersController).as('customers.orders')
   router.resource('/messages', MessageController).only(['index', 'show', 'destroy']).as('messages')
   router
     .resource('/providers', ProviderController)
@@ -27,7 +30,7 @@ export default function adminRoutes() {
   router.resource('/registries', RegistryController).only(['index', 'edit']).as('registries')
   router.resource('/orders', OrderController).as('orders')
   router.get('/orders/:id/print', [OrderController, 'print']).as('orders.print')
-  router.resource('/cart-items', CartItemController)
+  router.resource('/cart-items', CartItemController).only(['update'])
   router.get('/settings/view', [SettingController, 'view']).as('settings.view')
   router.resource('/settings', SettingController).as('settings')
   router.get('/showcases/create', [ShowcaseController, 'create']).as('showcases.create')
@@ -36,4 +39,5 @@ export default function adminRoutes() {
     .only(['index', 'store', 'destroy', 'edit', 'update'])
     .as('showcases')
   router.get('/showcases/list', [ShowcaseController, 'list']).as('showcases.list')
+  router.resource('/receipts', ReceiptsController)
 }

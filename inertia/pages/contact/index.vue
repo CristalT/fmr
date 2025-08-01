@@ -55,7 +55,8 @@ async function onSubmit() {
   await validate()
 
   if (isValid.value) {
-    http('contact').post(form)
+    http('contact')
+      .post(form)
       .then(() => {
         clearForm()
         toast.success('Formulario enviado con exito.')
@@ -86,39 +87,36 @@ onMounted(() => {
     <template #header>
       <MainHeader />
     </template>
-    <Card class="bg-white p-4 rounded-md shadow-lg">
+    <Card class="rounded-md bg-white p-4 shadow-lg">
       <template #header>
-        <h1 class="text-xl font-bold text-gray-700">Contacto</h1>
+        <h1 class="text-xl font-bold">Contacto</h1>
       </template>
-      <form @submit.prevent="onSubmit" class="flex flex-col gap-2 ">
-
-      <div>
-        <Input autofocus label="Nombre" v-model="form.name" :error="getError('name')" />
-      </div>
-      <div>
-        <Input label="Email" v-model="form.email" :error="getError('email')" />
-      </div>
-      <div>
-        <Input label="Teléfono" type="phone" v-model="form.phone" :error="getError('phone')" />
-      </div>
-      <div>
-        <Input label="Asunto" v-model="form.subject" :error="getError('subject')" />
-      </div>
-      <div>
-        <Input
-          label="Mensaje"
-          type="textarea"
-          v-model="form.message"
-          placeholder="Escriba su mensaje aquí ..."
-          :error="getError('message')"
-        />
-      </div>
-      <div>
-        <Recaptcha ref="recaptcha" @verify="setToken" />
-      </div>
-      <Button type="submit" label="Enviar" />
-    </form>
-  </Card>
-
+      <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
+        <div>
+          <Input autofocus label="Nombre" v-model="form.name" :error="getError('name')" />
+        </div>
+        <div>
+          <Input label="Email" v-model="form.email" :error="getError('email')" />
+        </div>
+        <div>
+          <Input label="Teléfono" type="phone" v-model="form.phone" :error="getError('phone')" />
+        </div>
+        <div>
+          <Input label="Asunto" v-model="form.subject" :error="getError('subject')" />
+        </div>
+        <div>
+          <Input
+            label="Mensaje"
+            type="textarea"
+            v-model="form.message"
+            placeholder="Escriba su mensaje aquí ..."
+            :error="getError('message')" />
+        </div>
+        <div>
+          <Recaptcha ref="recaptcha" @verify="setToken" />
+        </div>
+        <Button type="submit" label="Enviar" />
+      </form>
+    </Card>
   </MainLayout>
 </template>
