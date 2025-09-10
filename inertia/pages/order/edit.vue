@@ -7,7 +7,6 @@ import { Card, Input } from '~/components/ui'
 import MercadoPagoButton from '~/components/MercadoPagoButton.vue'
 import MainLayout from '~/components/MainLayout.vue'
 import MainHeader from '~/components/MainHeader.vue'
-import { M } from 'vitest/dist/chunks/reporters.d.BFLkQcL6.js'
 
 const { order, paymentMethods } = defineProps<{
   order: Order

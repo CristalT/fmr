@@ -3,6 +3,7 @@ import { afterFetch, afterFind, BaseModel, column, manyToMany, scope } from '@ad
 import setting from '#helpers/setting'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Showcase from '#models/showcase'
+import Category from './category.js'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -19,6 +20,9 @@ export default class Product extends BaseModel {
 
   @column()
   declare name: string
+
+  @column()
+  declare description: string
 
   @column()
   declare fob: number
@@ -39,10 +43,12 @@ export default class Product extends BaseModel {
   declare brand?: string
 
   @column()
-  declare category?: string
+  declare categoryId?: string
 
-  @column()
-  declare subcategory?: string
+  @manyToMany(() => Category, {
+    pivotTable: 'product_categories',
+  })
+  declare categories: ManyToMany<typeof Category>
 
   @column()
   declare origin?: string
@@ -92,6 +98,7 @@ export default class Product extends BaseModel {
         'provider',
         'public',
         'name',
+        'description',
         'price',
         'fob',
         'image',
@@ -125,11 +132,11 @@ export default class Product extends BaseModel {
   })
 
   /**
-   * Scope for public search
+   * Scope for eshop public search
    * This search criteria is used for listing products for Customer Users
    */
-  static readonly publicSearch = scope(
-    (query, { terms, hideZeroStock, hideZeroPrice, interval }) => {
+  static readonly eshopSearch = scope(
+    (query, { search, hideZeroStock, hideZeroPrice, interval }) => {
       query.where(async (q) => {
         if (hideZeroStock) {
           q.where('stock', '>', 0)
@@ -142,10 +149,10 @@ export default class Product extends BaseModel {
         q.where('public', 1)
       })
 
-      if (terms) {
+      if (search) {
         query.where((q) => {
-          q.where('name', 'LIKE', `%${terms.replaceAll(' ', '%')}%`)
-          q.orWhere('code', 'LIKE', terms)
+          q.where('name', 'LIKE', `%${search.replaceAll(' ', '%')}%`)
+          q.orWhere('code', 'LIKE', search)
         })
       }
     }

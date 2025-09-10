@@ -40,6 +40,9 @@ export default class Customer extends compose(BaseModel, AuthFinder) {
   declare address: string
 
   @column()
+  declare address2: string
+
+  @column()
   declare city: string
 
   @column()

@@ -21,7 +21,8 @@
       "unique": "El {field} ingresado ya existe",
       "required": "Ingrese {field}",
       "dni.unique": "El DNI / CUIT ingresado corresponde a otro cliente",
-      "amount.min": "El {field} debe ser igual o mayor o igual al total a cobrar"
+      "amount.min": "El {field} debe ser igual o mayor o igual al total a cobrar",
+      "database.exists": "El {field} ingresado ya existe"
     }
   }
 }

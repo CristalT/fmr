@@ -19,10 +19,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#023285',
-        secondary: '#43ab03',
-        tertiary: '#fecc01',
-        logo: '#f7f7f7', // logo background color
+        'primary-admin': '#2563eb',
+        'secondary-admin': '#43ab03',
+        'tertiary-admin': '#fecc01',
+        'primary': '#023285',
+        'secondary': '#43ab03',
+        'tertiary': '#fecc01',
+        'logo': '#f7f7f7', // logo background color
       },
     },
   },

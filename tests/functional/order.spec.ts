@@ -1,31 +1,53 @@
 import { CartItemFactory } from '#database/factories/cart_item_factory'
 import { CustomerFactory } from '#database/factories/customer_factory'
 import { OrderFactory } from '#database/factories/order_factory'
+import Order from '#models/order'
 import { OrderStatus } from '#types/order_status'
 import { test } from '@japa/runner'
 
 test.group('Order', () => {
-  test('create order', async ({ client }) => {
-    const customer = await CustomerFactory.create()
-    const items = await CartItemFactory.with('product', 3)
+  test('create order and redirects to show order if customer has the payment on delivery agree', async ({
+    client,
+  }) => {
+    const customer = await CustomerFactory.merge({ paymentOnDelivery: true }).create()
+
+    await CartItemFactory.with('product', 3)
       .merge({
         customerId: customer.id,
         status: OrderStatus.InCart,
       })
       .createMany(3)
 
-    const response = await client.post('orders').loginAs(customer).form({})
+    const response = await client.post('orders').withInertia().loginAs(customer).form({})
 
-    response.assertStatus(201)
-    response.assertBodyContains({
-      customerId: customer.id,
-      cartItems: items.map((item) => ({
-        id: item.id,
-        quantity: item.quantity,
-        status: OrderStatus.Pending,
-        productId: item.productId,
-      })),
-    })
+    const createdOrder = await Order.query()
+      .where('customerId', customer.id)
+      .orderBy('id', 'desc')
+      .firstOrFail()
+
+    response.assertRedirectsTo(`/orders/${createdOrder.id}`)
+  })
+
+  test('create order and redirect to payment pipeline if customer has not the payment on delivery agree', async ({
+    client,
+  }) => {
+    const customer = await CustomerFactory.create()
+
+    await CartItemFactory.with('product', 3)
+      .merge({
+        customerId: customer.id,
+        status: OrderStatus.InCart,
+      })
+      .createMany(3)
+
+    const response = await client.post('orders').withInertia().loginAs(customer).form({})
+
+    const createdOrder = await Order.query()
+      .where('customerId', customer.id)
+      .orderBy('id', 'desc')
+      .firstOrFail()
+
+    response.assertRedirectsTo(`/orders/${createdOrder.id}/edit`)
   })
 
   test('get customer orders', async ({ client }) => {

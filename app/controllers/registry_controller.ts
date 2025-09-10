@@ -50,4 +50,16 @@ export default class RegistryController {
     const registry = await Registry.findOrFail(request.param('id'))
     return inertia.render('registry/edit', { registry })
   }
+
+  async destroy({ request, response }: HttpContext) {
+    const registry = await Registry.findOrFail(request.param('id'))
+
+    try {
+      await registry.delete()
+      return response.redirect().toRoute('admin.registries.index')
+    } catch (error) {
+      logger.error(error)
+      return response.badRequest()
+    }
+  }
 }

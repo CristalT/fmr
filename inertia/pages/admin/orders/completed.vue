@@ -38,11 +38,14 @@ const cartItems = order.cartItems.map((item) => ({
   <AdminLayout>
     <template #topbar>
       <div class="flex items-center justify-between gap-2">
-        <Select
-          class="w-60"
-          :options="statusOptions"
-          v-model="order.status"
-          @change="({ value }) => setStatus(value as OrderStatus)" />
+        <div class="flex items-center gap-4 px-2">
+          Cambiar estado
+          <Select
+            class="w-60"
+            :options="statusOptions"
+            v-model="order.status"
+            @change="({ value }) => setStatus(value as OrderStatus)" />
+        </div>
       </div>
     </template>
     <Card class="mb-4 flex flex-col">

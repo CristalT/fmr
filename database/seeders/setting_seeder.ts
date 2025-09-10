@@ -76,6 +76,12 @@ export default class extends BaseSeeder {
         type: 'boolean',
         description: 'Mercado Pago',
       },
+      {
+        key: 'eshop_guest_enabled',
+        value: false,
+        type: 'boolean',
+        description: 'Habilitar compra como visitante',
+      },
     ]
 
     for (const setting of defaultSettings) {

@@ -32,7 +32,8 @@ test.group('Provider', (group) => {
   })
 
   test('search provider by name', async ({ client }) => {
-    ProviderFactory.merge({ name: 'test' }).create()
+    await ProviderFactory.merge({ name: 'test' }).create()
+
     const response = await client
       .get('/admin/providers?terms=test&page=1')
       .withGuard('admin')

@@ -35,23 +35,26 @@ const cartItems = computed(() =>
   <AdminLayout>
     <template #topbar>
       <div class="flex items-center justify-between gap-2">
-        <Select
-          class="w-60"
-          :options="statusOptions"
-          v-model="order.status"
-          @change="({ value }) => setStatus(value as OrderStatus)"
-        />
+        <div class="flex items-center gap-4 px-2">
+          Cambiar estado
+          <Select
+            class="w-60"
+            :options="statusOptions"
+            v-model="order.status"
+            @change="({ value }) => setStatus(value as OrderStatus)" />
+        </div>
+
         <Button
           v-if="order.status === OrderStatus.Cancelled"
           label="Eliminar"
           variant="danger"
           flat
-          @click="destroy"
-          ><template #icon><Icon name="delete" /></template
-        ></Button>
+          @click="destroy">
+          <template #icon><Icon name="delete" /></template>
+        </Button>
       </div>
     </template>
-    <Card class="flex flex-col mb-4">
+    <Card class="mb-4 flex flex-col">
       <template #header>
         <div class="flex items-center justify-between">
           <h1 class="text-xl font-bold">Pedido #{{ order.id }}</h1>

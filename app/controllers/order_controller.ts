@@ -64,10 +64,8 @@ export default class OrderController {
         status: OrderStatus.Pending,
       })
 
-    if (customer.paymentOnDelivery) {
-      return response.redirect().toRoute('orders.show', { id: order.id })
-    }
+    const routeName = customer.paymentOnDelivery ? 'orders.show' : 'orders.edit'
 
-    return response.redirect(`/orders/${order.id}/edit`)
+    return response.redirect().toRoute(routeName, { id: order.id })
   }
 }

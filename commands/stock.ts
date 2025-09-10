@@ -8,6 +8,7 @@ import { exit } from 'node:process'
 import { Transform } from 'node:stream'
 import Provider from '#models/provider'
 import { truncate } from 'lodash-es'
+import Category from '#models/category'
 
 /**
  * Creates a transform stream that removes double quotes from the data
@@ -33,6 +34,8 @@ export default class StockCommand extends BaseCommand {
   async run() {
     const products: any = []
     const providerAliases = new Map<string, string>()
+    const categories = new Set<string>()
+    const subcategories = new Map<string, string>()
     const source = env.get('STOCK_LIST_UTF8')
     if (!source) throw new Error('STOCK_LIST_UTF8 is not defined')
     this.logger.info('Updating stock...')
@@ -52,10 +55,10 @@ export default class StockCommand extends BaseCommand {
             'location',
             'brandCode',
             'brandName',
-            'categoryCode',
-            'categoryName',
             'subcategoryCode',
             'subcategoryName',
+            'categoryCode',
+            'categoryName',
             'originCode',
             'originName',
             'factoryCode',
@@ -76,12 +79,11 @@ export default class StockCommand extends BaseCommand {
           price: Number(row.price?.replace(',', '.') ?? 0),
           stock: Number.parseInt(row.stock, 10),
           brand: row.brandName,
-          category: row.categoryName,
-          subcategory: row.subcategoryName,
           origin: row.originName,
           factoryCode: truncate(row.factoryCode, { length: 20 }),
         })
-
+        categories.add(row.categoryName)
+        subcategories.set(row.subcategoryName, row.categoryName)
         providerAliases.set(row.providerAlias, row.providerName)
       })
       .on('end', () => {
@@ -115,7 +117,27 @@ export default class StockCommand extends BaseCommand {
             })
         )
 
-        Promise.all(promises).finally(() => exit())
+        // Update or create Categories
+        promises.push(
+          Category.updateOrCreateMany(
+            'slug',
+            Array.from(categories).map((name) => ({
+              slug: name.toLowerCase().replace(/\s+/g, '-'),
+              name,
+            }))
+          )
+            .then(() => {
+              this.logger.info('Categories updated')
+            })
+            .catch((error) => {
+              this.logger.error('Error updating categories', error.message)
+            })
+        )
+
+        Promise.all(promises).finally(() => {
+          this.logger.info('Stock update process completed')
+          exit()
+        })
       })
   }
 }

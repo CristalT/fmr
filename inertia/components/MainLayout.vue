@@ -5,6 +5,11 @@ import Toast from './Toast.vue'
 import { onMounted } from 'vue'
 import { useCart, useCustomer } from '~/composables'
 import { useSetting } from '~/composables'
+import { configure } from 'vue-gtag'
+
+configure({
+  tagId: 'G-VXHE8B86HW',
+})
 
 const { isLoggedIn } = useCustomer()
 const { settings } = useSetting()

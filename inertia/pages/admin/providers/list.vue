@@ -25,22 +25,20 @@ const columns = [
 <template>
   <AdminLayout>
     <div class="flex flex-col gap-2">
-      <div class="p-2 bg-white shadow-sm rounded-md">
+      <div class="rounded-md bg-white p-2 shadow-sm">
         <Input
           v-model="params.terms"
           placeholder="Buscar ..."
           :debounce="500"
           autofocus
-          clearable
-        />
+          clearable />
       </div>
       <Table
         :columns
         :data="providers"
         :metadata
         @page-change="(value) => (params.page = value)"
-        @row-click="(row) => router.visit(`/admin/providers/${row.alias}/edit`)"
-      />
+        @row-click="(row) => router.visit(`/admin/providers/${row.alias}/edit`)" />
     </div>
   </AdminLayout>
 </template>

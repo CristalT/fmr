@@ -45,10 +45,14 @@ function httpClientWrapper(client: AxiosInstance) {
         }
         return client(config) as Promise<T>
       },
-      post<T>(data: object): Promise<T> {
+      async post<T>(data: object, source?: string): Promise<T> {
         config.method = 'POST'
         config.data = data
-        return client(config)
+        if (source) {
+          const result = await client(config)
+          return get(result, source) as T
+        }
+        return client(config) as Promise<T>
       },
       put<T>(data: object): Promise<T> {
         config.method = 'PUT'

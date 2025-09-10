@@ -16,5 +16,6 @@ export const updateShowcaseValidator = vine.compile(
     name: vine.string(),
     description: vine.string().nullable(),
     products: vine.array(vine.string()).minLength(1),
+    order: vine.number().min(0).optional(),
   })
 )

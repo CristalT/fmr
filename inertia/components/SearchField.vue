@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { Input } from '~/components/ui'
 
-defineProps<{
+const { debounce = 800, flat = false } = defineProps<{
   autofocus?: boolean
+  placeholder?: string
+  debounce?: number
+  flat?: boolean
 }>()
 
 const terms = defineModel('terms', {
@@ -16,12 +19,13 @@ const page = defineModel('page', {
 })
 </script>
 <template>
-  <div class="rounded bg-white p-2 shadow-sm">
+  <div :class="{ 'rounded bg-white p-2 shadow-sm': !flat }">
     <Input
       :autofocus
-      placeholder="Buscar ..."
+      label="Buscar"
+      :placeholder="placeholder || `Buscar ...`"
       v-model="terms"
-      :debounce="800"
+      :debounce
       clearable
       @update:model-value="page = 1" />
   </div>

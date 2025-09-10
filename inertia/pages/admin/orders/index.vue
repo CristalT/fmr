@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import type Order from '#models/order'
-import { AdminLayout } from '~/components'
-import { Card, Select, Paginator, Input } from '~/components/ui'
+import { AdminLayout, SearchField, StatusBadge } from '~/components'
+import { Card, Select, Paginator } from '~/components/ui'
 import { friendlyDate } from '~/shared/utils'
 import { router } from '@inertiajs/vue3'
 import { statusOptions } from '~/shared/status_options'
-import StatusBadge from '~/components/StatusBadge.vue'
 import type { Meta } from '~/types/metadata'
 
 const { data } = defineProps<{ data: { data: Order[]; meta: Meta } }>()
@@ -17,10 +16,7 @@ const metadata = computed(() => data.meta)
 const status = ref('')
 const terms = ref('')
 
-const statusFilterOptions = [
-  { label: 'Todos', value: '' },
-  ...statusOptions
-]
+const statusFilterOptions = [{ label: 'Todos', value: '' }, ...statusOptions]
 
 function getCustomerFullName(order: Order) {
   try {
@@ -43,24 +39,45 @@ function changePage(page: number) {
 }
 
 function search() {
-  router.get(`/admin/orders`, { terms: terms.value, page: 1 }, { replace: true, preserveState: true })
+  router.get(
+    `/admin/orders`,
+    { terms: terms.value, page: 1 },
+    { replace: true, preserveState: true }
+  )
 }
-
 </script>
 
 <template>
   <AdminLayout>
     <template #topbar>
-      <div class="flex items-center justify-between gap-2">
-        <Input class="w-60" v-model="terms" placeholder="Buscar ..." clearable :debounce="800" @update:model-value="search" />
-        <Select class="w-60" :options="statusFilterOptions" v-model="status" @change="({value}) => filterByStatus(value as Order['status'])" />
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-4 px-2">
+          Filtrar por estado
+          <Select
+            class="w-60"
+            :options="statusFilterOptions"
+            v-model="status"
+            @change="({ value }) => filterByStatus(value as Order['status'])" />
+        </div>
       </div>
     </template>
-    <div v-if="!orders.length" class="text-gray-600 text-center py-4">
+
+    <SearchField
+      v-model:terms="terms"
+      class="mb-4"
+      placeholder="Ingrese nombre o apellido del cliente"
+      @update:terms="search" />
+
+    <div v-if="!orders.length" class="py-4 text-center text-gray-600">
       <div class="text-lg font-bold">No hay pedidos para la búsqueda seleccionada.</div>
     </div>
-    <div v-else class="grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-      <Card v-for="order of orders" :key="order.id" @click="showOrder(order)" class="cursor-pointer hover:bg-gray-50 hover:shadow-md transition-all">
+
+    <div v-else class="xs:grid-cols-1 grid gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <Card
+        v-for="order of orders"
+        :key="order.id"
+        @click="showOrder(order)"
+        class="cursor-pointer transition-all hover:bg-gray-50 hover:shadow-md">
         <template #header>
           <div class="flex items-center justify-between">
             <h1 class="font-semibold">
@@ -69,14 +86,15 @@ function search() {
             <StatusBadge :status="order.status" />
           </div>
         </template>
-        <p>
-          Fecha: {{ friendlyDate(order.createdAt) }}
-        </p>
-        <p>
-          Items: {{ order.cartItems.length }}
-        </p>
+        <p>Fecha: {{ friendlyDate(order.createdAt) }}</p>
+        <p>Items: {{ order.cartItems.length }}</p>
       </Card>
     </div>
-    <Paginator v-if="metadata.lastPage > 1" class="mt-4" :last-page="metadata.lastPage" v-model="metadata.currentPage" @change="changePage" />
+    <Paginator
+      v-if="metadata.lastPage > 1"
+      class="mt-4"
+      :last-page="metadata.lastPage"
+      v-model="metadata.currentPage"
+      @change="changePage" />
   </AdminLayout>
 </template>

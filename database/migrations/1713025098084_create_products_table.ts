@@ -13,8 +13,6 @@ export default class extends BaseSchema {
       table.integer('stock')
       table.tinyint('public', 1).defaultTo(1)
       table.string('brand')
-      table.string('category')
-      table.string('subcategory')
       table.string('origin')
       table.string('details')
       table.string('image')

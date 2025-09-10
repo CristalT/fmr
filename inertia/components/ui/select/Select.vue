@@ -292,6 +292,11 @@ onUnmounted(() => {
       <div v-else class="px-4 py-2 text-gray-500">
         {{ noResultsText || 'No se encontraron resultados' }}
       </div>
+
+      <!-- Actions slot -->
+      <div class="border-t" v-if="$slots.actions">
+        <slot name="actions" v-if="$slots.actions" />
+      </div>
     </div>
 
     <!-- Error message -->

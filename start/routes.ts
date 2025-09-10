@@ -3,11 +3,14 @@ import { sep, normalize } from 'node:path'
 import app from '@adonisjs/core/services/app'
 
 import router from '@adonisjs/core/services/router'
-import { publicRoutes, adminRoutes, customerRoutes, webhookRoutes } from '#start/routes/index'
+import { eshopRoutes, adminRoutes, webhookRoutes, apiRoutes } from '#start/routes/index'
 import env from '#start/env'
 
-// Public routes
-router.group(publicRoutes)
+// eShop routes
+router.group(eshopRoutes)
+
+// eShop API routes
+router.group(apiRoutes).as('api.v1').prefix('api/v1')
 
 // Webhook routes
 router.group(webhookRoutes).as('webhook')
@@ -18,9 +21,6 @@ router
   .prefix('/admin')
   .as('admin')
   .use(middleware.auth({ guards: ['admin'] }))
-
-// Customer routes
-router.group(customerRoutes).use(middleware.auth({ guards: ['customer', 'admin'] }))
 
 const PATH_TRAVERSAL_REGEX = /(?:^|[\\/])\.\.(?:[\\/]|$)/
 

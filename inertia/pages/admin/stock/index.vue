@@ -37,7 +37,7 @@ const products = computed(() => data.value?.data)
 const lastPage = computed(() => data.value?.meta?.lastPage || 1)
 
 function openEdit(productId: string) {
-  router.get(`/admin/stock/${productId}`)
+  router.get(`/admin/stock/${productId}/edit`)
 }
 
 // Context menu state

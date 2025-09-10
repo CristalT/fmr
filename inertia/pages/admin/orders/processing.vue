@@ -15,7 +15,7 @@ import SavingIndicator from '~/components/SavingIndicator.vue'
 import { ref } from 'vue'
 import { friendlyDate } from '~/shared/utils'
 import http from '~/shared/http'
-import { statusOptions } from '~/shared/status_options';
+import { statusOptions } from '~/shared/status_options'
 
 // Composables
 import { useOrder } from '~/composables'
@@ -35,7 +35,7 @@ const columns: Column[] = [
   { label: 'Cantidad', key: 'quantity', align: 'center' },
   { label: 'Precio', key: 'price', align: 'right' },
   { label: 'Entregado', key: 'delivered', align: 'center' },
-  { label: 'Importe', key: 'amount', align: 'right' }
+  { label: 'Importe', key: 'amount', align: 'right' },
 ]
 
 function setIsSaving(value: boolean, delay = 0) {
@@ -63,19 +63,23 @@ const print = () => {
   <AdminLayout>
     <template #topbar>
       <div class="flex items-center justify-between gap-2">
-        <Select
-          class="w-60"
-          :options="statusOptions.map(option => ({
-            value: option.value,
-            label: option.label,
-            component: {
-              name: 'StatusBadge',
-              props: { status: option.value }
-            }
-          }))"
-          v-model="order.status"
-          @change="({ value }) => setStatus(value as OrderStatus)"
-        />
+        <div class="flex items-center gap-4 px-2">
+          Cambiar estado
+          <Select
+            class="w-60"
+            :options="
+              statusOptions.map((option) => ({
+                value: option.value,
+                label: option.label,
+                component: {
+                  name: 'StatusBadge',
+                  props: { status: option.value },
+                },
+              }))
+            "
+            v-model="order.status"
+            @change="({ value }) => setStatus(value as OrderStatus)" />
+        </div>
 
         <Button label="Imprimir" variant="tertiary" @click="print">
           <template #icon>
@@ -84,7 +88,7 @@ const print = () => {
         </Button>
       </div>
     </template>
-    <Card class="flex flex-col mb-4">
+    <Card class="mb-4 flex flex-col">
       <template #header>
         <div class="flex items-center justify-between">
           <h1 class="text-xl font-bold">Pedido #{{ order.id }}</h1>
@@ -95,31 +99,41 @@ const print = () => {
       <h3 class="text-md font-bold">{{ friendlyDate(order.createdAt) }}</h3>
     </Card>
 
-    <table class="w-full bg-white shadow-sm rounded-md">
+    <table class="w-full rounded-md bg-white shadow-sm">
       <thead class="border-b">
         <tr>
-          <th v-for="(col, key) of columns" :key="key" class="p-2" :class="`text-${col.align || 'left'}`">{{ col.label
-          }}
+          <th
+            v-for="(col, key) of columns"
+            :key="key"
+            class="p-2"
+            :class="`text-${col.align || 'left'}`">
+            {{ col.label }}
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(row, key) of cartItems" :key="key" class="border-b">
-          <td class="text-center p-2">{{ row.product.code }}</td>
+          <td class="p-2 text-center">{{ row.product.code }}</td>
           <td class="p-2">{{ row.product.name }}</td>
-          <td class="text-center p-2">{{ row.quantity }}</td>
-          <td class="text-right p-2 currency">{{ Math.round(row.product.price) }}</td>
+          <td class="p-2 text-center">{{ row.quantity }}</td>
+          <td class="currency p-2 text-right">{{ Math.round(row.product.price) }}</td>
           <td class="flex justify-center p-2">
-            <Input type="number" v-model="row.delivered" alignment="center" class="w-24" :debounce="800"
+            <Input
+              type="number"
+              v-model="row.delivered"
+              alignment="center"
+              class="w-24"
+              :debounce="800"
               @update:modelValue="updateCartItem(row as CartItem)" />
           </td>
-          <td class="text-right p-2 currency">{{ Math.round(row.product.price * row.delivered) }}</td>
+          <td class="currency p-2 text-right">
+            {{ Math.round(row.product.price * row.delivered) }}
+          </td>
         </tr>
-
       </tbody>
     </table>
     <template #footer>
-      <div class="flex justify-between items-center gap-4">
+      <div class="flex items-center justify-between gap-4">
         <SavingIndicator :is-saving="isSaving" :is-saved="isSaving === false" />
         <div class="flex items-center gap-4">
           <div class="flex flex-col items-center gap-1">
@@ -128,9 +142,13 @@ const print = () => {
           </div>
           <div class="flex flex-col items-center gap-1">
             <div class="text-sm">Total</div>
-            <div class="font-semibold text-sm"> $ {{ Math.round(total) }}</div>
+            <div class="text-sm font-semibold">$ {{ Math.round(total) }}</div>
           </div>
-          <Button class="ml-4" label="Finalizar" variant="primary" @click="setStatus(OrderStatus.Completed)">
+          <Button
+            class="ml-4"
+            label="Finalizar"
+            variant="primary"
+            @click="setStatus(OrderStatus.Completed)">
             <template #icon>
               <Icon name="check" />
             </template>

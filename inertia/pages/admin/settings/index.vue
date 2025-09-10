@@ -9,8 +9,6 @@ import SavingIndicator from '~/components/SavingIndicator.vue'
 
 // Composables
 import { useSetting } from '~/composables'
-import { defineComponent } from 'vue'
-import { template } from 'lodash-es'
 
 const { mutate, isPending, isSuccess, isError } = useSetting().update
 
@@ -19,6 +17,8 @@ const { settings } = defineProps<{ settings: Setting[] }>()
 const companySettings = settings.filter((s) => s.key.startsWith('company_')).map(castToType)
 
 const stockSettings = settings.filter((s) => s.key.startsWith('stock_')).map(castToType)
+
+const eshopSettings = settings.filter((s) => s.key.startsWith('eshop_')).map(castToType)
 
 const paymentMethodSettings = settings
   .filter((s) => s.key.startsWith('payment_method_'))
@@ -85,6 +85,19 @@ function castToType(setting: Setting): Setting {
       <Card collapsible default-collapsed title="Métodos de Pago">
         <div class="flex flex-col gap-4">
           <div v-for="setting in paymentMethodSettings" :key="setting.key">
+            <Input
+              v-model="setting.value"
+              :label="setting.description ?? setting.key"
+              type="boolean"
+              :debounce="500"
+              @update:model-value="mutate(setting)" />
+          </div>
+        </div>
+      </Card>
+
+      <Card collapsible default-collapsed title="eShop">
+        <div class="flex flex-col gap-4">
+          <div v-for="setting in eshopSettings" :key="setting.key">
             <Input
               v-model="setting.value"
               :label="setting.description ?? setting.key"

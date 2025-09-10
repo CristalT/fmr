@@ -1,4 +1,5 @@
 import { UPLOADS_FOLDER } from '#config/constants'
+import Category from '#models/category'
 import Product from '#models/product'
 import { createStockItemValidator } from '#validators/stock'
 import { MultipartFile } from '@adonisjs/core/bodyparser'
@@ -37,10 +38,12 @@ export default class StockController {
     return response.json(data)
   }
 
-  async show({ inertia, request }: HttpContext) {
+  async edit({ inertia, request }: HttpContext) {
     const product = await Product.query()
       .withScopes((scopes) => scopes.getForEdit(request.param('id')))
+      .preload('categories')
       .firstOrFail()
+
     return inertia.render('admin/stock/edit', { product })
   }
 
@@ -92,9 +95,16 @@ export default class StockController {
   }
 
   async update({ request, params }: HttpContext) {
-    const data = request.all()
+    const data = request.except(['categories'])
+
     const product = await Product.findOrFail(params.id)
+
     product.fill(data)
+
     await product.save()
+
+    const categories = request.input('categories', []).map(({ id }: Category) => id)
+
+    await product.related('categories').sync(categories)
   }
 }

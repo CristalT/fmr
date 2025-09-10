@@ -1,11 +1,13 @@
+import { ref, Ref } from 'vue'
 import { icons } from '~/components/ui/icon/icons'
 
 export interface MenuOptions {
   label: string
   icon?: keyof typeof icons
   action?: () => void
-  section?: string
   subOptions?: MenuOptions[]
+  isActive?: boolean
+  isCollapsed?: Ref<boolean>
 }
 
 export class MenuOption {
@@ -14,12 +16,13 @@ export class MenuOption {
   action?: () => void
   section?: string
   subOptions: MenuOptions[]
+  isActive: boolean = false
+  isCollapsed: Ref<boolean> = ref(true)
 
   constructor(option: MenuOptions) {
     this.label = option.label
     this.action = option.action
     this.icon = option.icon
-    this.section = option.section
     this.subOptions = []
   }
 

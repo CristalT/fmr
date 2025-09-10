@@ -44,7 +44,7 @@ describe('Button', () => {
 
     const button = wrapper.find('button')
     expect(button.text()).toBe('Test Button')
-    expect(button.classes()).toContain('bg-transparent')
+    expect(button.classes()).toContain('bg-gray-100')
     expect(button.classes()).toContain('w-full')
   })
 })

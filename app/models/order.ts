@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany, scope } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, hasMany, hasOne, scope } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import CartItem from './cart_item.js'
 import Customer from './customer.js'
 import { OrderStatus } from '#types/order_status'
 import cache from '@adonisjs/cache/services/main'
 import Receipt from './receipt.js'
+import DeliveryInfo from './delivery_info.js'
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
@@ -34,6 +35,9 @@ export default class Order extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @hasOne(() => DeliveryInfo)
+  declare deliveryInfo: HasOne<typeof DeliveryInfo>
 
   static readonly getPendingOrders = scope((query) => {
     query.where('status', OrderStatus.Pending)

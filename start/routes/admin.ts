@@ -12,6 +12,7 @@ const SettingController = () => import('#controllers/setting_controller')
 const ShowcaseController = () => import('#controllers/showcase_controller')
 const ReceiptsController = () => import('#controllers/receipts_controller')
 const CustomerOrdersController = () => import('#controllers/admin/customer_orders_controller')
+const CategoriesController = () => import('#controllers/categories_controller')
 
 export default function adminRoutes() {
   router.get('/', [AdminController, 'index']).as('home')
@@ -27,17 +28,23 @@ export default function adminRoutes() {
     .only(['index', 'edit', 'update'])
     .as('providers')
   router.get('/providers/list', [ProviderController, 'list']).as('providers.list')
-  router.resource('/registries', RegistryController).only(['index', 'edit']).as('registries')
+  router
+    .resource('/registries', RegistryController)
+    .only(['index', 'edit', 'destroy'])
+    .as('registries')
   router.resource('/orders', OrderController).as('orders')
   router.get('/orders/:id/print', [OrderController, 'print']).as('orders.print')
   router.resource('/cart-items', CartItemController).only(['update'])
   router.get('/settings/view', [SettingController, 'view']).as('settings.view')
   router.resource('/settings', SettingController).as('settings')
   router.get('/showcases/create', [ShowcaseController, 'create']).as('showcases.create')
+  router.post('/showcases-order', [ShowcaseController, 'order']).as('showcases.order')
   router
     .resource('/showcases', ShowcaseController)
     .only(['index', 'store', 'destroy', 'edit', 'update'])
     .as('showcases')
   router.get('/showcases/list', [ShowcaseController, 'list']).as('showcases.list')
   router.resource('/receipts', ReceiptsController)
+  router.resource('/categories', CategoriesController).as('categories')
+  router.get('/categories-list', [CategoriesController, 'list']).as('categories.list')
 }

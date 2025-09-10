@@ -28,7 +28,11 @@ test.group('Cart item create', () => {
 
   test('list current user cart items', async ({ client }) => {
     const customer = await CustomerFactory.create()
-    const items = await CartItemFactory.with('product', 3)
+    const items = await CartItemFactory.with(
+      'product',
+      3,
+      (builder) => builder.merge({ price: 100 }) // harcoded price to prevent issues with rounded price method
+    )
       .merge({
         customerId: customer.id,
         status: OrderStatus.InCart,
@@ -49,7 +53,7 @@ test.group('Cart item create', () => {
           code: item.product.code,
           provider: item.product.provider,
           name: item.product.name,
-          price: item.product.price,
+          price: 100,
           image: null,
         },
       }))
@@ -88,9 +92,11 @@ test.group('Cart item create', () => {
     response.assertBody([])
   })
 
-  test('current cart list only items with status InCart', async ({ client }) => {
+  test('current cart lists only items with status InCart', async ({ client }) => {
     const customer = await CustomerFactory.create()
-    const items = await CartItemFactory.with('product', 3)
+    const items = await CartItemFactory.with('product', 3, (builder) => {
+      builder.merge({ price: 900 })
+    })
       .merge({
         customerId: customer.id,
         status: OrderStatus.InCart,
@@ -106,6 +112,7 @@ test.group('Cart item create', () => {
 
     const response = await client.get('/cart-items').loginAs(customer)
     response.assertStatus(200)
+
     response.assertBodyContains(
       items.map((item) => ({
         id: item.id,
@@ -163,7 +170,7 @@ test.group('Cart item create', () => {
       .create()
 
     const response = await client
-      .put(`/cart-items/${item.id}?orderId=${order.id}`)
+      .put(`/admin/cart-items/${item.id}?orderId=${order.id}`)
       .withGuard('admin')
       .loginAs(admin)
       .form({

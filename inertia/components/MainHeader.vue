@@ -68,7 +68,7 @@ function navigateTo(route: string) {
         </a>
         <a
           class="mx-2 rounded border border-secondary bg-secondary px-2 py-1 text-sm font-extralight uppercase text-white transition-colors hover:bg-secondary/80"
-          href="/auth/customers/show"
+          href="/registries/create"
           v-if="!customer.isLoggedIn.value">
           Quiero ser cliente
         </a>
