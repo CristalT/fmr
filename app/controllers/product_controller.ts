@@ -12,7 +12,7 @@ export default class ProductController {
     const limit = request.input('limit', 12)
 
     const queryOptions = {
-      terms: request.input('terms', null),
+      search: request.input('terms', null),
       hideZeroStock: await setting('stock_hide_products_with_zero_stock'),
       hideZeroPrice: await setting('stock_hide_products_with_zero_price'),
       interval: await setting('stock_round_interval'),
