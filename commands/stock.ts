@@ -86,58 +86,48 @@ export default class StockCommand extends BaseCommand {
         subcategories.set(row.subcategoryName, row.categoryName)
         providerAliases.set(row.providerAlias, row.providerName)
       })
-      .on('end', () => {
-        const promises = []
+      .on('end', async () => {
+        try {
+          // Collect all IDs from CSV
+          const productIds = products.map((p: any) => p.id)
 
-        // Update or create products
-        promises.push(
-          Product.updateOrCreateMany('id', products)
-            .then(() => {
-              this.logger.info('Stock updated')
-            })
-            .catch((error) => {
-              this.logger.error('Error updating stock ' + error.message)
-            })
-        )
+          // Update or create products
+          this.logger.info('Updating products...')
+          await Product.updateOrCreateMany('id', products)
+          this.logger.info('Products updated')
 
-        // Update or create providers
-        promises.push(
-          Provider.updateOrCreateMany(
+          // Delete products not in CSV
+          const deletedProducts = await Product.query().whereNotIn('id', productIds).delete()
+          this.logger.info(`Deleted ${deletedProducts} products not in CSV`)
+
+          // Update or create providers
+          this.logger.info('Updating providers...')
+          await Provider.updateOrCreateMany(
             'alias',
             Array.from(providerAliases).map(([alias, name]) => ({
               alias,
               name,
             }))
           )
-            .then(() => {
-              this.logger.info('Providers updated')
-            })
-            .catch((error) => {
-              this.logger.error('Error updating providers', error.message)
-            })
-        )
+          this.logger.info('Providers updated')
 
-        // Update or create Categories
-        promises.push(
-          Category.updateOrCreateMany(
+          // Update or create Categories
+          this.logger.info('Updating categories...')
+          await Category.updateOrCreateMany(
             'slug',
             Array.from(categories).map((name) => ({
               slug: name.toLowerCase().replace(/\s+/g, '-'),
               name,
             }))
           )
-            .then(() => {
-              this.logger.info('Categories updated')
-            })
-            .catch((error) => {
-              this.logger.error('Error updating categories', error.message)
-            })
-        )
+          this.logger.info('Categories updated')
 
-        Promise.all(promises).finally(() => {
           this.logger.info('Stock update process completed')
+        } catch (error) {
+          this.logger.error('Error during update process: ' + error.message)
+        } finally {
           exit()
-        })
+        }
       })
   }
 }

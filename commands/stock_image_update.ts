@@ -18,42 +18,42 @@ export default class StockImageUpdateCommand extends BaseCommand {
     const path = app.makePath(UPLOADS_FOLDER, 'images')
     const files = readdirSync(path)
 
-  for (const file of files) {
-    const [id, extension] = file.split('.')
+    for (const file of files) {
+      const [id, extension] = file.split('.')
 
-    // Validate file name format
-    if (!id || !extension) {
-      this.logger.warning(`Skipping invalid file: ${file}`)
-      continue
-    }
-
-    const imageName = `${id}.webp`
-
-    if (extension !== 'webp') {
-      try {
-        await sharp(app.makePath(UPLOADS_FOLDER, 'images', file))
-          .webp({ quality: 80 })
-          .toFile(app.makePath(UPLOADS_FOLDER, 'images', imageName))
-
-        unlinkSync(app.makePath(UPLOADS_FOLDER, 'images', file))
-        this.logger.info(`Converted ${file} to WebP format`)
-      } catch (error) {
-        this.logger.error(`Failed to convert ${file}: ${error.message}`)
+      // Validate file name format
+      if (!id || !extension) {
+        this.logger.warning(`Skipping invalid file: ${file}`)
         continue
       }
-    }
 
-    try {
-      const item = await Product.findBy({ id })
-      if (item && !item?.image) {
-        this.logger.info(`Updating product ${item.code}`)
-        item.image = imageName
-        await item.save()
+      const imageName = `${id}.webp`
+
+      if (extension !== 'webp') {
+        try {
+          await sharp(app.makePath(UPLOADS_FOLDER, 'images', file))
+            .webp({ quality: 80 })
+            .toFile(app.makePath(UPLOADS_FOLDER, 'images', imageName))
+
+          unlinkSync(app.makePath(UPLOADS_FOLDER, 'images', file))
+          this.logger.info(`Converted ${file} to WebP format`)
+        } catch (error) {
+          this.logger.error(`Failed to convert ${file}: ${error.message}`)
+          continue
+        }
       }
-    } catch (error) {
-      this.logger.error(`Failed to update product ${id}: ${error.message}`)
+
+      try {
+        const item = await Product.findBy({ id })
+        if (item && !item?.image) {
+          this.logger.info(`Updating product ${item.code}`)
+          item.image = imageName
+          await item.save()
+        }
+      } catch (error) {
+        this.logger.error(`Failed to update product ${id}: ${error.message}`)
+      }
     }
-  }
 
     this.logger.info('Products updated with the available images')
   }
