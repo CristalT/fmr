@@ -1,13 +1,33 @@
-import { describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
 import { usePath } from '~/composables'
 import ImageUpload from './ImageUpload.vue'
 
+const confirmation = vi.hoisted(() => vi.fn().mockResolvedValue(true))
+
+vi.mock('~/composables', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    useConfirm: () => ({ confirmation }),
+  }
+})
 
 describe('ImageUpload', () => {
+  let wrapper
+
+  beforeEach(() => {
+    confirmation.mockClear()
+    confirmation.mockResolvedValue(true)
+  })
+
+  afterEach(() => {
+    wrapper?.unmount()
+  })
+
   it('renders a placeholder image when no image is present', () => {
     const { staticPath } = usePath()
-    const wrapper = mount(ImageUpload, {
+    wrapper = mount(ImageUpload, {
       props: {
         product: {},
       },
@@ -19,50 +39,72 @@ describe('ImageUpload', () => {
   })
 
   it('hides delete icon if it has not something to delete', async () => {
-    const wrapper = mount(ImageUpload, {
+    wrapper = mount(ImageUpload, {
       props: { product: {} },
     })
 
     const actions = wrapper.findAllComponents({ name: 'Icon' })
 
-    expect(actions.length).toBe(1)
-    expect(actions.at(0).props('name')).not.toBe('delete')
+    expect(actions.length).toBe(2) // edit + paste hint
+    expect(actions.map((a) => a.props('name'))).not.toContain('delete')
   })
 
   it('shows delete icon if it has something deletable', async () => {
-    const wrapper = mount(ImageUpload, {
+    wrapper = mount(ImageUpload, {
       props: { product: { image: 'imgString' } },
     })
 
     const actions = wrapper.findAllComponents({ name: 'Icon' })
 
-    expect(actions.length).toBe(2)
+    expect(actions.length).toBe(3) // edit + delete + paste hint
     expect(actions.map((action) => action.props('name'))).toContain('delete')
   })
 
   it('shows a confirmation dialog when trying to delete an image', async () => {
-    const confirmation = vi.hoisted(() => vi.fn().mockResolvedValue(true))
-    // Mock the useConfirm composable
-    vi.mock('~/composables', async (importOriginal) => {
-      const actual = await importOriginal()
-      return {
-      ...actual,
-      useConfirm: () => ({
-        confirmation,
-      }),
-      }
-    })
-
-    const wrapper = mount(ImageUpload, {
+    wrapper = mount(ImageUpload, {
       props: { product: { image: 'imgString' } },
     })
 
-    // Find the delete icon and trigger a click
     const actions = wrapper.findAllComponents({ name: 'Icon' })
-    const deleteIcon = actions.find(action => action.props('name') === 'delete')
+    const deleteIcon = actions.find((action) => action.props('name') === 'delete')
     await deleteIcon.trigger('click')
 
-    // Expect the composable's confirm dialog to have been called
     expect(confirmation).toHaveBeenCalled()
+  })
+
+  it('pastes image without confirmation when no image is present', async () => {
+    wrapper = mount(ImageUpload, {
+      props: { product: {} },
+    })
+
+    const file = new File(['img'], 'paste.png', { type: 'image/png' })
+    const pasteEvent = new Event('paste')
+    Object.defineProperty(pasteEvent, 'clipboardData', {
+      value: { items: [{ kind: 'file', type: 'image/png', getAsFile: () => file }] },
+    })
+
+    window.dispatchEvent(pasteEvent)
+    await flushPromises()
+
+    expect(confirmation).not.toHaveBeenCalled()
+  })
+
+  it('shows confirmation before replacing existing image on paste', async () => {
+    wrapper = mount(ImageUpload, {
+      props: { product: { image: 'existing.jpg' } },
+    })
+
+    const file = new File(['img'], 'paste.png', { type: 'image/png' })
+    const pasteEvent = new Event('paste')
+    Object.defineProperty(pasteEvent, 'clipboardData', {
+      value: { items: [{ kind: 'file', type: 'image/png', getAsFile: () => file }] },
+    })
+
+    window.dispatchEvent(pasteEvent)
+    await flushPromises()
+
+    expect(confirmation).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Reemplazar imagen' })
+    )
   })
 })

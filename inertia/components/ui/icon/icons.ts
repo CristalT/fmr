@@ -22,6 +22,7 @@ import ProviderIcon from '~/components/icons/ProviderIcon.vue'
 import TreasuryIcon from '~/components/icons/TreasuryIcon.vue'
 import EyeIcon from '~/components/icons/EyeIcon.vue'
 import EyeOffIcon from '~/components/icons/EyeOffIcon.vue'
+import ContentPasteIcon from '~/components/icons/ContentPasteIcon.vue'
 
 export const icons = {
   edit: EditIcon,
@@ -48,4 +49,5 @@ export const icons = {
   treasury: TreasuryIcon,
   eye: EyeIcon,
   eyeOff: EyeOffIcon,
+  content_paste: ContentPasteIcon,
 }
