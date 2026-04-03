@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ProductCard } from '~/components'
 import { Icon } from '~/components/ui'
 import { useShowcase, useAdmin } from '~/composables'
@@ -16,6 +16,9 @@ const showcases = computed(() => data.value || [])
 
 // Carousel state for each showcase
 const carouselStates = ref<Record<number, { currentPage: number }>>({})
+const autoScrollIntervals = ref<Record<number, ReturnType<typeof setInterval>>>({})
+const pausedShowcases = ref<Set<number>>(new Set())
+const AUTO_SCROLL_INTERVAL = 4000
 
 const itemsPerPage = ref(4)
 
@@ -30,6 +33,35 @@ function updateItemsPerPage() {
   }
 }
 
+const startAutoScroll = (showcase: Showcase) => {
+  stopAutoScroll(showcase.id)
+  if (getTotalPages(showcase) <= 1) return
+  if (pausedShowcases.value.has(showcase.id)) return
+  autoScrollIntervals.value[showcase.id] = setInterval(() => {
+    initializeCarousel(showcase.id)
+    const state = carouselStates.value[showcase.id]
+    const total = getTotalPages(showcase)
+    state.currentPage = (state.currentPage + 1) % total
+  }, AUTO_SCROLL_INTERVAL)
+}
+
+const stopAutoScroll = (showcaseId: number) => {
+  if (autoScrollIntervals.value[showcaseId]) {
+    clearInterval(autoScrollIntervals.value[showcaseId])
+    delete autoScrollIntervals.value[showcaseId]
+  }
+}
+
+const toggleAutoScroll = (showcase: Showcase) => {
+  if (pausedShowcases.value.has(showcase.id)) {
+    pausedShowcases.value.delete(showcase.id)
+    startAutoScroll(showcase)
+  } else {
+    pausedShowcases.value.add(showcase.id)
+    stopAutoScroll(showcase.id)
+  }
+}
+
 onMounted(() => {
   updateItemsPerPage()
   window.addEventListener('resize', updateItemsPerPage)
@@ -37,7 +69,16 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateItemsPerPage)
+  Object.keys(autoScrollIntervals.value).forEach((id) => stopAutoScroll(Number(id)))
 })
+
+watch(
+  showcases,
+  (newShowcases) => {
+    newShowcases.forEach((showcase) => startAutoScroll(showcase))
+  },
+  { immediate: true }
+)
 
 const isAdminContext = computed(() => page.url.includes('admin'))
 
@@ -67,17 +108,22 @@ const nextPage = (showcase: Showcase) => {
   if (canGoNext(showcase)) {
     carouselStates.value[showcase.id].currentPage++
   }
+  pausedShowcases.value.add(showcase.id)
+  stopAutoScroll(showcase.id)
 }
 
 const prevPage = (showcase: Showcase) => {
   if (canGoPrev(showcase)) {
     carouselStates.value[showcase.id].currentPage--
   }
+  pausedShowcases.value.add(showcase.id)
+  stopAutoScroll(showcase.id)
 }
 
 const goToPage = (showcase: Showcase, page: number) => {
   initializeCarousel(showcase.id)
   carouselStates.value[showcase.id].currentPage = page
+  startAutoScroll(showcase)
 }
 </script>
 
@@ -147,17 +193,43 @@ const goToPage = (showcase: Showcase, page: number) => {
       </button>
 
       <!-- Page Indicators -->
-      <div v-if="getTotalPages(showcase) > 1" class="flex justify-center space-x-2 py-4">
+      <div v-if="getTotalPages(showcase) > 1" class="flex items-center justify-center gap-3 py-4">
+        <!-- Pause/Play Button -->
         <button
-          v-for="page in getTotalPages(showcase)"
-          :key="page"
-          @click="goToPage(showcase, page - 1)"
-          class="h-3 w-3 rounded-full transition-all duration-200"
-          :class="[
-            (carouselStates[showcase.id]?.currentPage || 0) === page - 1
-              ? 'scale-110 bg-primary'
-              : 'bg-gray-300 hover:bg-gray-400',
-          ]" />
+          @click="toggleAutoScroll(showcase)"
+          class="flex h-6 w-6 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-primary"
+          :title="pausedShowcases.has(showcase.id) ? 'Reanudar' : 'Pausar'">
+          <!-- Play icon -->
+          <svg
+            v-if="pausedShowcases.has(showcase.id)"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="h-5 w-5">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <!-- Pause icon -->
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="h-5 w-5">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          </svg>
+        </button>
+        <div class="flex space-x-2">
+          <button
+            v-for="page in getTotalPages(showcase)"
+            :key="page"
+            @click="goToPage(showcase, page - 1)"
+            class="h-3 w-3 rounded-full transition-all duration-200"
+            :class="[
+              (carouselStates[showcase.id]?.currentPage || 0) === page - 1
+                ? 'scale-110 bg-primary'
+                : 'bg-gray-300 hover:bg-gray-400',
+            ]" />
+        </div>
       </div>
 
       <!-- Page Info -->
