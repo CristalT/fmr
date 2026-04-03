@@ -45,7 +45,7 @@ describe('ImageUpload', () => {
 
     const actions = wrapper.findAllComponents({ name: 'Icon' })
 
-    expect(actions.length).toBe(2) // edit + paste hint
+    expect(actions.length).toBe(1) // edit
     expect(actions.map((a) => a.props('name'))).not.toContain('delete')
   })
 
@@ -56,7 +56,7 @@ describe('ImageUpload', () => {
 
     const actions = wrapper.findAllComponents({ name: 'Icon' })
 
-    expect(actions.length).toBe(3) // edit + delete + paste hint
+    expect(actions.length).toBe(2) // edit + delete
     expect(actions.map((action) => action.props('name'))).toContain('delete')
   })
 
