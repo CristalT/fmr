@@ -56,7 +56,6 @@ const onSubmit = async () => {
       console.error(error)
       toast.error('Error al enviar el formulario.')
     })
-
 }
 </script>
 <template>
@@ -65,7 +64,7 @@ const onSubmit = async () => {
       <MainHeader />
     </template>
 
-    <div class="flex items-center justify-center max-w-[800px] m-auto h-full">
+    <div class="m-auto flex h-full max-w-[800px] items-center justify-center">
       <Card class="w-full">
         <template #header>
           <h1 class="text-2xl font-bold">Registro de usuario</h1>
@@ -78,7 +77,10 @@ const onSubmit = async () => {
             <Input label="Email" v-model="registry.email" :error="getError('email')" />
             <Input label="Teléfono" v-model="registry.phone" :error="getError('phone')" />
             <Input label="Dirección" v-model="registry.address" :error="getError('address')" />
-            <Input label="Código Postal" v-model="registry.postalCode" :error="getError('postalCode')" />
+            <Input
+              label="Código Postal"
+              v-model="registry.postalCode"
+              :error="getError('postalCode')" />
             <Input label="Localidad" v-model="registry.city" :error="getError('city')" />
             <Input label="Provincia" v-model="registry.province" :error="getError('province')" />
 

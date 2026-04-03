@@ -26,7 +26,7 @@ onMounted(() => {
 </script>
 <template>
   <Toast />
-  <div class="h-min-screen bg-gray-200">
+  <div class="h-min-screen bg">
     <div class="sticky top-0 z-20">
       <slot name="header"></slot>
     </div>
@@ -49,7 +49,8 @@ onMounted(() => {
         </svg>
         <span class="sr-only">Cargando ...</span>
       </div>
-      <slot></slot>
+
+      <slot />
     </div>
     <div class="sticky bottom-0 z-10">
       <slot name="footer"></slot>
@@ -58,3 +59,12 @@ onMounted(() => {
   <Footer />
   <WhatsApp v-if="!whatsappHidden" :phone="settings.whatsapp" />
 </template>
+
+<style lang="css">
+.bg {
+  background-image: url('/static/background.png');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+</style>

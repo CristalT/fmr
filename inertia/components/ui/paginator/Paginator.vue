@@ -45,19 +45,31 @@ const pageNumbers = computed(() => {
 </script>
 <template>
   <div class="flex justify-center gap-4">
-    <Button id="paginator__prev-page" variant="tertiary" @click="handlePageChange(model - 1)">
+    <Button
+      id="paginator__prev-page"
+      variant="tertiary"
+      bordered
+      @click="handlePageChange(model - 1)">
       <template #icon>
         <Icon name="chevronLeft" />
       </template>
     </Button>
-    <ul class="flex gap-2 items-center" :key="model">
+    <ul class="flex items-center gap-2" :key="model">
       <li v-for="page of pageNumbers" :key="page">
-        <Button :variant="model === page ? 'primary' : 'tertiary'" :label="page" v-if="page !== '...'"
+        <Button
+          :variant="model === page ? 'primary' : 'tertiary'"
+          :label="page"
+          bordered
+          v-if="page !== '...'"
           @click="handlePageChange(page)" />
         <span v-else class="text-gray-400">{{ page }}</span>
       </li>
     </ul>
-    <Button id="paginator__next-page" variant="tertiary" @click="handlePageChange(model + 1)">
+    <Button
+      id="paginator__next-page"
+      variant="tertiary"
+      bordered
+      @click="handlePageChange(model + 1)">
       <template #icon>
         <Icon name="chevronRight" />
       </template>
