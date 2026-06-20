@@ -4,6 +4,12 @@ import { Menu } from './menu_builder'
 const menu = new Menu()
 
 menu.addOption({
+  label: 'Dashboard',
+  action: () => router.visit('/admin/dashboard'),
+  icon: 'adjustments',
+})
+
+menu.addOption({
   label: 'Mensajes',
   action: () => router.visit('/admin/messages'),
   icon: 'message',

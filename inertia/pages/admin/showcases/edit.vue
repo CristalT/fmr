@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { AdminLayout } from '~/components'
 import { Input, Card, Button, Icon } from '~/components/ui'
-import { useForm, router } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import { useConfirm, useToast } from '~/composables'
 import ShowcaseProducts from '~/components/ShowcaseProducts.vue'

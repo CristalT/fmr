@@ -1,6 +1,7 @@
 import router from '@adonisjs/core/services/router'
 
 const AdminController = () => import('#controllers/admin_controller')
+const DashboardController = () => import('#controllers/admin/dashboard_controller')
 const StockController = () => import('#controllers/admin/stock_controller')
 const ProviderController = () => import('#controllers/provider_controller')
 const OrderController = () => import('#controllers/admin/order_controller')
@@ -16,6 +17,10 @@ const CategoriesController = () => import('#controllers/categories_controller')
 
 export default function adminRoutes() {
   router.get('/', [AdminController, 'index']).as('home')
+  router.get('/dashboard', [DashboardController, 'index']).as('dashboard')
+  router
+    .post('/dashboard/stock-update/run', [DashboardController, 'runStockUpdate'])
+    .as('dashboard.stockUpdate.run')
   router.get('/stock/view', [StockController, 'view']).as('stock.view')
   router.resource('/stock', StockController).as('stock')
   router.post('/stock/:id/image', [StockController, 'uploadImage']).as('stock.uploadImage')
