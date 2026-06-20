@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Button, Icon } from '~/components/ui'
 import { ProductImage, SetCartQtyDialog } from '~/components'
 import { useCart, useToast, useCustomer } from '~/composables'
@@ -16,6 +16,10 @@ const { toast } = useToast()
 const props = defineProps<{
   product: Product
 }>()
+
+const isInCart = computed(() =>
+  cart.items.value.some((item) => item.productId === props.product.id)
+)
 
 function addToCart({ qty }: { qty: number }) {
   if (qty) {
@@ -51,9 +55,9 @@ function addToCart({ qty }: { qty: number }) {
 
     <div class="p-2">
       <Button
-        variant="primary"
+        :variant="isInCart ? 'success' : 'primary'"
         full
-        label="Agregar al Carrito"
+        :label="isInCart ? 'Agregar Más' : 'Agregar al Carrito'"
         v-if="isLoggedIn"
         @click="showQtyDialog = true">
         <template #icon>
@@ -68,12 +72,12 @@ function addToCart({ qty }: { qty: number }) {
         v-else
         @click="router.get(`/contact/${product.id}`)" />
     </div>
-  </div>
 
-  <SetCartQtyDialog
-    v-model:visible="showQtyDialog"
-    v-model:qty="qty"
-    :product="product"
-    title="Agregar al Carrito"
-    @update="addToCart" />
+    <SetCartQtyDialog
+      v-model:visible="showQtyDialog"
+      v-model:qty="qty"
+      :product="product"
+      title="Agregar al Carrito"
+      @update="addToCart" />
+  </div>
 </template>

@@ -60,21 +60,23 @@ test.group('Cart item create', () => {
     )
   })
 
-  test('cannot add the same product twice to the cart', async ({ client }) => {
+  test('adding the same product twice sums the quantity in the cart', async ({ client }) => {
     const customer = await CustomerFactory.create()
     const item = await CartItemFactory.with('product')
       .merge({
         customerId: customer.id,
         status: OrderStatus.InCart,
+        quantity: 2,
       })
       .create()
 
     const response = await client.post('/cart-items').loginAs(customer).form({
       id: item.product.id,
-      quantity: 1,
+      quantity: 3,
     })
 
-    response.assertConflict()
+    response.assertCreated()
+    response.assertBodyContains({ id: item.id, quantity: 5 })
   })
 
   test('cannot list orders of another user', async ({ client }) => {

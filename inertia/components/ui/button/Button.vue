@@ -4,7 +4,7 @@ const props = withDefaults(
     label?: string | number
     type?: 'button' | 'submit' | 'reset'
     full?: boolean
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'danger'
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'success'
     size?: 'sm' | 'md'
     bordered?: boolean
     disabled?: boolean
@@ -21,6 +21,7 @@ const variants = () => {
       'text-primary bg-primary/[0.1] hover:bg-primary/[0.2]': props.variant === 'primary',
       'text-secondary bg-secondary/[0.1] hover:bg-secondary/[0.2]': props.variant === 'secondary',
       'text-red-600 bg-red-700/[0.1] hover:bg-red-700/[0.2]': props.variant === 'danger',
+      'text-green-600 bg-green-700/[0.1] hover:bg-green-700/[0.2]': props.variant === 'success',
     }
   }
   return {
@@ -28,6 +29,7 @@ const variants = () => {
     'bg-secondary text-white hover:bg-secondary/[0.9]': props.variant === 'secondary',
     'bg-gray-100 text-gray-600 hover:bg-gray-200': props.variant === 'tertiary',
     'bg-red-600 text-white hover:bg-red-700': props.variant === 'danger',
+    'bg-green-600 text-white hover:bg-green-700': props.variant === 'success',
   }
 }
 

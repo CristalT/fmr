@@ -34,7 +34,10 @@ export default class CartItemController {
       .first()
 
     if (exists) {
-      return response.conflict('El producto ya se encuentra en el carrito')
+      exists.merge({ quantity: exists.quantity + Number(quantity) })
+      await exists.save()
+
+      return response.created(exists)
     }
 
     const cart = await CartItem.create({
