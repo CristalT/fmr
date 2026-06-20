@@ -9,5 +9,11 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["./**/*.ts", "./**/*.vue", "helpers/debounce.js", "components/ImageUpload/image_upload.test.js"]
+  "include": [
+    "./**/*.ts",
+    "./**/*.vue",
+    "helpers/debounce.js",
+    "components/ImageUpload/image_upload.test.js",
+    "types/auth_augment.d.ts"
+  ]
 }

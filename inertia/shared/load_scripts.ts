@@ -1,5 +1,3 @@
-import { App } from 'vue'
-
 function loadScript(src: string) {
   return new Promise(function (resolve, reject) {
     let shouldAppend = false

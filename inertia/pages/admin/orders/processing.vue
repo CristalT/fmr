@@ -67,16 +67,7 @@ const print = () => {
           Cambiar estado
           <Select
             class="w-60"
-            :options="
-              statusOptions.map((option) => ({
-                value: option.value,
-                label: option.label,
-                component: {
-                  name: 'StatusBadge',
-                  props: { status: option.value },
-                },
-              }))
-            "
+            :options="statusOptions"
             v-model="order.status"
             @change="({ value }) => setStatus(value as OrderStatus)" />
         </div>

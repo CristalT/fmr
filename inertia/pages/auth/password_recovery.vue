@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Input, Button, Alert } from '~/components/ui'
+import { Input, Button } from '~/components/ui'
 
 import { useForm } from '@inertiajs/vue3';
 import MainLayout from '~/components/MainLayout.vue';

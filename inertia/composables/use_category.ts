@@ -7,7 +7,7 @@ export type CreateCategory = {
   slug: string
   description?: string
   parentId: number | null
-  productIds: string[]
+  productIds?: string[]
 }
 
 export default function useCategory(parentId: number | null = null) {

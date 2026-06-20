@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import AdminSideMenu from './AdminSideMenu.vue'
-import { findByText } from '~/test_utils'
 import { Menu } from './menu_builder'
 
 const usePageMock = vi.hoisted(() => ({

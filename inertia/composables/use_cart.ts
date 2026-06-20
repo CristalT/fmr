@@ -1,4 +1,4 @@
-import { computed, shallowRef, toValue } from 'vue'
+import { computed, shallowRef } from 'vue'
 import http from '~/shared/http'
 import type CartItem from '#models/cart_item'
 import type Product from '#models/product'

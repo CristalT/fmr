@@ -1,11 +1,7 @@
-import type Order from '#models/order'
 import { OrderStatus } from '#types/order_status'
+import type { SelectOption } from '~/components/ui/select/Select.vue'
 
-export const statusOptions: {
-  label: string
-  value: Order['status']
-  component?: { name: string; props: Record<string, unknown> }
-}[] = [
+export const statusOptions: SelectOption[] = [
   {
     label: 'Pendiente',
     value: OrderStatus.Pending,

@@ -16,11 +16,11 @@ const { toast } = useToast()
 
 const showcase = useForm<{
   name: string
-  description: string | null
+  description: string
   products: string[]
 }>({
   name: props.showcase.name,
-  description: props.showcase.description,
+  description: props.showcase.description ?? '',
   products: props.showcase.products.map((product) => product.id),
 })
 
@@ -64,7 +64,7 @@ const deleteShowcase = async () => {
       </div>
     </Card>
 
-    <ShowcaseProducts v-model="selected" :selected-products="selectedProducts" />
+    <ShowcaseProducts v-model="selected" :selected-products="(selectedProducts as Product[])" />
     <template #footer>
       <div class="flex justify-end gap-2">
         <Button label="Eliminar" @click="deleteShowcase" variant="danger" flat>

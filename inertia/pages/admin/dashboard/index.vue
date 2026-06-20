@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { DateTime } from 'luxon'
-import type StockUpdateRun from '#models/stock_update_run'
+import type { StockUpdateTrigger } from '#models/stock_update_run'
 import { AdminLayout } from '~/components'
 import { Alert, Card, Icon, Button } from '~/components/ui'
 import { useStockUpdate, useToast } from '~/composables'
+
+type StockUpdateRun = {
+  id: number
+  trigger: StockUpdateTrigger
+  startedAt: string | null
+  finishedAt: string | null
+  success: boolean | null
+  createdCount: number | null
+  updatedCount: number | null
+  deletedCount: number | null
+  errorMessage: string | null
+}
 
 const { lastStockUpdateRun, lastStockUpdateRunWithChanges } = defineProps<{
   lastStockUpdateRun: StockUpdateRun | null

@@ -120,7 +120,7 @@ const isPublic = computed({
               <CategoriesTree
                 label="Categoría"
                 class="m-2"
-                v-model="form.categories as Category[]" />
+                v-model="form.categories as unknown as Category[]" />
             </div>
             <div>
               <Input type="textarea" label="Descripción" v-model="form.description" />

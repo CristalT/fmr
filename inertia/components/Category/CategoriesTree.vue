@@ -4,7 +4,6 @@ import type Category from '#models/category'
 import { Button } from '~/components/ui'
 import { computed, onMounted, ref } from 'vue'
 import { first, get } from 'lodash-es'
-import { createReusableTemplate } from '@vueuse/core'
 
 defineProps<{ label?: string }>()
 

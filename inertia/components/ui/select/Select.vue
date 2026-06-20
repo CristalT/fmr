@@ -23,17 +23,19 @@ const emit = defineEmits<{
   (e: 'change', option: { value: string | number; label: string }): void
 }>()
 
-type StatusBadgeProps = { status: OrderStatus }
+export type StatusBadgeProps = { status: OrderStatus }
+
+export type SelectOption = {
+  value: string | number
+  label: string
+  component?: {
+    name: 'StatusBadge'
+    props: StatusBadgeProps
+  }
+}
 
 const { clearable = false, ...props } = defineProps<{
-  options: Array<{
-    value: string | number
-    label: string
-    component?: {
-      name: 'StatusBadge'
-      props: StatusBadgeProps
-    }
-  }>
+  options: Array<SelectOption>
   placeholder?: string
   label?: string
   disabled?: boolean

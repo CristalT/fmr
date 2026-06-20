@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { Icon } from '~/components/ui'
 import type Product from '#models/product'
 import ProductImage from '../ProductImage.vue'
@@ -7,8 +7,6 @@ import { usePath, useConfirm } from '~/composables'
 
 const { staticPath } = usePath()
 const { confirmation } = useConfirm()
-
-useTemplateRef('deleteAction')
 
 const props = withDefaults(
   defineProps<{

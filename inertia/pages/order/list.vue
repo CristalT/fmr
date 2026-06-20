@@ -14,7 +14,7 @@ const orders = data.data.map((order) => ({
   id: order.id,
   createdAt: friendlyDate(order.createdAt),
   status: statusOptions.find((option) => option.value === order.status)?.label,
-  paymentStatus: order.paid ? 'Pagado' : 'Pendiente',
+  paymentStatus: order.receiptId ? 'Pagado' : 'Pendiente',
 }))
 
 const meta = data.meta
