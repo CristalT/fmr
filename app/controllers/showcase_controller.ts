@@ -44,7 +44,7 @@ export default class ShowcaseController {
     showcase.merge(data)
     await showcase.save()
     await showcase.related('products').sync(products)
-    return response.json(showcase)
+    return response.redirect().toRoute('admin.showcases.list')
   }
 
   async order({ request, response }: HttpContext) {

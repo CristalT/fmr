@@ -3,7 +3,7 @@ import { AdminLayout } from '~/components'
 import { Input, Card, Button, Icon } from '~/components/ui'
 import { useForm, router } from '@inertiajs/vue3'
 import { ref } from 'vue'
-import { useConfirm } from '~/composables'
+import { useConfirm, useToast } from '~/composables'
 import ShowcaseProducts from '~/components/ShowcaseProducts.vue'
 
 import type Showcase from '#models/showcase'
@@ -12,6 +12,7 @@ import type Product from '#models/product'
 const props = defineProps<{ showcase: Showcase }>()
 
 const { confirmation } = useConfirm()
+const { toast } = useToast()
 
 const showcase = useForm<{
   name: string
@@ -29,8 +30,8 @@ const selectedProducts = ref<Product[]>(props.showcase.products)
 const save = () => {
   showcase.products = selected.value
   showcase.put(`/admin/showcases/${props.showcase.id}`, {
-    onSuccess: () => {
-      router.visit(`/admin/showcases/list`)
+    onError: () => {
+      toast.error('Ocurrió un error al actualizar la vidriera')
     },
   })
 }
