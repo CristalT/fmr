@@ -1,5 +1,5 @@
 import http from '~/shared/http'
-import { useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 import type Provider from '#models/provider'
 import { Ref } from 'vue'
 import { Meta } from '~/types/metadata'
@@ -31,5 +31,17 @@ export default function useProduct() {
       },
     })
   }
-  return { fetchOptions, fetchAll }
+  const updateProductsPublication = (alias: string) =>
+    useMutation({
+      mutationKey: ['update_products_publication', alias],
+      mutationFn: (isPublic: boolean) =>
+        http(`admin/providers/${alias}/products-publication`)
+          .cancellable('update_products_publication')
+          .patch<{ data: { total: number; published: number; unpublished: number } }>({
+            public: isPublic,
+          })
+          .then((res) => res.data),
+    })
+
+  return { fetchOptions, fetchAll, updateProductsPublication }
 }

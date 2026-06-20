@@ -7,3 +7,9 @@ export const updateProviderValidator = vine.compile(
     name: vine.string(),
   })
 )
+
+export const updateProductsPublicationValidator = vine.compile(
+  vine.object({
+    public: vine.boolean(),
+  })
+)

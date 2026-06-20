@@ -1,7 +1,8 @@
 // import type { HttpContext } from '@adonisjs/core/http'
 
 import Provider from '#models/provider'
-import { updateProviderValidator } from '#validators/provider'
+import Product from '#models/product'
+import { updateProductsPublicationValidator, updateProviderValidator } from '#validators/provider'
 import { HttpContext } from '@adonisjs/core/http'
 
 export default class ProviderController {
@@ -31,7 +32,19 @@ export default class ProviderController {
 
   async edit({ inertia, params }: HttpContext) {
     const provider = await Provider.findByOrFail({ alias: params.id })
-    return inertia.render('admin/providers/edit', { provider })
+
+    const counts = await Product.query()
+      .where('provider', provider.alias)
+      .select('public')
+      .count('* as total')
+      .groupBy('public')
+
+    const productCounts = {
+      published: Number(counts.find((c) => c.public === 1)?.$extras.total ?? 0),
+      unpublished: Number(counts.find((c) => c.public === 0)?.$extras.total ?? 0),
+    }
+
+    return inertia.render('admin/providers/edit', { provider, productCounts })
   }
 
   async update({ request, params, response }: HttpContext) {
@@ -43,5 +56,21 @@ export default class ProviderController {
     await provider.save()
 
     return response.redirect().toRoute('admin.providers.list')
+  }
+
+  async updateProductsPublication({ request, params, response }: HttpContext) {
+    const provider = await Provider.findByOrFail({ alias: params.id })
+
+    const data = await request.validateUsing(updateProductsPublicationValidator)
+
+    const total = await Product.query()
+      .where('provider', provider.alias)
+      .update({ public: data.public ? 1 : 0 })
+
+    return response.json({
+      total: total[0] ?? 0,
+      published: data.public ? total[0] ?? 0 : 0,
+      unpublished: data.public ? 0 : total[0] ?? 0,
+    })
   }
 }

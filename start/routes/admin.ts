@@ -29,6 +29,9 @@ export default function adminRoutes() {
     .as('providers')
   router.get('/providers/list', [ProviderController, 'list']).as('providers.list')
   router
+    .patch('/providers/:id/products-publication', [ProviderController, 'updateProductsPublication'])
+    .as('providers.updateProductsPublication')
+  router
     .resource('/registries', RegistryController)
     .only(['index', 'edit', 'destroy'])
     .as('registries')
