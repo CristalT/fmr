@@ -1,10 +1,11 @@
 import env from '#start/env'
-import { createReadStream } from 'node:fs'
+import { createReadStream, existsSync } from 'node:fs'
 import parser from 'csv-parser'
 import Product from '#models/product'
 import Provider from '#models/provider'
 import Category from '#models/category'
 import StockUpdateRun, { StockUpdateTrigger } from '#models/stock_update_run'
+import db from '@adonisjs/lucid/services/db'
 import { truncate } from 'lodash-es'
 import { Transform } from 'node:stream'
 import { DateTime } from 'luxon'
@@ -44,10 +45,19 @@ export async function runStockUpdate({ trigger, onProgress }: Options) {
 
   try {
     if (!source) throw new Error('STOCK_LIST_UTF8 is not defined')
+    if (!existsSync(source)) {
+      throw new Error(`No se encontró el archivo de stock en la ruta configurada: ${source}`)
+    }
     info('Actualizando stock...')
 
     await new Promise<void>((resolve, reject) => {
+      const onSourceError = (err: Error) => {
+        error('Error al leer el archivo de origen. ' + err.message)
+        reject(err)
+      }
+
       createReadStream(source)
+        .on('error', onSourceError)
         .pipe(replaceStreamContent())
         .pipe(
           parser({
@@ -73,10 +83,7 @@ export async function runStockUpdate({ trigger, onProgress }: Options) {
             ],
           })
         )
-        .on('error', (err) => {
-          error('Error al leer el archivo de origen. ' + err.message)
-          reject(err)
-        })
+        .on('error', onSourceError)
         .on('data', (row) => {
           products.push({
             id: `${row.code}${row.providerAlias}`,
@@ -100,15 +107,60 @@ export async function runStockUpdate({ trigger, onProgress }: Options) {
     // Collect all IDs from CSV
     const productIds = products.map((p: any) => p.id)
 
-    // Figure out which products are new vs existing, before upserting
-    const existingProducts = await Product.query().whereIn('id', productIds).select('id')
-    const existingIds = new Set(existingProducts.map((p) => p.id))
-    const createdCount = productIds.filter((id: string) => !existingIds.has(id)).length
-    const updatedCount = productIds.length - createdCount
-
-    // Update or create products
+    // Update or create products, counting only the ones that actually changed.
+    // Note: fetched directly via the query builder (not the Product model), since
+    // Product's afterFetch hook rounds `price` for display and would make every
+    // row look "changed" when compared against the unrounded CSV value.
     info('Actualizando artículos...')
-    await Product.updateOrCreateMany('id', products)
+
+    const exactFields = [
+      'code',
+      'provider',
+      'location',
+      'name',
+      'stock',
+      'brand',
+      'origin',
+    ] as const
+    // `price`/`fob` are FLOAT columns: MySQL stores them as binary floats, so the
+    // round-tripped value can be off by a tiny amount that scales with magnitude
+    // (e.g. ~0.05 off on a value in the millions). Tolerance combines a fixed
+    // floor with a relative margin so it scales the same way.
+    const numericFields = ['fob', 'price'] as const
+    const isNumericallyEqual = (a: number, b: number) =>
+      Math.abs(a - b) <= Math.max(0.01, Math.abs(a) * 1e-6)
+
+    const existingProducts = await db
+      .from('products')
+      .select('id', ...exactFields, ...numericFields, 'factory_code')
+      .whereIn('id', productIds)
+    const existingById = new Map(existingProducts.map((p) => [p.id, p]))
+
+    let createdCount = 0
+    let updatedCount = 0
+    const productsToPersist: any[] = []
+
+    for (const data of products) {
+      const existing = existingById.get(data.id)
+      if (!existing) {
+        productsToPersist.push(data)
+        createdCount++
+        continue
+      }
+      const hasChanges =
+        exactFields.some((field) => existing[field] !== data[field]) ||
+        numericFields.some((field) => !isNumericallyEqual(existing[field], data[field])) ||
+        existing.factory_code !== data.factoryCode
+      if (hasChanges) {
+        productsToPersist.push(data)
+        updatedCount++
+      }
+    }
+
+    if (productsToPersist.length > 0) {
+      await Product.updateOrCreateMany('id', productsToPersist)
+    }
+
     info('Artículos actualizados correctamente.')
 
     // Delete products not in CSV

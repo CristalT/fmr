@@ -6,7 +6,21 @@ export default class DashboardController {
   async index({ inertia }: HttpContext) {
     const lastStockUpdateRun = await StockUpdateRun.query().orderBy('id', 'desc').first()
 
-    return inertia.render('admin/dashboard/index', { lastStockUpdateRun })
+    const lastStockUpdateRunWithChanges = await StockUpdateRun.query()
+      .where('success', true)
+      .where((query) => {
+        query
+          .where('createdCount', '>', 0)
+          .orWhere('updatedCount', '>', 0)
+          .orWhere('deletedCount', '>', 0)
+      })
+      .orderBy('id', 'desc')
+      .first()
+
+    return inertia.render('admin/dashboard/index', {
+      lastStockUpdateRun,
+      lastStockUpdateRunWithChanges,
+    })
   }
 
   async runStockUpdate({ response }: HttpContext) {
