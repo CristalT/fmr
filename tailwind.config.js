@@ -18,6 +18,9 @@ export default {
   content: ['./inertia/**/*.{html,js,vue}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Roboto Condensed"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
         'primary-admin': '#2563eb',
         'secondary-admin': '#43ab03',

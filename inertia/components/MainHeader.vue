@@ -78,6 +78,8 @@ function navigateTo(route: string) {
       <!-- Mobile Menu Button -->
       <button
         @click="toggleMobileMenu"
+        aria-label="Abrir menú"
+        :aria-expanded="isMobileMenuOpen"
         class="flex h-8 w-8 flex-col items-center justify-center space-y-1 md:hidden"
         :class="{ 'space-y-0': isMobileMenuOpen }">
         <span

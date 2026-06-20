@@ -22,9 +22,10 @@ const error = computed(() => {
   <div
     class="absolute inset-0 flex h-screen w-screen flex-row items-center justify-center bg-cover bg-center bg-no-repeat"
     style="background-image: url('/static/customer-login-bg.webp')">
-    <div class="h-full w-full bg-black bg-opacity-40 p-28 md:w-2/3 lg:w-2/4 xl:w-2/5">
+    <div
+      class="h-full w-full bg-black bg-opacity-40 p-6 sm:p-10 md:w-2/3 md:p-16 lg:w-2/4 lg:p-24 xl:w-2/5">
       <div class="flex flex-col gap-4">
-        <h1 class="text-center font-semibold uppercase text-white">Acceso Clientes</h1>
+        <h1 class="text-center text-2xl font-semibold uppercase text-white">Acceso Clientes</h1>
         <Alert variant="danger" v-if="error">{{ error }}</Alert>
         <form @submit.prevent="form.post('/auth/customers')">
           <div class="flex flex-col gap-4">

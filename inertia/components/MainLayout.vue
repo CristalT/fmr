@@ -64,7 +64,6 @@ onMounted(() => {
 .bg {
   background-image: url('/static/background.png');
   background-size: cover;
-  background-attachment: fixed;
   background-position: center;
 }
 </style>

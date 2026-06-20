@@ -72,8 +72,8 @@ async function createOrder() {
     <template #header>
       <MainHeader />
     </template>
-    <div class="rounded-md bg-white" v-if="cartItems.length">
-      <table class="mx-auto w-full overflow-hidden rounded-md bg-white shadow-sm">
+    <div class="overflow-x-auto rounded-md bg-white shadow-sm" v-if="cartItems.length">
+      <table class="mx-auto w-full min-w-[640px] bg-white">
         <thead>
           <tr class="border-b bg-white">
             <th class="px-4 py-2 text-center">Imagen</th>

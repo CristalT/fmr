@@ -72,14 +72,6 @@ onUnmounted(() => {
   Object.keys(autoScrollIntervals.value).forEach((id) => stopAutoScroll(Number(id)))
 })
 
-watch(
-  showcases,
-  (newShowcases) => {
-    newShowcases.forEach((showcase) => startAutoScroll(showcase))
-  },
-  { immediate: true }
-)
-
 const isAdminContext = computed(() => page.url.includes('admin'))
 
 const initializeCarousel = (showcaseId: number) => {
@@ -125,6 +117,14 @@ const goToPage = (showcase: Showcase, page: number) => {
   carouselStates.value[showcase.id].currentPage = page
   startAutoScroll(showcase)
 }
+
+watch(
+  showcases,
+  (newShowcases) => {
+    newShowcases.forEach((showcase) => startAutoScroll(showcase))
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -149,11 +149,11 @@ const goToPage = (showcase: Showcase, page: number) => {
       <button
         v-if="canGoPrev(showcase)"
         @click="prevPage(showcase)"
-        class="group absolute left-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 transition-all duration-200 hover:bg-black/70">
+        class="group absolute left-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 transition-all duration-200 hover:bg-black/70 sm:left-2 sm:h-12 sm:w-12">
         <Icon
           name="chevronLeft"
           class="text-white transition-transform group-hover:scale-110"
-          size="lg" />
+          size="md" />
       </button>
 
       <!-- Carousel Container -->
@@ -166,7 +166,7 @@ const goToPage = (showcase: Showcase, page: number) => {
           <div
             v-for="(_, chunkIndex) in Math.ceil(showcase.products.length / itemsPerPage)"
             :key="chunkIndex"
-            class="w-full flex-shrink-0 px-12">
+            class="w-full flex-shrink-0 px-8 sm:px-12">
             <div class="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
               <ProductCard
                 v-for="product in showcase.products.slice(
@@ -185,11 +185,11 @@ const goToPage = (showcase: Showcase, page: number) => {
       <button
         v-if="canGoNext(showcase)"
         @click="nextPage(showcase)"
-        class="group absolute right-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 transition-all duration-200 hover:bg-black/70">
+        class="group absolute right-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 transition-all duration-200 hover:bg-black/70 sm:right-2 sm:h-12 sm:w-12">
         <Icon
           name="chevronRight"
           class="text-white transition-transform group-hover:scale-110"
-          size="lg" />
+          size="md" />
       </button>
 
       <!-- Page Indicators -->

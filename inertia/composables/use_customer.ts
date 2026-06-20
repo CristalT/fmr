@@ -27,12 +27,12 @@ export default function useCustomer() {
       isAdminLoggedIn: boolean
       userId: number
       userFullName: string
-    }
+    } | null
   }
 
-  const fullName = computed(() => props.auth.userFullName)
-  const isLoggedIn = computed(() => props.auth.isCustomerLoggedIn)
-  const userId = computed(() => props.auth.userId)
+  const fullName = computed(() => props.auth?.userFullName)
+  const isLoggedIn = computed(() => props.auth?.isCustomerLoggedIn ?? false)
+  const userId = computed(() => props.auth?.userId)
 
   const fetchOptions = () => {
     return useQuery({

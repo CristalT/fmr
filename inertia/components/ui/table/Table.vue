@@ -95,8 +95,8 @@ function onDragEnd() {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-md border">
-    <table class="w-full bg-white">
+  <div class="overflow-x-auto rounded-md border">
+    <table class="w-full min-w-[480px] bg-white">
       <thead class="border-b-2">
         <tr>
           <th v-if="sortable" class="w-10 px-2 py-2"></th>

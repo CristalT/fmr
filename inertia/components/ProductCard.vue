@@ -33,7 +33,8 @@ function addToCart({ qty }: { qty: number }) {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-md border bg-white shadow-sm">
+  <div
+    class="overflow-hidden rounded-md border bg-white shadow-sm transition-shadow hover:shadow-md">
     <div class="flex h-[200px] justify-center pt-4">
       <ProductImage :product rounded />
     </div>
@@ -60,7 +61,7 @@ function addToCart({ qty }: { qty: number }) {
         </template>
       </Button>
       <Button
-        variant="tertiary"
+        variant="primary"
         bordered
         full
         label="Consultar"
