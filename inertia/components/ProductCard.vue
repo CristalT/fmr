@@ -53,6 +53,14 @@ function addToCart({ qty }: { qty: number }) {
       $ {{ product.price }}
     </div>
 
+    <button
+      type="button"
+      class="flex w-full items-center justify-center gap-1 pb-2 text-sm text-primary hover:underline"
+      @click="router.get(`/products/${product.id}`)">
+      <Icon name="eye" size="sm" />
+      Ver más
+    </button>
+
     <div class="p-2">
       <Button
         :variant="isInCart ? 'success' : 'primary'"

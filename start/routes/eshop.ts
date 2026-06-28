@@ -19,6 +19,7 @@ export default function eshopRoutes() {
   router.get('/', [HomeController, 'index'])
   router.get('/products', [ProductController, 'index'])
   router.get('/products/list', [ProductController, 'list'])
+  router.get('/products/:id', [ProductController, 'show'])
   router.resource('/auth/customers', CustomerAuthController).only(['store', 'show', 'destroy'])
   router.get('/auth/password-reset', [PasswordResetController, 'view'])
   router.post('/auth/password-reset', [PasswordResetController, 'reset'])

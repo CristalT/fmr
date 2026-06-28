@@ -7,6 +7,26 @@ export default class ProductController {
     return inertia.render('products/index')
   }
 
+  async show({ params, auth, inertia }: HttpContext) {
+    const queryOptions = {
+      hideZeroStock: await setting('stock_hide_products_with_zero_stock'),
+      hideZeroPrice: await setting('stock_hide_products_with_zero_price'),
+      interval: await setting('stock_round_interval'),
+    }
+
+    let fields = ['id', 'name', 'image', 'code', 'description', 'details']
+
+    if (await auth.check()) fields = fields.concat(['price', 'stock', 'brand', 'provider'])
+
+    const product = await Product.query()
+      .where('id', params.id)
+      .withScopes((scope) => scope.eshopSearch(queryOptions))
+      .select(fields)
+      .firstOrFail()
+
+    return inertia.render('products/show', { product })
+  }
+
   async list({ request, auth }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 12)
