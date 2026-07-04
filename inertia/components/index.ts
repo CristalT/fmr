@@ -1,6 +1,7 @@
 export { default as AdminLayout } from './AdminLayout/AdminLayout.vue'
 export { default as AdminSideMenu } from './AdminLayout/AdminSideMenu.vue'
 export { default as ImageUpload } from './ImageUpload/ImageUpload.vue'
+export { default as SlideImageUpload } from './SlideImageUpload/SlideImageUpload.vue'
 export { default as SetCartQtyDialog } from './SetCartQtyDialog/SetCartQtyDialog.vue'
 export { default as ProductImage } from './ProductImage.vue'
 export { default as MainHeader } from './MainHeader.vue'

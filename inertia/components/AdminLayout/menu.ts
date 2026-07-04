@@ -76,6 +76,12 @@ menu.addOption({
 })
 
 menu.addOption({
+  label: 'Slides',
+  action: () => router.visit('/admin/slides/list'),
+  icon: 'showcase',
+})
+
+menu.addOption({
   label: 'Configuración',
   action: () => router.visit('/admin/settings/view'),
   icon: 'settings',

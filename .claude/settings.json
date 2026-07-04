@@ -5,7 +5,23 @@
       "Bash(sips -g pixelWidth -g pixelHeight public/static/favico.png)",
       "Bash(pkill -f \"node ace serve\")",
       "Bash(lsof -ti:3333)",
-      "Bash(xargs kill)"
+      "Bash(xargs kill)",
+      "Bash(xargs -I{} echo {})",
+      "Bash(command -v chromium-cli)",
+      "Read(//usr/local/bin/**)",
+      "Bash(find / -maxdepth 4 -iname \"*chromium-cli*\")",
+      "Bash(find / -maxdepth 6 -iname \"chromium-cli\")",
+      "Bash(lsof -i :3333 -sTCP:LISTEN)",
+      "Bash(curl -s http://localhost:3333/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(kill 43581)",
+      "Bash(kill -9 43581)",
+      "Bash(curl -s http://localhost:3333/)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3333/admin/slides/list)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3333/admin/slides)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3333/admin/slides/create)",
+      "Bash(PGPASSWORD=admin psql -h 127.0.0.1 -p 33060 -U admin -d fmr-site -c \"\\\\d administrators\")",
+      "Bash(PGPASSWORD=admin psql -h 127.0.0.1 -p 33060 -U admin -d fmr-site -c \"select id, email from administrators limit 5;\")"
     ]
   }
 }
