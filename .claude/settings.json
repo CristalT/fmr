@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sips -g pixelWidth -g pixelHeight public/static/android-chrome-512x512.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight public/static/favico.png)",
+      "Bash(pkill -f \"node ace serve\")",
+      "Bash(lsof -ti:3333)",
+      "Bash(xargs kill)"
+    ]
+  }
+}
