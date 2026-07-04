@@ -23,6 +23,8 @@ import TreasuryIcon from '~/components/icons/TreasuryIcon.vue'
 import EyeIcon from '~/components/icons/EyeIcon.vue'
 import EyeOffIcon from '~/components/icons/EyeOffIcon.vue'
 import ContentPasteIcon from '~/components/icons/ContentPasteIcon.vue'
+import WhatsAppIcon from '~/components/icons/WhatsAppIcon.vue'
+import ZoomIcon from '~/components/icons/ZoomIcon.vue'
 
 export const icons = {
   edit: EditIcon,
@@ -50,4 +52,6 @@ export const icons = {
   eye: EyeIcon,
   eyeOff: EyeOffIcon,
   content_paste: ContentPasteIcon,
+  whatsapp: WhatsAppIcon,
+  zoom: ZoomIcon,
 }

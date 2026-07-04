@@ -24,7 +24,17 @@ export default class ProductController {
       .select(fields)
       .firstOrFail()
 
-    return inertia.render('products/show', { product })
+    const firstWord = product.name.split(' ')[0]
+
+    const relatedProducts = await Product.query()
+      .where('name', 'LIKE', `${firstWord}%`)
+      .where('id', '!=', product.id)
+      .withScopes((scope) => scope.eshopSearch(queryOptions))
+      .select(fields)
+      .orderByRaw('RAND()')
+      .limit(8)
+
+    return inertia.render('products/show', { product, relatedProducts })
   }
 
   async list({ request, auth }: HttpContext) {
