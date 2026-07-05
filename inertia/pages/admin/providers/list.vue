@@ -21,6 +21,21 @@ const columns = [
   { label: 'ID', key: 'alias' },
   { label: 'Razón Social', key: 'name' },
 ]
+
+function publicationStatus(row: { productCounts?: { published: number; unpublished: number } }) {
+  const { published = 0, unpublished = 0 } = row.productCounts ?? {}
+
+  if (published === 0 && unpublished === 0) {
+    return { label: 'Sin artículos', color: 'bg-gray-400 text-white' }
+  }
+  if (published > 0 && unpublished === 0) {
+    return { label: 'Publicado', color: 'bg-green-600 text-white' }
+  }
+  if (published === 0 && unpublished > 0) {
+    return { label: 'No publicado', color: 'bg-red-600 text-white' }
+  }
+  return { label: 'Parcial', color: 'bg-yellow-500 text-white' }
+}
 </script>
 <template>
   <AdminLayout>
@@ -38,7 +53,15 @@ const columns = [
         :data="providers"
         :metadata
         @page-change="(value) => (params.page = value)"
-        @row-click="(row) => router.visit(`/admin/providers/${row.alias}/edit`)" />
+        @row-click="(row) => router.visit(`/admin/providers/${row.alias}/edit`)">
+        <template #append="{ row }">
+          <span
+            class="rounded p-1 text-xs font-semibold"
+            :class="publicationStatus(row).color">
+            {{ publicationStatus(row).label }}
+          </span>
+        </template>
+      </Table>
     </div>
   </AdminLayout>
 </template>

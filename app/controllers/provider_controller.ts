@@ -20,13 +20,36 @@ export default class ProviderController {
       query.where('alias', terms).orWhereILike('name', `%${terms}%`)
     }
 
-    let data
     if (page) {
-      data = await query.paginate(page, size)
-    } else {
-      data = await query.exec()
+      const paginated = await query.paginate(page, size)
+      const json = paginated.toJSON()
+
+      const aliases = json.data.map((provider) => provider.alias)
+      const counts = await Product.query()
+        .whereIn('provider', aliases)
+        .select('provider', 'public')
+        .count('* as total')
+        .groupBy('provider', 'public')
+
+      const productCounts: Record<string, { published: number; unpublished: number }> = {}
+      for (const alias of aliases) {
+        productCounts[alias] = { published: 0, unpublished: 0 }
+      }
+      for (const row of counts) {
+        const entry = productCounts[row.provider]
+        if (row.public === 1) entry.published = Number(row.$extras.total)
+        else entry.unpublished = Number(row.$extras.total)
+      }
+
+      const data = json.data.map((provider) => ({
+        ...provider.serialize(),
+        productCounts: productCounts[provider.alias],
+      }))
+
+      return response.json({ meta: json.meta, data })
     }
 
+    const data = await query.exec()
     return response.json(data)
   }
 

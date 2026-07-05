@@ -21,13 +21,17 @@ export default function useProduct() {
   }
 
   const fetchAll = (params: Ref<Params>) => {
+    type ProviderRow = Provider & {
+      productCounts: { published: number; unpublished: number }
+    }
+
     return useQuery({
       queryKey: ['providers', params],
       queryFn: () => {
         return http('admin/providers')
           .cancellable('fetch_providers_list')
           .query({ ...params.value })
-          .get<{ data: Provider[]; meta: Meta }>('data')
+          .get<{ data: ProviderRow[]; meta: Meta }>('data')
       },
     })
   }
