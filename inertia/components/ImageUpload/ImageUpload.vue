@@ -111,7 +111,7 @@ onUnmounted(() => {
     <p v-if="label">{{ label }}</p>
     <div class="relative overflow-hidden rounded-md">
       <div
-        class="absolute flex h-full w-full flex-col items-center justify-center gap-4 opacity-0 transition-all hover:bg-black/50 hover:opacity-100">
+        class="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-4 bg-black/50 opacity-0 hover:opacity-100">
         <div class="flex w-full justify-center gap-4">
           <Icon
             name="edit"
@@ -127,7 +127,11 @@ onUnmounted(() => {
         <div class="text-white">Ctrl + V para pegar imagen</div>
       </div>
       <input :accept="accept" type="file" v-show="false" ref="inputFile" @change="loadImage" />
-      <ProductImage v-if="!preview && !product.image" rounded :product class="mx-auto w-full" />
+      <ProductImage
+        v-if="!preview && !product.image"
+        rounded
+        :product
+        class="mx-auto w-full cursor-pointer" />
       <img
         id="img-preview"
         v-else
