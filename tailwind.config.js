@@ -19,7 +19,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Roboto Condensed"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['"IBM Plex Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['"Bungee"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         'primary-admin': '#2563eb',
